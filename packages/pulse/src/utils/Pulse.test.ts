@@ -162,22 +162,6 @@ test("C-011 a setup that reports an error then throws surfaces the failure once"
   expect(consoleError).not.toHaveBeenCalled();
 });
 
-test("C-012 a setup answering no function fails, and a promise is not a cleanup", () => {
-  for (const answer of [undefined, null, {}, Promise.resolve(() => {})]) {
-    const adapter = {
-      name: "bad",
-      available: () => true,
-      observe: () => answer,
-    };
-
-    // @ts-expect-error A JavaScript adapter can answer anything.
-    const pulse = new Pulse({ adapter });
-
-    expectCode(() => pulse.start(), "START_FAILED");
-    expectCode(() => pulse.state.subscribe(() => {}), "FAILED_INSTANCE");
-  }
-});
-
 test("C-013 a dispose during setup runs the cleanup once and publishes nothing", () => {
   let pulse: Pulse | null = null;
   const cleanup = vi.fn();

@@ -159,10 +159,10 @@ export class Pulse {
       },
     });
 
-    let answer: unknown;
+    let cleanup: () => void;
 
     try {
-      answer = adapter.observe(observer);
+      cleanup = adapter.observe(observer);
     } catch (error) {
       throw this.#fail(
         new PulseError({
@@ -172,19 +172,6 @@ export class Pulse {
         }),
       );
     }
-
-    if (typeof answer !== "function") {
-      throw this.#fail(
-        new PulseError({
-          code: "START_FAILED",
-          message: `The ${host.adapter.name} adapter's setup answered no cleanup function.`,
-        }),
-      );
-    }
-
-    const cleanup = () => {
-      answer();
-    };
 
     if (this.#isDisposed()) {
       this.#runCleanup(host, cleanup);

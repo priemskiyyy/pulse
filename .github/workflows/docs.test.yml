@@ -63,3 +63,7 @@ jobs:
 
       - name: Pages and links
         run: pnpm verify:docs
+
+      # VitePress fails the build on a dead internal link.
+      - name: Site
+        run: pnpm build:docs

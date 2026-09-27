@@ -37,7 +37,7 @@ The specification names 200 scenarios. The tests carry their IDs:
 - `I-001` to `I-011` and `I-017`, integrations: `examples/shared/recipes/**`.
 - `P-001` to `P-015`, packaging: `scripts/verify-packages.mjs`, `scripts/measure-size.mjs` and `scripts/verify-release.mjs`.
 
-Malformed snapshots and options are ruled out by the types and the `*.contracts.ts` files instead of runtime checks, and a throwing getter simply propagates; see [decisions](decisions.md).
+Malformed snapshots and options are ruled out by the types and the `*.contracts.ts` files instead of runtime checks; see [decisions](decisions.md). Host failures are not type errors: a throwing document getter leaves only its own axis unknown and is reported after that state, and a setup that throws removes every listener it had installed.
 
 ## Running a platform exercise
 

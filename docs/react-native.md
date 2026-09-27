@@ -36,7 +36,7 @@ Android reports `focus` and `blur` separately from its app state and offers no c
 
 ## Startup
 
-The adapter subscribes before it reads `AppState.currentState`, so a change during the read wins over the stale baseline. An unresolved state is unknown, with the listeners attached; there is no polling and no timeout.
+The adapter subscribes before it reads `AppState.currentState`, so a change during the read wins over the stale baseline. An unresolved state is unknown, with the listeners attached; there is no polling and no timeout. A subscription or read that throws during setup removes every subscription already made, and cleanup tries every removal even when one throws.
 
 ## Expo and web builds
 

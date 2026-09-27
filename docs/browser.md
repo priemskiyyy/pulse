@@ -15,17 +15,18 @@ export const pulse = new Pulse({ adapter: browser() });
 
 ## Mapping
 
-| Document                                  | `phase`      | `interaction`               |
-| ----------------------------------------- | ------------ | --------------------------- |
-| visible, `hasFocus()` true / false        | `foreground` | `available` / `unavailable` |
-| hidden, pagehide-latched, or prerendering | `background` | `unavailable`               |
-| any other `visibilityState`               | `unknown`    | from `hasFocus()`           |
+| Document                                  | `phase`                | `interaction`               |
+| ----------------------------------------- | ---------------------- | --------------------------- |
+| visible, `hasFocus()` true / false        | `foreground`           | `available` / `unavailable` |
+| hidden, pagehide-latched, or prerendering | `background`           | `unavailable`               |
+| any other `visibilityState`               | `unknown`              | from `hasFocus()`           |
+| a getter that throws                      | that axis is `unknown` | reported after the state    |
 
 Visibility and focus answer different questions. A visible window that loses focus to another window stays foreground with interaction unavailable, and that is no transition.
 
 ## Listeners
 
-The adapter registers capture-phase listeners for `visibilitychange`, `freeze`, `resume` and `prerenderingchange` on the document, and `focus`, `blur`, `pagehide` and `pageshow` on the window. `pagehide` and `pageshow` set and clear a hold, below; every other event only resamples the document. Focus moving between controls, or into an iframe, never changes interaction: only the window's own focus events resample. It registers no `unload`, `beforeunload`, activity, router or timer listener, and never sets an `on*` handler property. Cleanup removes exactly its own listeners.
+The adapter registers capture-phase listeners for `visibilitychange`, `freeze`, `resume` and `prerenderingchange` on the document, and `focus`, `blur`, `pagehide` and `pageshow` on the window. `pagehide` and `pageshow` set and clear a hold, below; every other event only resamples the document. Focus moving between controls, or into an iframe, never changes interaction: only the window's own focus events resample. It registers no `unload`, `beforeunload`, activity, router or timer listener, and never sets an `on*` handler property. Cleanup removes exactly its own listeners, all of them even when one removal throws, and a setup that throws removes the ones it had added.
 
 ## pagehide and pageshow
 

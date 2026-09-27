@@ -1,0 +1,14 @@
+{
+  "expo": {
+    "name": "Pulse Lifecycle Lab",
+    "slug": "pulse-lifecycle-lab",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "web": {
+      "bundler": "metro",
+      "output": "single"
+    }
+  }
+}

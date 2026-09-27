@@ -17,7 +17,8 @@
     "check": "pnpm build && pnpm lint:typescript && pnpm lint:eslint && pnpm test:lint && pnpm lint:prettier && pnpm test:unit",
     "test:lint": "node scripts/verify-lint-rules.mjs",
     "test:package": "node scripts/verify-packages.mjs",
-    "test:size": "node scripts/measure-size.mjs"
+    "test:size": "node scripts/measure-size.mjs",
+    "verify:release": "node scripts/verify-release.mjs"
   },
   "devDependencies": {
     "@eslint/js": "9.39.4",

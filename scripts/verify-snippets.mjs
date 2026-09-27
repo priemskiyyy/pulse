@@ -4,7 +4,6 @@ import {
   readdirSync,
   readFileSync,
   rmSync,
-  statSync,
   writeFileSync,
 } from "node:fs";
 import path from "node:path";
@@ -18,15 +17,9 @@ const output = path.join(workspace, ".artifacts/snippets");
 const dist = path.join(workspace, "packages/pulse/dist");
 
 const listPages = (directory) =>
-  readdirSync(directory).flatMap((name) => {
-    const file = path.join(directory, name);
-
-    if (statSync(file).isDirectory()) {
-      return listPages(file);
-    }
-
-    return name.endsWith(".md") ? [file] : [];
-  });
+  readdirSync(directory, { recursive: true })
+    .filter((name) => name.endsWith(".md"))
+    .map((name) => path.join(directory, name));
 
 const pages = [
   path.join(workspace, "README.md"),

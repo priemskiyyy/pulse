@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -7,15 +7,9 @@ const workspace = fileURLToPath(new URL("..", import.meta.url));
 const docs = path.join(workspace, "docs");
 
 const listPages = (directory) =>
-  readdirSync(directory).flatMap((name) => {
-    const file = path.join(directory, name);
-
-    if (statSync(file).isDirectory()) {
-      return listPages(file);
-    }
-
-    return name.endsWith(".md") ? [file] : [];
-  });
+  readdirSync(directory, { recursive: true })
+    .filter((name) => name.endsWith(".md"))
+    .map((name) => path.join(directory, name));
 
 const pages = listPages(docs);
 

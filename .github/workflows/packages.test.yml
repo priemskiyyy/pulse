@@ -63,6 +63,9 @@ jobs:
       - name: Linting Eslint
         run: pnpm lint:eslint
 
+      - name: Lint rule probes
+        run: pnpm test:lint
+
       # Every host is faked in process, so the whole suite runs here with no
       # browser, no device and no credentials.
       - name: Unit tests

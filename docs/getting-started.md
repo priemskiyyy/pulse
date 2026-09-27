@@ -48,4 +48,4 @@ Pulse neither awaits nor catches a promise a listener returns. It does not guara
 
 ## Errors and diagnostics
 
-Listener, clock, adapter and cleanup errors go to `onError(error, context)`, or to `console.error` without one. `context` says where the error came from, the adapter and the commit sequence. `onDiagnostic` receives `started`, `unavailable`, `commit` and `duplicate` records, synchronously and only when you pass it; Pulse keeps no history.
+Every reported error goes to `onError(error, context)`, or to `console.error` without one. `context` says where the error came from, the adapter and the commit sequence. `onDiagnostic` receives `started`, `unavailable`, `commit` and `duplicate` records, synchronously and only when you pass it; Pulse keeps no history.

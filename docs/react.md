@@ -45,4 +45,4 @@ The server snapshot is always unknown on both axes, the same frozen object on ev
 
 ## Teardown
 
-Unmount the React tree and remove every integration before disposing the Pulse. For an embedded root or a micro-frontend, the mount function creates, starts and returns a teardown for its own instance; a later mount creates a new one.
+Unmount the React tree and remove every integration before disposing the Pulse: subscribing to a disposed Pulse throws `DISPOSED`, so a component that mounts afterwards fails instead of reading a stale snapshot. For an embedded root or a micro-frontend, the mount function creates, starts and returns a teardown for its own instance; a later mount creates a new one.

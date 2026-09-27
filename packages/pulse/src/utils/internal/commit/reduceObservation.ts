@@ -1,22 +1,18 @@
 import type { BackgroundEvent } from "src/types/BackgroundEvent";
 import type { ForegroundEvent } from "src/types/ForegroundEvent";
 import type { Timeline } from "src/types/internal/Timeline";
+import type { BackgroundState } from "src/types/internal/BackgroundState";
+import type { ForegroundState } from "src/types/internal/ForegroundState";
 import type { LifecycleState } from "src/types/LifecycleState";
-import { isBackgroundState } from "src/utils/internal/state/isBackgroundState";
-import { isForegroundState } from "src/utils/internal/state/isForegroundState";
 
 type Observation = { state: LifecycleState; timestamp: number | null };
 
-const getObservedAway = (departure: number | null, entry: number | null) => {
-  if (departure === null || entry === null) {
-    return null;
-  }
+// The flat state type does not narrow on its phase, so the event payloads need these.
+const isForegroundState = (state: LifecycleState): state is ForegroundState =>
+  state.phase === "foreground";
 
-  const away = entry - departure;
-
-  // A usable entry never precedes its departure, but two finite extremes can overflow.
-  return Number.isFinite(away) ? away : null;
-};
+const isBackgroundState = (state: LifecycleState): state is BackgroundState =>
+  state.phase === "background" && state.interaction === "unavailable";
 
 export const reduceObservation = (
   timeline: Timeline,
@@ -68,13 +64,16 @@ export const reduceObservation = (
   }
 
   if (isBackgroundState(from) && isForegroundState(state)) {
+    const away = departure === null || !usable ? null : timestamp - departure;
+
     const event: ForegroundEvent = Object.freeze({
       type: "foreground",
       sequence,
       from,
       to: state,
       observedAt: timestamp,
-      observedAway: getObservedAway(departure, usable ? timestamp : null),
+      // A usable entry never precedes its departure, but two finite extremes can overflow.
+      observedAway: away !== null && Number.isFinite(away) ? away : null,
     });
 
     return {

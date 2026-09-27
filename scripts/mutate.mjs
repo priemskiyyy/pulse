@@ -47,8 +47,8 @@ const MUTANTS = [
   },
   {
     file: `${source}/utils/Pulse.ts`,
-    find: "event === null ? [] : [...this.#listeners[event.type]];",
-    replace: "event === null ? [] : this.#listeners[event.type];",
+    find: "const registrations = [...registry];",
+    replace: "const registrations = registry;",
     describes: "a listener added during a commit hearing that commit",
   },
   {

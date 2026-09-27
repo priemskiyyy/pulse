@@ -1,3 +1,5 @@
+import type { BackgroundEvent } from "src/types/BackgroundEvent";
+import type { ForegroundEvent } from "src/types/ForegroundEvent";
 import type { Intake, Report } from "src/types/internal/Intake";
 import type { Ownership } from "src/types/internal/Ownership";
 import type { PulseHost } from "src/types/internal/PulseHost";
@@ -16,7 +18,16 @@ import { sampleClock } from "src/utils/internal/intake/sampleClock";
 import { reportError } from "src/utils/internal/reporting/reportError";
 import { PulseError } from "src/utils/PulseError";
 
-type Registration = { listener: unknown };
+// Each call is its own registration, so the same function can be registered twice.
+type Registration<TArgs extends unknown[]> = {
+  listener: (...args: TArgs) => void;
+};
+
+type Registry<TArgs extends unknown[]> = Set<Registration<TArgs>>;
+
+type TransitionRegistries = {
+  [TType in keyof LifecycleEvents]: Registry<[LifecycleEvents[TType]]>;
+};
 
 const INITIAL_TIMELINE: Timeline = Object.freeze({
   state: UNKNOWN_LIFECYCLE_STATE,
@@ -56,10 +67,10 @@ export class Pulse {
   #timeline = INITIAL_TIMELINE;
   #queue: Intake[] = [];
   #draining = false;
-  #listeners = {
-    state: new Set<Registration>(),
-    foreground: new Set<Registration>(),
-    background: new Set<Registration>(),
+  #stateListeners: Registry<[]> = new Set();
+  #transitionListeners: TransitionRegistries = {
+    foreground: new Set(),
+    background: new Set(),
   };
 
   constructor({
@@ -97,7 +108,7 @@ export class Pulse {
     subscribe: (listener: () => void) => {
       this.#assertUsable();
 
-      return this.#register("state", listener);
+      return this.#register(this.#stateListeners, listener);
     },
   });
 
@@ -212,7 +223,7 @@ export class Pulse {
   ): (() => void) => {
     this.#assertUsable();
 
-    return this.#register(type, listener);
+    return this.#register(this.#transitionListeners[type], listener);
   };
 
   /**
@@ -263,9 +274,11 @@ export class Pulse {
     }
   }
 
-  #register(kind: "state" | keyof LifecycleEvents, listener: unknown) {
-    const registry = this.#listeners[kind];
-    const registration: Registration = { listener };
+  #register<TArgs extends unknown[]>(
+    registry: Registry<TArgs>,
+    listener: (...args: TArgs) => void,
+  ) {
+    const registration: Registration<TArgs> = { listener };
 
     registry.add(registration);
 
@@ -275,9 +288,9 @@ export class Pulse {
   }
 
   #clearListeners() {
-    this.#listeners.state.clear();
-    this.#listeners.foreground.clear();
-    this.#listeners.background.clear();
+    this.#stateListeners.clear();
+    this.#transitionListeners.foreground.clear();
+    this.#transitionListeners.background.clear();
   }
 
   #getLiveOwnership(token: object) {
@@ -336,7 +349,9 @@ export class Pulse {
       return;
     }
 
-    if (!this.#isRunning()) {
+    const ownership = this.#ownership;
+
+    if (ownership.state !== "RUNNING") {
       return;
     }
 
@@ -345,8 +360,9 @@ export class Pulse {
     try {
       let intake = this.#queue.shift();
 
+      // Disposal empties the queue, so a dispose from any callback also ends this loop.
       while (intake !== undefined) {
-        this.#process(intake);
+        this.#process(ownership.host, intake);
         intake = this.#queue.shift();
       }
     } finally {
@@ -354,15 +370,7 @@ export class Pulse {
     }
   }
 
-  #process(intake: Intake) {
-    const ownership = this.#ownership;
-
-    if (ownership.state !== "RUNNING") {
-      return;
-    }
-
-    const { host } = ownership;
-
+  #process(host: PulseHost, intake: Intake) {
     if (intake.kind === "error") {
       this.#report(host, [{ error: intake.error, origin: "adapter" }]);
 
@@ -401,49 +409,16 @@ export class Pulse {
     }
 
     // Both groups are captured before the first callback: a registration added now waits for the next commit.
-    const eventRegistrations =
-      event === null ? [] : [...this.#listeners[event.type]];
+    const notifyState = this.#capture(
+      this.#stateListeners,
+      [],
+      "state-listener",
+    );
 
-    // Disposal clears the registries, so it also skips every remaining turn.
-    for (const registration of [...this.#listeners.state]) {
-      const { listener } = registration;
+    const notifyTransition = this.#captureTransition(event);
 
-      if (!this.#listeners.state.has(registration)) {
-        continue;
-      }
-
-      if (typeof listener !== "function") {
-        continue;
-      }
-
-      try {
-        listener();
-      } catch (error) {
-        reports.push({ error, origin: "state-listener" });
-      }
-    }
-
-    if (event !== null) {
-      const registry = this.#listeners[event.type];
-
-      for (const registration of eventRegistrations) {
-        const { listener } = registration;
-
-        if (!registry.has(registration)) {
-          continue;
-        }
-
-        if (typeof listener !== "function") {
-          continue;
-        }
-
-        try {
-          listener(event);
-        } catch (error) {
-          reports.push({ error, origin: "transition-listener" });
-        }
-      }
-    }
+    notifyState(reports);
+    notifyTransition(reports);
 
     this.#report(host, reports);
     this.#diagnose(host, () => ({
@@ -454,6 +429,51 @@ export class Pulse {
       observedAt: intake.timestamp,
       transition: event === null ? null : event.type,
     }));
+  }
+
+  #captureTransition(
+    event: ForegroundEvent | BackgroundEvent | null,
+  ): (reports: Report[]) => void {
+    if (event === null) {
+      return () => {};
+    }
+
+    if (event.type === "foreground") {
+      return this.#capture(
+        this.#transitionListeners.foreground,
+        [event],
+        "transition-listener",
+      );
+    }
+
+    return this.#capture(
+      this.#transitionListeners.background,
+      [event],
+      "transition-listener",
+    );
+  }
+
+  #capture<TArgs extends unknown[]>(
+    registry: Registry<TArgs>,
+    args: TArgs,
+    origin: PulseErrorOrigin,
+  ) {
+    const registrations = [...registry];
+
+    return (reports: Report[]) => {
+      for (const registration of registrations) {
+        // Disposal clears the registries, so it also skips every remaining turn.
+        if (!registry.has(registration)) {
+          continue;
+        }
+
+        try {
+          registration.listener(...args);
+        } catch (error) {
+          reports.push({ error, origin });
+        }
+      }
+    };
   }
 
   #getErrorContext(host: PulseHost, origin: PulseErrorOrigin) {

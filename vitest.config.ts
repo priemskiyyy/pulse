@@ -25,21 +25,6 @@ export default defineConfig({
       },
       {
         extends: true,
-        resolve: {
-          alias: {
-            src: fileURLToPath(
-              new URL("./examples/recipes/src", import.meta.url),
-            ),
-          },
-        },
-        test: {
-          name: "recipes",
-          include: ["examples/recipes/src/**/*.test.ts"],
-          environment: "node",
-        },
-      },
-      {
-        extends: true,
         test: {
           name: "example-shared",
           include: ["examples/shared/**/*.test.ts"],

@@ -79,7 +79,7 @@ writeFileSync(
           "@tanstack/query-core": [
             path.join(
               workspace,
-              "examples/recipes/node_modules/@tanstack/query-core",
+              "examples/shared/node_modules/@tanstack/query-core",
             ),
           ],
         },

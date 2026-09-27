@@ -4,7 +4,7 @@ import { createMockAdapter } from "@priemskiyyy/pulse/testing";
 import { focusManager } from "@tanstack/query-core";
 import { afterEach, expect, test } from "vitest";
 
-import { installPulseQueryFocus } from "src/installPulseQueryFocus";
+import { installPulseQueryFocus } from "example-shared/recipes/installPulseQueryFocus";
 
 const FOREGROUND: LifecycleState = {
   phase: "foreground",

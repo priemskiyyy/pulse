@@ -3,7 +3,7 @@ import { Pulse } from "@priemskiyyy/pulse";
 import { createMockAdapter } from "@priemskiyyy/pulse/testing";
 import { expect, test, vi } from "vitest";
 
-import { observeForegroundEligibility } from "src/observeForegroundEligibility";
+import { observeForegroundEligibility } from "example-shared/recipes/observeForegroundEligibility";
 
 const FOREGROUND: LifecycleState = {
   phase: "foreground",

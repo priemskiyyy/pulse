@@ -2,9 +2,10 @@
   "name": "example-shared",
   "private": true,
   "type": "module",
-  "description": "The lifecycle lab both examples share: one Pulse, a stale-data refresh, a simulation, the timeline and the Tailwind styles.",
+  "description": "The code both example apps share: the lifecycle lab, the integration recipes and the Tailwind styles.",
   "exports": {
     "./lab/*": "./lab/*.ts",
+    "./recipes/*": "./recipes/*.ts",
     "./formatting/*": "./formatting/*.ts",
     "./types/*": "./types/*.ts",
     "./utils/*": "./utils/*.ts",
@@ -18,6 +19,7 @@
   },
   "dependencies": {
     "@priemskiyyy/pulse": "workspace:*",
+    "@tanstack/query-core": "5.104.0",
     "class-variance-authority": "0.7.1",
     "ts-pattern": "5.9.0"
   }

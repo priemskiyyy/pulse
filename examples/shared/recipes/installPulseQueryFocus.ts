@@ -1,7 +1,7 @@
 import type { LifecycleSource } from "@priemskiyyy/pulse";
 import type { FocusManager } from "@tanstack/query-core";
 
-import { observeForegroundEligibility } from "src/observeForegroundEligibility";
+import { observeForegroundEligibility } from "example-shared/recipes/observeForegroundEligibility";
 
 /**
  * Drives TanStack Query's focus from Pulse's phase: foreground is focused,

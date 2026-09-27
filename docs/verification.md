@@ -31,10 +31,10 @@ The specification names 200 scenarios. The tests carry their IDs:
 - `B-001` to `B-046`, the browser adapter: `src/adapters/browser/**`. `B-047`, a real back/forward cache restore, is a host exercise.
 - `N-001` to `N-030`, the native adapter: `src/adapters/react-native/**`. `N-031`, device multi-window and credential picker traces, is a host exercise.
 - `R-001` to `R-018`, React: `src/react/**`.
-- `I-001` to `I-017`, integrations: `examples/recipes/src/**`, with the Reach, Shift, Simulcast, Anchor and Chime policies documented in [recipes](recipes.md) rather than built.
+- `I-001` to `I-011` and `I-017`, integrations: `examples/recipes/src/**`.
 - `P-001` to `P-015`, packaging: `scripts/verify-packages.mjs`, `scripts/measure-size.mjs` and `scripts/verify-release.mjs`.
 
-Scenarios about removed runtime checks, such as malformed snapshots or throwing getters, are covered by the types and the `*.contracts.ts` files instead; see [decisions](decisions.md).
+Malformed snapshots and options are ruled out by the types and the `*.contracts.ts` files instead of runtime checks, and a throwing getter simply propagates; see [decisions](decisions.md).
 
 ## Reporting a platform exercise
 

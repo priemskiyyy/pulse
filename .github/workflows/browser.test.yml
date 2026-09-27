@@ -8,7 +8,7 @@ on:
       - "package.json"
       - "pnpm-lock.yaml"
       - "packages/**"
-      - "examples/browser-lifecycle-lab/**"
+      - "examples/**"
       - ".github/actions/setup/**"
       - ".github/workflows/browser.test.yml"
   push:
@@ -18,7 +18,7 @@ on:
       - "package.json"
       - "pnpm-lock.yaml"
       - "packages/**"
-      - "examples/browser-lifecycle-lab/**"
+      - "examples/**"
       - ".github/actions/setup/**"
       - ".github/workflows/browser.test.yml"
 
@@ -44,8 +44,12 @@ jobs:
       - name: Install Chromium
         run: pnpm exec playwright install --with-deps chromium
 
-      - name: Lab in Chromium
+      - name: Labs in Chromium
         run: pnpm test:browser
+
+      # Metro resolves the package's exports for both native platforms; a device still has to run them.
+      - name: Expo native bundles
+        run: pnpm --filter example-expo-lifecycle-lab build:native
 
       - name: Upload results
         uses: actions/upload-artifact@v4

@@ -1,0 +1,21 @@
+node_modules/
+.idea/
+.DS_Store
+.env
+.env.*
+!.env.example
+dist/
+.expo/
+coverage/
+*.tgz
+.artifacts/
+docs/.vitepress/dist/
+docs/.vitepress/cache/
+test-results/
+playwright-report/
+
+# pnpm store created by the packed-consumer check
+.pnpm-store/
+
+# The local decision log, plan and notes, not published
+tasks/

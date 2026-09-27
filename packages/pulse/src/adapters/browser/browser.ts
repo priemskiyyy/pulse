@@ -1,14 +1,12 @@
 import type { BrowserOptions } from "src/adapters/browser/types/BrowserOptions";
-import { BACKGROUND_STATE } from "src/adapters/browser/utils/constants/states";
 import { sampleDocument } from "src/adapters/browser/utils/sampleDocument";
 import type { LifecycleAdapter } from "src/types/LifecycleAdapter";
+import { LIFECYCLE_STATES } from "src/utils/constants/states";
 
 /**
- * Observes one document: visibility is the phase, `document.hasFocus()` the
- * interaction. A `pagehide` holds the phase at background until `pageshow`,
- * and a positively prerendering document is background. It registers no
- * unload, activity or timer listener, creating it reads nothing, and it is
- * unavailable where there is no live document, such as on a server.
+ * Observes one document: visibility is the phase and `document.hasFocus()` the
+ * interaction, with `pagehide` holding background until `pageshow`. It is
+ * unavailable without a live document, such as on a server.
  *
  * @example
  * ```ts
@@ -24,10 +22,6 @@ export const browser = ({ target }: BrowserOptions = {}): LifecycleAdapter => ({
 
     // A server render has no window.
     if (typeof targetWindow !== "object") {
-      return false;
-    }
-
-    if (targetWindow === null) {
       return false;
     }
 
@@ -51,7 +45,10 @@ export const browser = ({ target }: BrowserOptions = {}): LifecycleAdapter => ({
       generation += 1;
 
       const sampled = generation;
-      const state = latched ? BACKGROUND_STATE : sampleDocument(targetDocument);
+
+      const state = latched
+        ? LIFECYCLE_STATES.background.unavailable
+        : sampleDocument(targetDocument);
 
       if (closed) {
         return;
@@ -67,15 +64,11 @@ export const browser = ({ target }: BrowserOptions = {}): LifecycleAdapter => ({
 
     // Focus moving between elements reaches the window in its capture phase; only the window's own counts.
     const handleFocusChange = (event: Event) => {
-      if (event.target === targetWindow) {
-        publish();
-
+      if (event.target !== targetWindow) {
         return;
       }
 
-      if (event.target === targetDocument) {
-        publish();
-      }
+      publish();
     };
 
     const handlePageHide = () => {

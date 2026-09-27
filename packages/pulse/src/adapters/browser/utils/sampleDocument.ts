@@ -1,5 +1,5 @@
-import { BACKGROUND_STATE } from "src/adapters/browser/utils/constants/states";
 import type { LifecycleState } from "src/types/LifecycleState";
+import { LIFECYCLE_STATES } from "src/utils/constants/states";
 
 export const sampleDocument = (targetDocument: Document): LifecycleState => {
   // A browser without prerendering support reports nothing, which is no evidence of it.
@@ -7,13 +7,13 @@ export const sampleDocument = (targetDocument: Document): LifecycleState => {
     "prerendering" in targetDocument ? targetDocument.prerendering : false;
 
   if (prerendering === true) {
-    return BACKGROUND_STATE;
+    return LIFECYCLE_STATES.background.unavailable;
   }
 
   const { visibilityState } = targetDocument;
 
   if (visibilityState === "hidden") {
-    return BACKGROUND_STATE;
+    return LIFECYCLE_STATES.background.unavailable;
   }
 
   // Legacy values such as "prerender" are no evidence of foreground.

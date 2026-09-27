@@ -71,14 +71,14 @@ const MUTANTS = [
   },
   {
     file: `${source}/adapters/browser/browser.ts`,
-    find: "      if (event.target === targetWindow) {",
-    replace: "      if (event.target !== null) {",
+    find: "      if (event.target !== targetWindow) {",
+    replace: "      if (event.target === null) {",
     describes: "focus moving between controls resampling the page",
   },
   {
     file: `${source}/adapters/browser/browser.ts`,
-    find: "const state = latched ? BACKGROUND_STATE : sampleDocument(targetDocument);",
-    replace: "const state = sampleDocument(targetDocument);",
+    find: "      const state = latched\n        ? LIFECYCLE_STATES.background.unavailable\n        : sampleDocument(targetDocument);",
+    replace: "      const state = sampleDocument(targetDocument);",
     describes: "resume or focus ending the pagehide latch",
   },
   {

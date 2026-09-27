@@ -8,13 +8,14 @@ description: "Write a lifecycle adapter as a plain object: a cheap availability 
 import type { LifecycleAdapter, LifecycleState } from "@priemskiyyy/pulse";
 
 type Host = {
+  isReady: () => boolean;
   read: () => LifecycleState;
   subscribe: (listener: (state: LifecycleState) => void) => () => void;
 };
 
-export const fromHost = (host: Host | null): LifecycleAdapter => ({
+export const fromHost = (host: Host): LifecycleAdapter => ({
   name: "custom-host",
-  available: () => host !== null,
+  available: () => host.isReady(),
   observe: (observer) => {
     let closed = false;
     let received = false;

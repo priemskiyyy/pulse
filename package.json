@@ -9,11 +9,16 @@
   "scripts": {
     "format": "prettier --write .",
     "lint:prettier": "prettier --check .",
-    "lint:typescript": "tsc --noEmit && pnpm -r lint:typescript"
+    "lint:typescript": "tsc --noEmit && pnpm -r lint:typescript",
+    "lint:eslint": "eslint ."
   },
   "devDependencies": {
+    "@eslint/js": "9.39.4",
     "@types/node": "22.20.2",
+    "eslint": "9.39.4",
+    "eslint-plugin-react-hooks": "7.1.1",
     "prettier": "3.9.6",
-    "typescript": "5.8.3"
+    "typescript": "5.8.3",
+    "typescript-eslint": "8.70.0"
   }
 }

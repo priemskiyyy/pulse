@@ -162,6 +162,28 @@ test("C-011 a setup that reports an error then throws surfaces the failure once"
   expect(consoleError).not.toHaveBeenCalled();
 });
 
+test("an availability probe that throws fails the start like a throwing setup", () => {
+  const failure = new Error("cross-origin window");
+  const observe = vi.fn(() => () => {});
+
+  const pulse = new Pulse({
+    adapter: {
+      name: "probe",
+      available: () => {
+        throw failure;
+      },
+      observe,
+    },
+  });
+
+  expect(() => pulse.start()).toThrow(
+    expect.objectContaining({ code: "START_FAILED", cause: failure }),
+  );
+  expect(observe).not.toHaveBeenCalled();
+  expectCode(() => pulse.start(), "FAILED_INSTANCE");
+  expectCode(() => pulse.on("foreground", () => {}), "FAILED_INSTANCE");
+});
+
 test("C-013 a dispose during setup runs the cleanup once and publishes nothing", () => {
   let pulse: Pulse | null = null;
   const cleanup = vi.fn();

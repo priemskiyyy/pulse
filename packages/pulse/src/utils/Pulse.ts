@@ -137,9 +137,16 @@ export class Pulse {
     }
 
     const { adapter, host } = ownership;
+    let available: boolean;
+
+    try {
+      available = adapter.available();
+    } catch (error) {
+      throw this.#failStart(host, error);
+    }
 
     // An unavailable host, such as a server render, is observed as unknown rather than as a failure.
-    if (!adapter.available()) {
+    if (!available) {
       this.#ownership = {
         state: "RUNNING",
         token: {},
@@ -175,18 +182,7 @@ export class Pulse {
     try {
       cleanup = adapter.observe(observer);
     } catch (error) {
-      // A dispose during setup already cleared everything and stays terminal.
-      if (!this.#isDisposed()) {
-        this.#ownership = { state: "FAILED" };
-        this.#queue = [];
-        this.#clearListeners();
-      }
-
-      throw new PulseError({
-        code: "START_FAILED",
-        message: `The ${host.adapter.name} adapter's setup threw.`,
-        cause: error,
-      });
+      throw this.#failStart(host, error);
     }
 
     if (this.#isDisposed()) {
@@ -253,6 +249,21 @@ export class Pulse {
 
     this.#runCleanup(ownership.host, ownership.cleanup);
   };
+
+  // A dispose during setup already cleared everything and stays disposed, though start() still throws.
+  #failStart(host: PulseHost, error: unknown) {
+    if (!this.#isDisposed()) {
+      this.#ownership = { state: "FAILED" };
+      this.#queue = [];
+      this.#clearListeners();
+    }
+
+    return new PulseError({
+      code: "START_FAILED",
+      message: `The ${host.adapter.name} adapter threw while starting.`,
+      cause: error,
+    });
+  }
 
   #isDisposed() {
     return this.#ownership.state === "DISPOSED";

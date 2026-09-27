@@ -13,7 +13,6 @@ import { UNKNOWN_LIFECYCLE_STATE } from "src/utils/constants/states";
 import { reduceObservation } from "src/utils/internal/commit/reduceObservation";
 import { readObservation } from "src/utils/internal/intake/readObservation";
 import { sampleClock } from "src/utils/internal/intake/sampleClock";
-import { readPulseOptions } from "src/utils/internal/options/readPulseOptions";
 import { reportError } from "src/utils/internal/reporting/reportError";
 import { PulseError } from "src/utils/PulseError";
 
@@ -37,9 +36,6 @@ const createFailedError = () =>
     code: "FAILED_INSTANCE",
     message: "This Pulse failed to start. Create a new one to try again.",
   });
-
-const createInvalidArgument = (message: string) =>
-  new PulseError({ code: "INVALID_OPTIONS", message });
 
 /**
  * One application-owned observation of a host's lifecycle: an immutable
@@ -66,10 +62,22 @@ export class Pulse {
     background: new Set<Registration>(),
   };
 
-  constructor(options: PulseOptions) {
-    const { observe, host } = readPulseOptions(options);
-
-    this.#ownership = { state: "CREATED", observe, host };
+  constructor({
+    adapter,
+    now = Date.now,
+    onError,
+    onDiagnostic,
+  }: PulseOptions) {
+    this.#ownership = {
+      state: "CREATED",
+      adapter,
+      host: {
+        adapter: Object.freeze({ name: adapter.name }),
+        now,
+        onError: onError ?? null,
+        onDiagnostic: onDiagnostic ?? null,
+      },
+    };
   }
 
   /**
@@ -117,7 +125,7 @@ export class Pulse {
       return;
     }
 
-    const { observe, host } = ownership;
+    const { adapter, host } = ownership;
     const token = {};
 
     this.#ownership = { state: "STARTING", token, host };
@@ -137,7 +145,7 @@ export class Pulse {
     let answer: unknown;
 
     try {
-      answer = observe(observer);
+      answer = adapter.observe(observer);
     } catch (error) {
       throw this.#fail(
         new PulseError({
@@ -194,12 +202,6 @@ export class Pulse {
   ): (() => void) => {
     this.#assertUsable();
 
-    if (type !== "foreground" && type !== "background") {
-      throw createInvalidArgument(
-        'on() accepts only "foreground" and "background".',
-      );
-    }
-
     return this.#register(type, listener);
   };
 
@@ -252,10 +254,6 @@ export class Pulse {
   }
 
   #register(kind: "state" | keyof LifecycleEvents, listener: unknown) {
-    if (typeof listener !== "function") {
-      throw createInvalidArgument("A listener must be a function.");
-    }
-
     const registry = this.#listeners[kind];
     const registration: Registration = { listener };
 

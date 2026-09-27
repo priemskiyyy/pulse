@@ -26,8 +26,8 @@ test("a cause is kept as it was thrown, and an error without one has no cause of
   });
 
   const withoutCause = new PulseError({
-    code: "INVALID_OPTIONS",
-    message: "The options are not an object.",
+    code: "DISPOSED",
+    message: "The Pulse was disposed.",
   });
 
   expect(withCause.cause).toBe(cause);

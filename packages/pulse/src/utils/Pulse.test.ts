@@ -307,32 +307,3 @@ test("C-022 the same function registered twice is two independent registrations"
   expect(listener).toHaveBeenCalledTimes(3);
   expect(onBackground).toHaveBeenCalledTimes(1);
 });
-
-test("C-023 invalid options throw synchronously and are never logged later", async () => {
-  const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
-
-  // @ts-expect-error A JavaScript caller can omit the adapter.
-  expectCode(() => new Pulse({}), "INVALID_OPTIONS");
-  await new Promise((resolve) => setTimeout(resolve, 0));
-
-  expect(consoleError).not.toHaveBeenCalled();
-});
-
-test("on() and subscribe() refuse bad arguments without registering anything", () => {
-  const mock = createMockAdapter({ initial: FOREGROUND });
-  const pulse = new Pulse({ adapter: mock.adapter });
-
-  // @ts-expect-error "resume" is not a transition.
-  expectCode(() => pulse.on("resume", () => {}), "INVALID_OPTIONS");
-  // @ts-expect-error A listener must be a function.
-  expectCode(() => pulse.on("foreground", null), "INVALID_OPTIONS");
-  // @ts-expect-error A listener must be a function.
-  expectCode(() => pulse.state.subscribe("listener"), "INVALID_OPTIONS");
-
-  pulse.start();
-  mock.emit(BACKGROUND);
-  pulse.dispose();
-
-  // @ts-expect-error "resume" is not a transition.
-  expectCode(() => pulse.on("resume", () => {}), "DISPOSED");
-});

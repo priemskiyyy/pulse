@@ -4,7 +4,7 @@ import type { PulseErrorContext } from "src/types/PulseErrorContext";
 
 /**
  * What a `Pulse` observes, and where it reports. Every field is read once, at
- * construction.
+ * construction; the types are the validation.
  *
  * @example
  * ```ts

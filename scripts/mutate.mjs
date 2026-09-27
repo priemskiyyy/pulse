@@ -59,7 +59,7 @@ const MUTANTS = [
   },
   {
     file: `${source}/utils/Pulse.ts`,
-    find: "    if (!adapter.available()) {",
+    find: "    if (!available) {",
     replace: "    if (false) {",
     describes: "an unavailable adapter observed anyway",
   },
@@ -77,15 +77,39 @@ const MUTANTS = [
   },
   {
     file: `${source}/adapters/browser/browser.ts`,
-    find: "      const state = latched\n        ? LIFECYCLE_STATES.background.unavailable\n        : sampleDocument(targetDocument);",
-    replace: "      const state = sampleDocument(targetDocument);",
+    find: "      const { state, errors } = latched\n        ? { state: LIFECYCLE_STATES.background.unavailable, errors: [] }\n        : sampleDocument(targetDocument);",
+    replace: "      const { state, errors } = sampleDocument(targetDocument);",
     describes: "resume or focus ending the pagehide latch",
   },
   {
     file: `${source}/adapters/browser/utils/sampleDocument.ts`,
-    find: "  if (prerendering === true) {",
+    find: "  if (readPrerendering(targetDocument, errors)) {",
     replace: "  if (false) {",
     describes: "a prerendering page reported as foreground",
+  },
+  {
+    file: `${source}/utils/internal/cleanup/removeAll.ts`,
+    find: "    try {\n      remove();\n    } catch (error) {\n      failures.push(error);\n    }",
+    replace: "    remove();",
+    describes: "a throwing removal stopping the ones after it",
+  },
+  {
+    file: `${source}/adapters/browser/browser.ts`,
+    find: "      rollBack(removals, error);",
+    replace: "      throw error;",
+    describes: "a failed browser setup leaving its listeners attached",
+  },
+  {
+    file: `${source}/adapters/react-native/reactNative.ts`,
+    find: "      rollBack(removals, error);",
+    replace: "      throw error;",
+    describes: "a failed native setup leaving its subscriptions attached",
+  },
+  {
+    file: `${source}/utils/Pulse.ts`,
+    find: "    try {\n      available = adapter.available();\n    } catch (error) {\n      throw this.#failStart(host, error);\n    }",
+    replace: "    available = adapter.available();",
+    describes: "a throwing availability probe escaping as a raw error",
   },
   {
     file: `${source}/adapters/react-native/reactNative.ts`,
@@ -107,8 +131,8 @@ const MUTANTS = [
   },
   {
     file: `${source}/adapters/react-native/reactNative.ts`,
-    find: '    if (platform === "android") {\n      subscriptions.push',
-    replace: "    if (true) {\n      subscriptions.push",
+    find: '      if (platform === "android") {\n        listen("focus"',
+    replace: '      if (true) {\n        listen("focus"',
     describes: "iOS registering Android-only focus listeners",
   },
   {

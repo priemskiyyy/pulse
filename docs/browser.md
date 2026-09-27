@@ -15,14 +15,15 @@ export const pulse = new Pulse({ adapter: browser() });
 
 ## Mapping
 
-| Document                                  | `phase`                | `interaction`               |
-| ----------------------------------------- | ---------------------- | --------------------------- |
-| visible, `hasFocus()` true / false        | `foreground`           | `available` / `unavailable` |
-| hidden, pagehide-latched, or prerendering | `background`           | `unavailable`               |
-| any other `visibilityState`               | `unknown`              | from `hasFocus()`           |
-| a getter that throws                      | that axis is `unknown` | reported after the state    |
+| Document                                  | `phase`      | `interaction`               |
+| ----------------------------------------- | ------------ | --------------------------- |
+| visible, `hasFocus()` true / false        | `foreground` | `available` / `unavailable` |
+| hidden, pagehide-latched, or prerendering | `background` | `unavailable`               |
+| any other `visibilityState`               | `unknown`    | from `hasFocus()`           |
+| `visibilityState` throws                  | `unknown`    | from `hasFocus()`           |
+| `hasFocus()` throws while visible         | `foreground` | `unknown`                   |
 
-Visibility and focus answer different questions. A visible window that loses focus to another window stays foreground with interaction unavailable, and that is no transition.
+A getter that throws is reported through `onError` after the state it left unknown. A throwing `prerendering` is reported and ignored. Visibility and focus answer different questions. A visible window that loses focus to another window stays foreground with interaction unavailable, and that is no transition.
 
 ## Listeners
 

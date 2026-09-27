@@ -169,17 +169,7 @@ const hostGlobals = [
 
 export default tseslint.config(
   {
-    ignores: [
-      "**/dist/**",
-      "**/node_modules/**",
-      "**/.expo/**",
-      ".artifacts/**",
-      "tasks/**",
-      "docs/.vitepress/cache/**",
-      "docs/.vitepress/dist/**",
-      "test-results/**",
-      "playwright-report/**",
-    ],
+    ignores: ["**/dist/**", "**/node_modules/**", ".artifacts/**", "tasks/**"],
   },
   {
     // No inline comment can switch a rule off; an exception is a file-scoped block here.

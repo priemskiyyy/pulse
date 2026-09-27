@@ -19,10 +19,12 @@
     "test:package": "node scripts/verify-packages.mjs",
     "test:size": "node scripts/measure-size.mjs",
     "verify:release": "node scripts/verify-release.mjs",
-    "check:release": "pnpm check && pnpm verify:docs && pnpm verify:snippets && pnpm test:package && pnpm test:size && pnpm verify:release && pnpm test:mutation",
+    "check:release": "pnpm check && pnpm build:docs && pnpm verify:docs && pnpm verify:snippets && pnpm test:package && pnpm test:size && pnpm verify:release && pnpm test:mutation",
     "test:mutation": "node scripts/mutate.mjs",
     "verify:docs": "node scripts/verify-docs.mjs",
-    "verify:snippets": "node scripts/verify-snippets.mjs"
+    "verify:snippets": "node scripts/verify-snippets.mjs",
+    "build:docs": "vitepress build docs",
+    "dev:docs": "vitepress dev docs"
   },
   "devDependencies": {
     "@eslint/js": "9.39.4",
@@ -45,6 +47,7 @@
     "tsdown": "0.22.14",
     "typescript": "5.8.3",
     "typescript-eslint": "8.70.0",
+    "vitepress": "1.6.4",
     "vitest": "4.1.10"
   }
 }

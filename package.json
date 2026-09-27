@@ -10,7 +10,7 @@
     "build": "pnpm -r --filter ./packages/** build",
     "format": "prettier --write .",
     "lint:prettier": "prettier --check .",
-    "lint:typescript": "tsc --noEmit && pnpm -r lint:typescript",
+    "lint:typescript": "tsc --noEmit && tsc --noEmit -p examples && pnpm -r lint:typescript",
     "lint:eslint": "eslint .",
     "test:unit": "vitest run",
     "test:unit:watch": "vitest",
@@ -25,7 +25,7 @@
     "verify:snippets": "node scripts/verify-snippets.mjs",
     "build:docs": "vitepress build docs",
     "dev:docs": "vitepress dev docs",
-    "test:browser": "pnpm build && playwright test -c examples/browser-lifecycle-lab/playwright.config.ts"
+    "test:browser": "pnpm build && playwright test -c examples/playwright.config.ts"
   },
   "devDependencies": {
     "@eslint/js": "9.39.4",

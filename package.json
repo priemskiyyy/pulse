@@ -13,7 +13,8 @@
     "lint:typescript": "tsc --noEmit && pnpm -r lint:typescript",
     "lint:eslint": "eslint .",
     "test:unit": "vitest run",
-    "test:unit:watch": "vitest"
+    "test:unit:watch": "vitest",
+    "check": "pnpm build && pnpm lint:typescript && pnpm lint:eslint && pnpm lint:prettier && pnpm test:unit"
   },
   "devDependencies": {
     "@eslint/js": "9.39.4",

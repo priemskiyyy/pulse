@@ -34,19 +34,12 @@ export const createPage = ({
 
   const registrations: Registration[] = [];
 
-  // A test sets these to make the host refuse one registration or removal.
-  const faults: {
-    add: ((type: string) => void) | null;
-    remove: ((type: string) => void) | null;
-  } = { add: null, remove: null };
-
   const track = (name: Registration["target"], target: EventTarget) => {
     const add = target.addEventListener.bind(target);
     const remove = target.removeEventListener.bind(target);
 
     vi.spyOn(target, "addEventListener").mockImplementation(
       (type, listener, options) => {
-        faults.add?.(type);
         registrations.push({
           target: name,
           type,
@@ -59,8 +52,6 @@ export const createPage = ({
 
     vi.spyOn(target, "removeEventListener").mockImplementation(
       (type, listener, options) => {
-        faults.remove?.(type);
-
         const index = registrations.findIndex(
           (registration) =>
             registration.target === name &&
@@ -89,7 +80,6 @@ export const createPage = ({
     document,
     page,
     registrations,
-    faults,
     fire,
     hide: () => {
       page.visibility = "hidden";

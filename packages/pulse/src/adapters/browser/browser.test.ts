@@ -5,7 +5,6 @@ import { createPage } from "src/adapters/browser/browser.fixture";
 import { testLifecycleAdapter } from "src/testing/testLifecycleAdapter";
 import type { LifecycleObserver } from "src/types/LifecycleObserver";
 import type { LifecycleState } from "src/types/LifecycleState";
-import type { PulseErrorContext } from "src/types/PulseErrorContext";
 import { UNKNOWN_LIFECYCLE_STATE } from "src/utils/constants/states";
 import { Pulse } from "src/utils/Pulse";
 import { recordDelivery } from "src/utils/Pulse.fixture";
@@ -16,18 +15,12 @@ afterEach(() => {
 });
 
 const startOn = (page: ReturnType<typeof createPage>) => {
-  const reports: Array<[unknown, PulseErrorContext]> = [];
-
-  const pulse = new Pulse({
-    adapter: browser({ target: page.window }),
-    onError: (error, context) => reports.push([error, context]),
-  });
-
+  const pulse = new Pulse({ adapter: browser({ target: page.window }) });
   const log = recordDelivery(pulse);
 
   pulse.start();
 
-  return { pulse, log, reports };
+  return { pulse, log };
 };
 
 const EXPECTED_REGISTRATIONS = [
@@ -121,27 +114,6 @@ test("B-006 B-007 B-008 each baseline commits without a transition", () => {
   expect(focused.log).toEqual(["state foreground/available"]);
   expect(unfocused.log).toEqual(["state foreground/unavailable"]);
   expect(hidden.log).toEqual(["state background/unavailable"]);
-});
-
-test("B-011 a throwing focus getter publishes the unknown axis, then reports", () => {
-  const page = createPage();
-  const failure = new Error("hasFocus failed");
-  const { pulse, reports } = startOn(page);
-
-  Object.defineProperty(page.document, "hasFocus", {
-    value: () => {
-      throw failure;
-    },
-  });
-  page.fire(page.window, "focus");
-
-  expect(pulse.state.get()).toEqual({
-    phase: "foreground",
-    interaction: "unknown",
-  });
-  expect(reports).toEqual([
-    [failure, { origin: "adapter", adapter: { name: "browser" }, sequence: 2 }],
-  ]);
 });
 
 test("B-014 switching windows while visible changes interaction, not phase", () => {
@@ -253,79 +225,6 @@ test("B-042 a sample taken while the host dispatched a newer event cannot overwr
     interaction: "unavailable",
   });
   expect(log).toEqual(["state background/unavailable"]);
-});
-
-test("B-043 a failed registration removes every listener already installed", () => {
-  const page = createPage();
-  const failure = new Error("registration refused");
-
-  page.faults.add = (type) => {
-    if (type === "pageshow") {
-      throw failure;
-    }
-  };
-
-  const pulse = new Pulse({ adapter: browser({ target: page.window }) });
-
-  expect(() => pulse.start()).toThrow(
-    expect.objectContaining({ code: "START_FAILED", cause: failure }),
-  );
-  expect(page.registrations).toEqual([]);
-});
-
-test("B-043 a rollback that also fails keeps every failure", () => {
-  const page = createPage();
-  const failure = new Error("registration refused");
-  const removal = new Error("removal refused");
-
-  page.faults.add = (type) => {
-    if (type === "pagehide") {
-      throw failure;
-    }
-  };
-
-  page.faults.remove = (type) => {
-    if (type === "focus") {
-      throw removal;
-    }
-  };
-
-  const pulse = new Pulse({ adapter: browser({ target: page.window }) });
-  let thrown: unknown = null;
-
-  try {
-    pulse.start();
-  } catch (error) {
-    thrown = error;
-  }
-
-  expect(thrown).toMatchObject({ code: "START_FAILED" });
-  expect(thrown).toHaveProperty("cause.errors", [failure, removal]);
-  expect(page.registrations.map(({ type }) => type)).toEqual(["focus"]);
-});
-
-test("B-044 cleanup tries every removal with the original capture flag and reports the failure", () => {
-  const page = createPage();
-  const removal = new Error("removal refused");
-  const { pulse, reports } = startOn(page);
-
-  page.faults.remove = (type) => {
-    if (type === "freeze") {
-      throw removal;
-    }
-  };
-
-  pulse.dispose();
-
-  expect(page.registrations).toMatchObject([
-    { target: "document", type: "freeze", capture: true },
-  ]);
-  expect(reports).toEqual([
-    [
-      expect.objectContaining({ errors: [removal] }),
-      { origin: "cleanup", adapter: { name: "browser" }, sequence: 1 },
-    ],
-  ]);
 });
 
 test("B-045 B-046 only Pulse's own capture listeners come and go, and no handler property is touched", () => {

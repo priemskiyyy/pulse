@@ -1,51 +1,25 @@
 import { BACKGROUND_STATE } from "src/adapters/browser/utils/constants/states";
 import type { LifecycleState } from "src/types/LifecycleState";
 
-// Every getter is optional or may throw; a failure leaves only its own axis unknown.
-export const sampleDocument = (
-  targetDocument: Document,
-): { state: LifecycleState; failures: unknown[] } => {
-  const failures: unknown[] = [];
-
-  try {
-    if (
-      "prerendering" in targetDocument &&
-      targetDocument.prerendering === true
-    ) {
-      return { state: BACKGROUND_STATE, failures };
-    }
-  } catch (error) {
-    failures.push(error);
+export const sampleDocument = (targetDocument: Document): LifecycleState => {
+  if (
+    "prerendering" in targetDocument &&
+    targetDocument.prerendering === true
+  ) {
+    return BACKGROUND_STATE;
   }
 
-  let visibility: unknown = null;
+  const { visibilityState } = targetDocument;
 
-  try {
-    visibility = targetDocument.visibilityState;
-  } catch (error) {
-    failures.push(error);
+  if (visibilityState === "hidden") {
+    return BACKGROUND_STATE;
   }
 
-  if (visibility === "hidden") {
-    return { state: BACKGROUND_STATE, failures };
-  }
+  // Legacy values such as "prerender" are no evidence of foreground.
+  const phase = visibilityState === "visible" ? "foreground" : "unknown";
 
-  const phase = visibility === "visible" ? "foreground" : "unknown";
-
-  try {
-    const focused: unknown =
-      typeof targetDocument.hasFocus === "function"
-        ? targetDocument.hasFocus()
-        : null;
-
-    if (typeof focused === "boolean") {
-      const interaction = focused ? "available" : "unavailable";
-
-      return { state: { phase, interaction }, failures };
-    }
-  } catch (error) {
-    failures.push(error);
-  }
-
-  return { state: { phase, interaction: "unknown" }, failures };
+  return {
+    phase,
+    interaction: targetDocument.hasFocus() ? "available" : "unavailable",
+  };
 };

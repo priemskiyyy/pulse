@@ -46,10 +46,7 @@ export const browser = ({ target }: BrowserOptions = {}): LifecycleAdapter => ({
       generation += 1;
 
       const sampled = generation;
-
-      const { state, failures } = latched
-        ? { state: BACKGROUND_STATE, failures: [] }
-        : sampleDocument(targetDocument);
+      const state = latched ? BACKGROUND_STATE : sampleDocument(targetDocument);
 
       // An event handled while the getters ran has already published newer evidence.
       if (closed || sampled !== generation) {
@@ -57,10 +54,6 @@ export const browser = ({ target }: BrowserOptions = {}): LifecycleAdapter => ({
       }
 
       observer.next(state);
-
-      for (const failure of failures) {
-        observer.error(failure);
-      }
     };
 
     // Focus moving between elements reaches the window in its capture phase; only the window's own counts.
@@ -89,46 +82,15 @@ export const browser = ({ target }: BrowserOptions = {}): LifecycleAdapter => ({
       removals.push(() => eventTarget.removeEventListener(type, handler, true));
     };
 
-    const removeAll = () => {
-      const failures: unknown[] = [];
-
-      for (const remove of removals.reverse()) {
-        try {
-          remove();
-        } catch (error) {
-          failures.push(error);
-        }
-      }
-
-      removals.length = 0;
-
-      return failures;
-    };
-
-    try {
-      listen(targetDocument, "visibilitychange", publish);
-      listen(targetWindow, "focus", handleFocusChange);
-      listen(targetWindow, "blur", handleFocusChange);
-      listen(targetWindow, "pagehide", handlePageHide);
-      listen(targetWindow, "pageshow", handlePageShow);
-      listen(targetDocument, "freeze", publish);
-      listen(targetDocument, "resume", publish);
-      listen(targetDocument, "prerenderingchange", publish);
-      publish();
-    } catch (error) {
-      closed = true;
-
-      const failures = removeAll();
-
-      if (failures.length > 0) {
-        throw new AggregateError(
-          [error, ...failures],
-          "Observing the document failed, and so did removing its listeners.",
-        );
-      }
-
-      throw error;
-    }
+    listen(targetDocument, "visibilitychange", publish);
+    listen(targetWindow, "focus", handleFocusChange);
+    listen(targetWindow, "blur", handleFocusChange);
+    listen(targetWindow, "pagehide", handlePageHide);
+    listen(targetWindow, "pageshow", handlePageShow);
+    listen(targetDocument, "freeze", publish);
+    listen(targetDocument, "resume", publish);
+    listen(targetDocument, "prerenderingchange", publish);
+    publish();
 
     return () => {
       if (closed) {
@@ -137,13 +99,8 @@ export const browser = ({ target }: BrowserOptions = {}): LifecycleAdapter => ({
 
       closed = true;
 
-      const failures = removeAll();
-
-      if (failures.length > 0) {
-        throw new AggregateError(
-          failures,
-          "Removing the document listeners failed.",
-        );
+      for (const remove of removals) {
+        remove();
       }
     };
   },

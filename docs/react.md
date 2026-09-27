@@ -41,7 +41,7 @@ useEffect(() => {
 
 ## Server rendering and hydration
 
-The server snapshot is always unknown on both axes, the same frozen object on every call. On the server, render with a Pulse you never start, one per request, or with any source whose `get` answers `UNKNOWN_LIFECYCLE_STATE`; never fake foreground. On the client, a Pulse that already knows its state still hydrates from unknown, then re-renders with the live state, so markup never mismatches.
+The server snapshot is always unknown on both axes, the same frozen object on every call. On the server, render with a Pulse you never start, or with any source whose `get` answers `UNKNOWN_LIFECYCLE_STATE`; never fake foreground. On the client, a Pulse that already knows its state still hydrates from unknown, then re-renders with the live state, so markup never mismatches.
 
 ## Teardown
 

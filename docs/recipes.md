@@ -31,10 +31,10 @@ installPulseQueryFocus(pulse, focusManager);
 pulse.start();
 ```
 
-Query's focus follows the phase: foreground is focused, background and unknown are not. A browser focus-only change, iOS `inactive` and the Android notification drawer leave Query focused, which differs from Query's own React Native example on purpose. A stricter policy, `interaction === "available"`, can hold Android work while its focus is unknown; it is a different choice, not a fix.
+Query's focus follows the phase: foreground is focused, background and unknown are not, so a browser focus-only change, iOS `inactive` and the Android notification drawer leave Query focused. Requiring `interaction === "available"` instead is a stricter policy, which holds Android work while its focus is unknown.
 
-Install it once, at the application's bootstrap. The focus manager is a singleton that replaces its setup rather than stacking it, so nothing restores the listener that was there before, and `setFocused(undefined)` only resets an override. Do not also refetch on every foreground event: Query already refetches stale queries when it regains focus. Connectivity belongs to `onlineManager` and its own source, never to the phase.
+Install it once, at bootstrap: the focus manager is a singleton that replaces its setup, and nothing restores the one before. Do not also refetch on every foreground event; Query already refetches stale queries when it regains focus. Connectivity belongs to `onlineManager`, never to the phase.
 
 ## Other services
 
-Every integration owns its policy: what unknown means, how it deduplicates work, how it cancels, and which identity a late result belongs to. A background event is not a logout or a denial, unknown is not offline, and a `null` away time never means zero. Capture the identity before an asynchronous check and discard the result if it changed.
+Every integration owns its policy: what unknown means, how it deduplicates and cancels work, and which user a late result belongs to. Background is not a logout, unknown is not offline, and a `null` away time never means zero.

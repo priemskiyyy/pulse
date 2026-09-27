@@ -32,7 +32,7 @@ An iOS interruption, `active`, `inactive`, `active`, changes interaction only. `
 
 ## Why interaction is unknown on Android
 
-Android reports `focus` and `blur` separately from its app state and offers no current-focus reading. The adapter keeps focus evidence only since the last distinct move into background or unknown: focus before a departure never counts for the next `active`, a repeated `background` keeps focus that arrived for the next `active`, and the notification drawer changes interaction without changing phase. Until fresh evidence arrives, `active` is foreground with interaction unknown. That is an honest answer, not a failure.
+Android reports `focus` and `blur` separately from its app state and offers no current-focus reading. The adapter keeps focus evidence only since the last distinct move into background or unknown: focus before a departure never counts for the next `active`, a repeated `background` keeps focus that arrived for the next `active`, and the notification drawer changes interaction without changing phase. Until fresh evidence arrives, `active` is foreground with interaction unknown.
 
 ## Startup
 

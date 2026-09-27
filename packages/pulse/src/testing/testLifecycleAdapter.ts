@@ -44,7 +44,7 @@ const inspect = (adapter: LifecycleAdapter) => {
   return { adapter: inspected, invalid };
 };
 
-// Every report reaches `errors`, so a noisy adapter or a throwing cleanup cannot pass silently.
+// Every report reaches `errors`, so the checks that start a Pulse can fail a noisy adapter or a throwing cleanup.
 const startPulse = (adapter: LifecycleAdapter) => {
   const errors: string[] = [];
 
@@ -193,8 +193,9 @@ const CHECKS: Check[] = [
     name: "keeps observations independent",
     run: async (harness) => {
       const before = harness.subscriptionCount();
-      const first = startPulse(harness.adapter);
-      const second = startPulse(harness.adapter);
+      const { adapter, invalid } = inspect(harness.adapter);
+      const first = startPulse(adapter);
+      const second = startPulse(adapter);
 
       try {
         await harness.settle();
@@ -215,6 +216,8 @@ const CHECKS: Check[] = [
         harness.subscriptionCount() === before,
         "A host subscription remained once both observations closed.",
       );
+      assert(invalid.length === 0, `Invalid snapshot: ${invalid.join(" ")}`);
+      expectNoErrors([...first.errors, ...second.errors]);
     },
   },
   {

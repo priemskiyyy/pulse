@@ -233,3 +233,34 @@ test("a cleanup that throws after removing its listeners fails", async () => {
     /removes every subscription when cleanup returns: The adapter reported: cleanup: cleanup threw/,
   );
 });
+
+test("an adapter that reports an error when a second observation opens fails", async () => {
+  const shared = (host: ReturnType<typeof createHost>): LifecycleAdapter => {
+    const adapter = createCompliantAdapter(host);
+    let open = 0;
+
+    return {
+      ...adapter,
+      observe: (observer) => {
+        open += 1;
+
+        if (open > 1) {
+          observer.error(new Error("already observed"));
+        }
+
+        const cleanup = adapter.observe(observer);
+
+        return () => {
+          open -= 1;
+          cleanup();
+        };
+      },
+    };
+  };
+
+  await expect(
+    testLifecycleAdapter(() => createHostHarness(shared)),
+  ).rejects.toThrow(
+    /keeps observations independent: The adapter reported: adapter: already observed/,
+  );
+});

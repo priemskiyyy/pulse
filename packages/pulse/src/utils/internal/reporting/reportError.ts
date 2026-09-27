@@ -2,17 +2,13 @@ import type { PulseHost } from "src/types/internal/PulseHost";
 import type { PulseErrorContext } from "src/types/PulseErrorContext";
 
 // The core compiles without DOM or Node types, where no console is declared.
-declare const console: { error?: unknown } | undefined;
+declare const console: { error: (...data: unknown[]) => void };
 
 const writeToConsole = (...values: unknown[]) => {
   try {
-    if (typeof console === "undefined" || typeof console.error !== "function") {
-      return;
-    }
-
     console.error(...values);
   } catch {
-    // A missing or throwing console must not break the delivery around it.
+    // A throwing console must not break the delivery around it.
   }
 };
 

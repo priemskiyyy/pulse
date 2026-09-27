@@ -1,12 +1,8 @@
-import { afterEach, expect, test, vi } from "vitest";
+import { expect, test, vi } from "vitest";
 
 import type { PulseHost } from "src/types/internal/PulseHost";
 import type { PulseErrorContext } from "src/types/PulseErrorContext";
 import { reportError } from "src/utils/internal/reporting/reportError";
-
-afterEach(() => {
-  vi.unstubAllGlobals();
-});
 
 const context: PulseErrorContext = Object.freeze({
   origin: "state-listener",
@@ -61,19 +57,12 @@ test("C-066 a throwing onError is logged with the original, and never called aga
   ]);
 });
 
-test("C-066 a missing, broken or throwing console cannot throw into the caller", () => {
-  const failure = new Error("listener failed");
-
-  vi.stubGlobal("console", undefined);
-  expect(() => reportError(createHost(null), failure, context)).not.toThrow();
-
-  vi.stubGlobal("console", { error: "not a function" });
-  expect(() => reportError(createHost(null), failure, context)).not.toThrow();
-
-  vi.stubGlobal("console", {
-    error: () => {
-      throw new Error("console failed");
-    },
+test("C-066 a throwing console cannot throw into the caller", () => {
+  vi.spyOn(console, "error").mockImplementation(() => {
+    throw new Error("console failed");
   });
-  expect(() => reportError(createHost(null), failure, context)).not.toThrow();
+
+  expect(() =>
+    reportError(createHost(null), new Error("listener failed"), context),
+  ).not.toThrow();
 });

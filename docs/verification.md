@@ -41,7 +41,7 @@ Malformed snapshots and options are ruled out by the types and the `*.contracts.
 
 ## Running a platform exercise
 
-The [browser lab](https://github.com/priemskiyyy/pulse/tree/main/examples/browser-lifecycle-lab) and the [Expo lab](https://github.com/priemskiyyy/pulse/tree/main/examples/expo-lifecycle-lab) list their manual exercises and record the raw host signals next to the Pulse commits. The browser lab exports both as JSON.
+The [browser lab](https://github.com/priemskiyyy/pulse/tree/main/examples/react) and the [Expo lab](https://github.com/priemskiyyy/pulse/tree/main/examples/expo) list their manual exercises and record the raw host signals next to the Pulse commits. The browser lab exports both as JSON.
 
 ## Reporting a platform exercise
 

@@ -32,7 +32,7 @@ Not a background task runner, a scheduler, a guaranteed exit hook, a session or 
 
 - [The package readme](packages/pulse/README.md): installation, the API and the entry points.
 - [Documentation](docs/index.md): states and transitions, the adapters, React, testing and verification. `pnpm dev:docs` serves it as a site.
-- [The browser lab](examples/browser-lifecycle-lab) and [the Expo lab](examples/expo-lifecycle-lab): Pulse next to the raw host signals, for exercising a real browser or device.
+- [The browser lab](examples/react) and [the Expo lab](examples/expo): Pulse next to the raw host signals, for exercising a real browser or device.
 
 ## Status
 

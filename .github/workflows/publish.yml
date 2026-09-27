@@ -38,8 +38,11 @@ jobs:
   verified:
     needs: metadata
     uses: ./.github/workflows/packages.verify.yml
+  docs:
+    needs: metadata
+    uses: ./.github/workflows/docs.test.yml
   publish:
-    needs: [metadata, packages, format, verified]
+    needs: [metadata, packages, format, verified, docs]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     environment: npm

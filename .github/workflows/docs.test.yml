@@ -1,0 +1,65 @@
+name: docs-test
+
+on:
+  workflow_call:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "*.md"
+      - "docs/**"
+      - "packages/**"
+      - "examples/**"
+      - ".github/actions/setup/**"
+      - ".github/workflows/docs.test.yml"
+      - "scripts/verify-docs.mjs"
+      - "scripts/verify-snippets.mjs"
+      - "scripts/snippets.ambient.d.ts"
+  push:
+    branches:
+      - "main"
+    paths:
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "*.md"
+      - "docs/**"
+      - "packages/**"
+      - "examples/**"
+      - ".github/actions/setup/**"
+      - ".github/workflows/docs.test.yml"
+      - "scripts/verify-docs.mjs"
+      - "scripts/verify-snippets.mjs"
+      - "scripts/snippets.ambient.d.ts"
+
+permissions:
+  contents: read
+
+env:
+  TZ: UTC
+
+concurrency:
+  group: docs-test-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup workspace
+        uses: ./.github/actions/setup
+
+      - name: Build packages
+        run: pnpm build
+
+      # Every copyable fence compiles against the built declarations.
+      - name: Snippets
+        run: pnpm verify:snippets
+
+      - name: Pages and links
+        run: pnpm verify:docs

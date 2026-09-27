@@ -46,6 +46,24 @@ export default defineConfig({
           environment: "node",
         },
       },
+      {
+        extends: true,
+        resolve: {
+          alias: {
+            src: fileURLToPath(
+              new URL("./examples/react/src", import.meta.url),
+            ),
+          },
+          dedupe: ["react", "react-dom"],
+        },
+        test: {
+          name: "example-react",
+          include: ["examples/react/src/**/*.test.tsx"],
+          environment: "jsdom",
+          // Node would load the icons with their own React; through Vite they share the deduplicated one.
+          server: { deps: { inline: ["@phosphor-icons/react"] } },
+        },
+      },
     ],
   },
 });

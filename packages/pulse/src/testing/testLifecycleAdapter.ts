@@ -19,9 +19,6 @@ const assert = (condition: boolean, message: string) => {
   }
 };
 
-const describeState = ({ phase, interaction }: LifecycleState) =>
-  `${phase}/${interaction}`;
-
 // Every snapshot the adapter reports is checked on its way to the core.
 const inspect = (adapter: LifecycleAdapter) => {
   const invalid: string[] = [];
@@ -64,7 +61,7 @@ const expectPhase = (pulse: Pulse, expected: LifecycleState, when: string) => {
     state.phase === expected.phase &&
       (expected.phase !== "background" ||
         state.interaction === expected.interaction),
-    `After ${when}, the adapter reported ${describeState(state)} instead of ${describeState(expected)}.`,
+    `After ${when}, the adapter reported ${state.phase}/${state.interaction} instead of ${expected.phase}/${expected.interaction}.`,
   );
 };
 

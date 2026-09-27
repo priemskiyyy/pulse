@@ -28,9 +28,15 @@ export class PulseError extends Error {
     message: string;
     cause?: unknown;
   }) {
-    // `{ cause: undefined }` would still give the error a `cause` of its own.
-    super(message, cause === undefined ? undefined : { cause });
+    super(message);
     this.name = "PulseError";
     this.code = code;
+
+    // Set directly, since engines without the Error cause option ignore it; an absent cause stays absent.
+    if (cause === undefined) {
+      return;
+    }
+
+    this.cause = cause;
   }
 }

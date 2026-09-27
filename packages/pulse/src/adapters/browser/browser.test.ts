@@ -401,3 +401,44 @@ test("B-044 a removal that throws does not stop the others", () => {
   expect(page.registrations.map(({ type }) => type)).toEqual(["blur"]);
   expect(() => cleanup()).not.toThrow();
 });
+
+test("B-011 a getter error is dropped once a listener published newer evidence", () => {
+  const page = createPage();
+  const failure = new Error("hasFocus threw");
+  const onError = vi.fn();
+  let failing = false;
+
+  vi.spyOn(page.document, "hasFocus").mockImplementation(() => {
+    if (failing) {
+      throw failure;
+    }
+
+    return true;
+  });
+
+  const pulse = new Pulse({
+    adapter: browser({ target: page.window }),
+    onError,
+  });
+
+  const log = recordDelivery(pulse);
+
+  pulse.start();
+  pulse.state.subscribe(() => {
+    if (!failing) {
+      return;
+    }
+
+    failing = false;
+    page.fire(page.window, "focus");
+  });
+  failing = true;
+  page.fire(page.window, "blur");
+
+  expect(log).toEqual([
+    "state foreground/available",
+    "state foreground/unknown",
+    "state foreground/available",
+  ]);
+  expect(onError).not.toHaveBeenCalled();
+});

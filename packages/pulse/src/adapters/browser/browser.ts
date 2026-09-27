@@ -56,7 +56,7 @@ export const browser = ({ target }: BrowserOptions = {}): LifecycleAdapter => ({
         return;
       }
 
-      // An event handled while the getters ran has already published newer evidence.
+      // An event handled while the getters ran has already published newer evidence, so this sample and its errors are dropped.
       if (sampled !== generation) {
         return;
       }
@@ -66,6 +66,11 @@ export const browser = ({ target }: BrowserOptions = {}): LifecycleAdapter => ({
       // The unknown axes are published first, so a report never outlives the evidence it explains.
       for (const error of errors) {
         if (closed) {
+          return;
+        }
+
+        // A listener of the state above can publish newer evidence, which this report would then follow.
+        if (sampled !== generation) {
           return;
         }
 

@@ -171,3 +171,65 @@ test("a host that fails to dispose is reported with its check", async () => {
     /creates no host subscription before start: disposing the host: host stuck/,
   );
 });
+
+test("an adapter that subscribes before start fails the demand check", async () => {
+  const eager = (host: ReturnType<typeof createHost>): LifecycleAdapter => {
+    host.listeners.add(() => {});
+
+    return createCompliantAdapter(host);
+  };
+
+  await expect(
+    testLifecycleAdapter(() => createHostHarness(eager)),
+  ).rejects.toThrow(
+    /creates no host subscription before start: Creating the adapter installed a host subscription/,
+  );
+});
+
+test("an adapter that reports an error on every observation fails", async () => {
+  const noisy = (host: ReturnType<typeof createHost>): LifecycleAdapter => {
+    const adapter = createCompliantAdapter(host);
+
+    return {
+      ...adapter,
+      observe: (observer) =>
+        adapter.observe({
+          next: (state) => {
+            observer.next(state);
+            observer.error(new Error("noise"));
+          },
+          error: observer.error,
+        }),
+    };
+  };
+
+  await expect(
+    testLifecycleAdapter(() => createHostHarness(noisy)),
+  ).rejects.toThrow(
+    /reports a valid foreground baseline: The adapter reported: adapter: noise/,
+  );
+});
+
+test("a cleanup that throws after removing its listeners fails", async () => {
+  const throwing = (host: ReturnType<typeof createHost>): LifecycleAdapter => {
+    const adapter = createCompliantAdapter(host);
+
+    return {
+      ...adapter,
+      observe: (observer) => {
+        const cleanup = adapter.observe(observer);
+
+        return () => {
+          cleanup();
+          throw new Error("cleanup threw");
+        };
+      },
+    };
+  };
+
+  await expect(
+    testLifecycleAdapter(() => createHostHarness(throwing)),
+  ).rejects.toThrow(
+    /removes every subscription when cleanup returns: The adapter reported: cleanup: cleanup threw/,
+  );
+});

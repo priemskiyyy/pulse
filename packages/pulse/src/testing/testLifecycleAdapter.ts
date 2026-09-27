@@ -44,15 +44,29 @@ const inspect = (adapter: LifecycleAdapter) => {
   return { adapter: inspected, invalid };
 };
 
+// Every report reaches `errors`, so a noisy adapter or a throwing cleanup cannot pass silently.
 const startPulse = (adapter: LifecycleAdapter) => {
-  const pulse = new Pulse({ adapter, onError: () => {} });
+  const errors: string[] = [];
+
+  const pulse = new Pulse({
+    adapter,
+    onError: (error, { origin }) =>
+      errors.push(
+        `${origin}: ${error instanceof Error ? error.message : String(error)}`,
+      ),
+  });
+
   const events: Array<ForegroundEvent | BackgroundEvent> = [];
 
   pulse.on("foreground", (event) => events.push(event));
   pulse.on("background", (event) => events.push(event));
   pulse.start();
 
-  return { pulse, events };
+  return { pulse, events, errors };
+};
+
+const expectNoErrors = (errors: string[]) => {
+  assert(errors.length === 0, `The adapter reported: ${errors.join(" ")}`);
 };
 
 const expectPhase = (pulse: Pulse, expected: LifecyclePhase, when: string) => {
@@ -77,7 +91,11 @@ const CHECKS: Check[] = [
   {
     name: "creates no host subscription before start",
     run: async (harness) => {
-      const before = harness.subscriptionCount();
+      assert(
+        harness.subscriptionCount() === 0,
+        "Creating the adapter installed a host subscription.",
+      );
+
       let observed = 0;
 
       const pulse = new Pulse({
@@ -94,13 +112,14 @@ const CHECKS: Check[] = [
 
       pulse.state.subscribe(() => {});
       pulse.on("foreground", () => {});
+      harness.adapter.available();
       await harness.settle();
       pulse.dispose();
 
       assert(observed === 0, "Subscribing observed the adapter.");
       assert(
-        harness.subscriptionCount() === before,
-        "Constructing or subscribing installed a host subscription.",
+        harness.subscriptionCount() === 0,
+        "Probing, constructing or subscribing installed a host subscription.",
       );
     },
   },
@@ -108,13 +127,14 @@ const CHECKS: Check[] = [
     name: "reports a valid foreground baseline",
     run: async (harness) => {
       const { adapter, invalid } = inspect(harness.adapter);
-      const { pulse, events } = startPulse(adapter);
+      const { pulse, events, errors } = startPulse(adapter);
 
       try {
         await harness.settle();
         expectPhase(pulse, "foreground", "start in a foreground host");
         assert(events.length === 0, "The baseline produced a transition.");
         assert(invalid.length === 0, `Invalid snapshot: ${invalid.join(" ")}`);
+        expectNoErrors(errors);
       } finally {
         pulse.dispose();
       }
@@ -124,7 +144,7 @@ const CHECKS: Check[] = [
     name: "maps background and foreground",
     run: async (harness) => {
       const { adapter, invalid } = inspect(harness.adapter);
-      const { pulse, events } = startPulse(adapter);
+      const { pulse, events, errors } = startPulse(adapter);
 
       try {
         await harness.settle();
@@ -140,6 +160,7 @@ const CHECKS: Check[] = [
           `The transitions were [${events.map((event) => event.type).join(", ")}] instead of [background, foreground].`,
         );
         assert(invalid.length === 0, `Invalid snapshot: ${invalid.join(" ")}`);
+        expectNoErrors(errors);
       } finally {
         pulse.dispose();
       }
@@ -149,7 +170,7 @@ const CHECKS: Check[] = [
     name: "removes every subscription when cleanup returns",
     run: async (harness) => {
       const before = harness.subscriptionCount();
-      const { pulse } = startPulse(harness.adapter);
+      const { pulse, errors } = startPulse(harness.adapter);
 
       try {
         await harness.settle();
@@ -165,6 +186,7 @@ const CHECKS: Check[] = [
         harness.subscriptionCount() === before,
         "A host subscription remained once cleanup returned.",
       );
+      expectNoErrors(errors);
     },
   },
   {

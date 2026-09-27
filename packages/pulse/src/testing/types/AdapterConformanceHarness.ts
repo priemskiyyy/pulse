@@ -23,7 +23,7 @@ export type AdapterConformanceHarness = {
   background: () => void | Promise<void>;
   /** Resolves once the host has delivered everything it queued. */
   settle: () => Promise<void>;
-  /** The number of subscriptions the adapter installed on the host right now. */
+  /** The number of subscriptions the adapter installed on the host right now, 0 before any observation. */
   subscriptionCount: () => number;
   disposeHost: () => void | Promise<void>;
 };

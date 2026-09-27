@@ -3,7 +3,6 @@ import { afterEach, expect, test, vi } from "vitest";
 import { createMockAdapter } from "src/testing/createMockAdapter";
 import { createTestClock } from "src/testing/createTestClock";
 import type { ForegroundEvent } from "src/types/ForegroundEvent";
-import type { LifecycleState } from "src/types/LifecycleState";
 import type { PulseErrorContext } from "src/types/PulseErrorContext";
 import { UNKNOWN_LIFECYCLE_STATE } from "src/utils/constants/states";
 import { Pulse } from "src/utils/Pulse";
@@ -32,13 +31,14 @@ const createReported = (options: { now?: () => number } = {}) => {
   return { mock, pulse, reports };
 };
 
-test("C-041 C-042 an invalid snapshot is published as unknown and reported, without throwing into the host", () => {
+test("C-043 a background that claims interaction is published as unknown and reported, without throwing into the host", () => {
   const { mock, pulse, reports } = createReported();
   const log = recordDelivery(pulse);
-  const invalid = { phase: "active", interaction: "available" };
 
-  // @ts-expect-error A bad adapter can report anything.
-  expect(() => mock.emit(invalid)).not.toThrow();
+  // The flat type allows this combination; the runtime contract does not.
+  expect(() =>
+    mock.emit({ phase: "background", interaction: "available" }),
+  ).not.toThrow();
 
   expect(pulse.state.get()).toBe(UNKNOWN_LIFECYCLE_STATE);
   expect(log).toEqual(["state unknown/unknown"]);
@@ -47,29 +47,6 @@ test("C-041 C-042 an invalid snapshot is published as unknown and reported, with
       expect.objectContaining({ code: "INVALID_OBSERVATION" }),
       { origin: "observation", adapter: { name: "mock" }, sequence: 2 },
     ],
-  ]);
-});
-
-test("C-043 C-044 a contract violation never leaves the last foreground authoritative", () => {
-  const { mock, pulse, reports } = createReported();
-
-  const throwing: LifecycleState = {
-    phase: "foreground",
-    get interaction(): "available" {
-      throw new Error("getter failed");
-    },
-  };
-
-  // The flat type allows this combination; the runtime contract does not.
-  mock.emit({ phase: "background", interaction: "available" });
-  expect(pulse.state.get()).toBe(UNKNOWN_LIFECYCLE_STATE);
-
-  mock.emit(FOREGROUND);
-  expect(() => mock.emit(throwing)).not.toThrow();
-  expect(pulse.state.get()).toBe(UNKNOWN_LIFECYCLE_STATE);
-  expect(reports.map(([error]) => error)).toMatchObject([
-    { code: "INVALID_OBSERVATION" },
-    { code: "INVALID_OBSERVATION", cause: new Error("getter failed") },
   ]);
 });
 

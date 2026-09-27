@@ -308,7 +308,7 @@ export class Pulse {
     return ownership.token === token ? ownership : null;
   }
 
-  #accept(token: object, value: unknown) {
+  #accept(token: object, value: LifecycleState) {
     const ownership = this.#getLive(token);
 
     if (ownership === null) {

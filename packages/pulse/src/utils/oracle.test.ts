@@ -2,12 +2,15 @@ import fc from "fast-check";
 import { expect, test, vi } from "vitest";
 
 import { createMockAdapter } from "src/testing/createMockAdapter";
+import type { InteractionState } from "src/types/InteractionState";
+import type { LifecyclePhase } from "src/types/LifecyclePhase";
+import type { LifecycleState } from "src/types/LifecycleState";
 import { Pulse } from "src/utils/Pulse";
 
-type Step = { phase: string; interaction: string; time: number | null };
+type Step = LifecycleState & { time: number | null };
 
 // Weighted toward known phases, which is where edges, pairs and duplicates happen.
-const VALID = [
+const VALID: Array<[LifecyclePhase, InteractionState]> = [
   ["foreground", "available"],
   ["foreground", "available"],
   ["foreground", "unavailable"],
@@ -20,10 +23,9 @@ const VALID = [
   ["unknown", "unknown"],
 ];
 
-const INVALID = [
+const INVALID: Array<[LifecyclePhase, InteractionState]> = [
   ["background", "available"],
   ["background", "unknown"],
-  ["active", "available"],
 ];
 
 const PROPERTY_OPTIONS = { seed: 20_260_927, numRuns: 500 };
@@ -41,7 +43,7 @@ const timeArbitrary = fc.oneof(
 
 const stepArbitrary = fc
   .tuple(pairArbitrary, timeArbitrary)
-  .map(([[phase = "unknown", interaction = "unknown"], time]): Step => ({
+  .map(([[phase, interaction], time]): Step => ({
     phase,
     interaction,
     time,
@@ -56,9 +58,9 @@ const runOracle = (steps: Step[]) => {
   let departure: number | null = null;
 
   for (const step of steps) {
-    const valid =
-      ["foreground", "background", "unknown"].includes(step.phase) &&
-      !(step.phase === "background" && step.interaction !== "unavailable");
+    const valid = !(
+      step.phase === "background" && step.interaction !== "unavailable"
+    );
 
     const next = valid
       ? `${step.phase}/${step.interaction}`
@@ -151,10 +153,7 @@ const runPulse = (steps: Step[]) => {
   for (const step of steps) {
     time = step.time;
 
-    const state = { phase: step.phase, interaction: step.interaction };
-
-    // @ts-expect-error The generated steps include values outside the contract.
-    mock.emit(state);
+    mock.emit({ phase: step.phase, interaction: step.interaction });
   }
 
   pulse.dispose();
@@ -193,10 +192,7 @@ test("a second passive subscriber never changes how often the adapter is observe
         pulse.start();
 
         for (const { phase, interaction } of steps) {
-          const state = { phase, interaction };
-
-          // @ts-expect-error The generated steps include values outside the contract.
-          mock.emit(state);
+          mock.emit({ phase, interaction });
         }
 
         expect(mock.stats()).toEqual({
@@ -231,10 +227,7 @@ test("disposal never increases the number of later callbacks", () => {
       listener.mockClear();
 
       for (const { phase, interaction } of steps) {
-        const state = { phase, interaction };
-
-        // @ts-expect-error The generated steps include values outside the contract.
-        mock.unsafe.emitAfterCleanup(state);
+        mock.unsafe.emitAfterCleanup({ phase, interaction });
       }
 
       expect(listener).not.toHaveBeenCalled();

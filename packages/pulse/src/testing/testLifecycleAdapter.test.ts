@@ -27,19 +27,6 @@ const CHECK_NAMES = [
   "stays silent after cleanup",
 ];
 
-const createMockHarness = (): AdapterConformanceHarness => {
-  const mock = createMockAdapter({ initial: FOREGROUND });
-
-  return {
-    adapter: mock.adapter,
-    foreground: () => mock.emit(FOREGROUND),
-    background: () => mock.emit(BACKGROUND),
-    settle: async () => {},
-    subscriptionCount: () => mock.stats().activeObservations,
-    disposeHost: () => {},
-  };
-};
-
 // A tiny host whose listeners the harness can count, for adapters under test.
 const createHost = () => {
   let state = FOREGROUND;
@@ -98,9 +85,20 @@ const createCompliantAdapter = (
 });
 
 test("the mock adapter passes every check, in a documented order", async () => {
-  await expect(testLifecycleAdapter(createMockHarness)).resolves.toEqual({
-    passed: CHECK_NAMES,
+  const report = await testLifecycleAdapter(() => {
+    const mock = createMockAdapter({ initial: FOREGROUND });
+
+    return {
+      adapter: mock.adapter,
+      foreground: () => mock.emit(FOREGROUND),
+      background: () => mock.emit(BACKGROUND),
+      settle: async () => {},
+      subscriptionCount: () => mock.stats().activeObservations,
+      disposeHost: () => {},
+    };
   });
+
+  expect(report).toEqual({ passed: CHECK_NAMES });
 });
 
 test("an asynchronous harness factory and host operations are awaited", async () => {

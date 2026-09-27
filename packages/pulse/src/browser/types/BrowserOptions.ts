@@ -9,6 +9,6 @@
  * ```
  */
 export type BrowserOptions = {
-  /** A borrowed window; Pulse observes its own document and never a parent's. */
-  target?: Window;
+  /** A borrowed window, typed by what the adapter uses; its own document is observed, never a parent's. */
+  target?: EventTarget & Pick<Window, "document">;
 };

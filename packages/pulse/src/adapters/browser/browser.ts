@@ -2,6 +2,7 @@ import type { BrowserOptions } from "src/adapters/browser/types/BrowserOptions";
 import { sampleDocument } from "src/adapters/browser/utils/sampleDocument";
 import type { LifecycleAdapter } from "src/types/LifecycleAdapter";
 import { LIFECYCLE_STATES } from "src/utils/constants/states";
+import { removeAll, rollBack } from "src/utils/internal/cleanup/removeAll";
 
 /**
  * Observes one document: visibility is the phase and `document.hasFocus()` the
@@ -46,8 +47,9 @@ export const browser = ({ target }: BrowserOptions = {}): LifecycleAdapter => ({
 
       const sampled = generation;
 
-      const state = latched
-        ? LIFECYCLE_STATES.background.unavailable
+      // The latch holds background without reading the document, so a restoring callback cannot end it early.
+      const { state, errors } = latched
+        ? { state: LIFECYCLE_STATES.background.unavailable, errors: [] }
         : sampleDocument(targetDocument);
 
       if (closed) {
@@ -60,6 +62,15 @@ export const browser = ({ target }: BrowserOptions = {}): LifecycleAdapter => ({
       }
 
       observer.next(state);
+
+      // The unknown axes are published first, so a report never outlives the evidence it explains.
+      for (const error of errors) {
+        if (closed) {
+          return;
+        }
+
+        observer.error(error);
+      }
     };
 
     // Focus moving between elements reaches the window in its capture phase; only the window's own counts.
@@ -90,15 +101,20 @@ export const browser = ({ target }: BrowserOptions = {}): LifecycleAdapter => ({
       removals.push(() => eventTarget.removeEventListener(type, handler, true));
     };
 
-    listen(targetDocument, "visibilitychange", publish);
-    listen(targetWindow, "focus", handleFocusChange);
-    listen(targetWindow, "blur", handleFocusChange);
-    listen(targetWindow, "pagehide", handlePageHide);
-    listen(targetWindow, "pageshow", handlePageShow);
-    listen(targetDocument, "freeze", publish);
-    listen(targetDocument, "resume", publish);
-    listen(targetDocument, "prerenderingchange", publish);
-    publish();
+    try {
+      listen(targetDocument, "visibilitychange", publish);
+      listen(targetWindow, "focus", handleFocusChange);
+      listen(targetWindow, "blur", handleFocusChange);
+      listen(targetWindow, "pagehide", handlePageHide);
+      listen(targetWindow, "pageshow", handlePageShow);
+      listen(targetDocument, "freeze", publish);
+      listen(targetDocument, "resume", publish);
+      listen(targetDocument, "prerenderingchange", publish);
+      publish();
+    } catch (error) {
+      closed = true;
+      rollBack(removals, error);
+    }
 
     return () => {
       if (closed) {
@@ -106,10 +122,7 @@ export const browser = ({ target }: BrowserOptions = {}): LifecycleAdapter => ({
       }
 
       closed = true;
-
-      for (const remove of removals) {
-        remove();
-      }
+      removeAll(removals);
     };
   },
 });

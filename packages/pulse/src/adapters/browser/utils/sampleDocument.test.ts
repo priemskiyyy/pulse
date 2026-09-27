@@ -19,13 +19,16 @@ const createDocument = (overrides: PropertyDescriptorMap = {}) => {
 
 test("B-006 B-007 a visible document is foreground, with its focus as interaction", () => {
   expect(sampleDocument(createDocument())).toEqual({
-    phase: "foreground",
-    interaction: "available",
+    state: { phase: "foreground", interaction: "available" },
+    errors: [],
   });
 
   expect(
     sampleDocument(createDocument({ hasFocus: { value: () => false } })),
-  ).toEqual({ phase: "foreground", interaction: "unavailable" });
+  ).toEqual({
+    state: { phase: "foreground", interaction: "unavailable" },
+    errors: [],
+  });
 });
 
 test("B-008 B-013 a hidden document is background without reading focus, whatever focus says", () => {
@@ -37,8 +40,8 @@ test("B-008 B-013 a hidden document is background without reading focus, whateve
   });
 
   expect(sampleDocument(hidden)).toEqual({
-    phase: "background",
-    interaction: "unavailable",
+    state: { phase: "background", interaction: "unavailable" },
+    errors: [],
   });
   expect(hasFocus).not.toHaveBeenCalled();
 });
@@ -50,8 +53,8 @@ test("B-009 B-012 a missing or unrecognized visibility is an unknown phase that 
     });
 
     expect(sampleDocument(document)).toEqual({
-      phase: "unknown",
-      interaction: "available",
+      state: { phase: "unknown", interaction: "available" },
+      errors: [],
     });
   }
 });
@@ -60,8 +63,8 @@ test("B-039 a prerendering document is background even if the rest looks foregro
   const prerendering = createDocument({ prerendering: { get: () => true } });
 
   expect(sampleDocument(prerendering)).toEqual({
-    phase: "background",
-    interaction: "unavailable",
+    state: { phase: "background", interaction: "unavailable" },
+    errors: [],
   });
 });
 
@@ -70,7 +73,58 @@ test("B-041 an absent prerender probe does not erase valid visibility", () => {
 
   expect("prerendering" in absent).toBe(false);
   expect(sampleDocument(absent)).toEqual({
-    phase: "foreground",
-    interaction: "available",
+    state: { phase: "foreground", interaction: "available" },
+    errors: [],
+  });
+});
+
+test("B-041 a throwing prerender probe is returned and keeps valid visibility", () => {
+  const failure = new Error("prerendering threw");
+
+  const throwing = createDocument({
+    prerendering: {
+      get: () => {
+        throw failure;
+      },
+    },
+  });
+
+  expect(sampleDocument(throwing)).toEqual({
+    state: { phase: "foreground", interaction: "available" },
+    errors: [failure],
+  });
+});
+
+test("B-011 a throwing focus getter leaves only the interaction unknown", () => {
+  const failure = new Error("hasFocus threw");
+
+  const throwing = createDocument({
+    hasFocus: {
+      value: () => {
+        throw failure;
+      },
+    },
+  });
+
+  expect(sampleDocument(throwing)).toEqual({
+    state: { phase: "foreground", interaction: "unknown" },
+    errors: [failure],
+  });
+});
+
+test("a throwing visibility getter leaves only the phase unknown", () => {
+  const failure = new Error("visibilityState threw");
+
+  const throwing = createDocument({
+    visibilityState: {
+      get: () => {
+        throw failure;
+      },
+    },
+  });
+
+  expect(sampleDocument(throwing)).toEqual({
+    state: { phase: "unknown", interaction: "available" },
+    errors: [failure],
   });
 });

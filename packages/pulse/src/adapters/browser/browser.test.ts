@@ -312,3 +312,92 @@ test("the browser adapter passes the conformance suite on a real document", asyn
 
   expect(report.passed).toHaveLength(8);
 });
+
+test("B-011 a throwing focus getter publishes foreground/unknown before reporting", () => {
+  const page = createPage();
+  const failure = new Error("hasFocus threw");
+  const order: string[] = [];
+
+  const pulse = new Pulse({
+    adapter: browser({ target: page.window }),
+    onError: (error, { origin }) => {
+      const { phase, interaction } = pulse.state.get();
+
+      order.push(
+        `${origin} ${String(error === failure)} ${phase}/${interaction}`,
+      );
+    },
+  });
+
+  pulse.start();
+  vi.spyOn(page.document, "hasFocus").mockImplementation(() => {
+    throw failure;
+  });
+  page.blur();
+
+  expect(pulse.state.get()).toEqual({
+    phase: "foreground",
+    interaction: "unknown",
+  });
+  expect(order).toEqual(["adapter true foreground/unknown"]);
+});
+
+// A window whose listener methods can fail, over the fixture's tracked one.
+const createFailingTarget = (
+  page: ReturnType<typeof createPage>,
+  failing: { add?: string; remove?: string },
+) => ({
+  document: page.document,
+  dispatchEvent: (event: Event) => page.window.dispatchEvent(event),
+  addEventListener: (
+    type: string,
+    listener: EventListenerOrEventListenerObject,
+    options?: boolean | AddEventListenerOptions,
+  ) => {
+    if (type === failing.add) {
+      throw new Error(`adding ${type} threw`);
+    }
+
+    page.window.addEventListener(type, listener, options);
+  },
+  removeEventListener: (
+    type: string,
+    listener: EventListenerOrEventListenerObject,
+    options?: boolean | EventListenerOptions,
+  ) => {
+    if (type === failing.remove) {
+      throw new Error(`removing ${type} threw`);
+    }
+
+    page.window.removeEventListener(type, listener, options);
+  },
+});
+
+const silentObserver: LifecycleObserver = { next: () => {}, error: () => {} };
+
+test("B-043 a listener registration that throws removes the ones already installed", () => {
+  const page = createPage();
+
+  const adapter = browser({
+    target: createFailingTarget(page, { add: "pagehide" }),
+  });
+
+  expect(() => adapter.observe(silentObserver)).toThrow(
+    "adding pagehide threw",
+  );
+  expect(page.registrations).toEqual([]);
+});
+
+test("B-044 a removal that throws does not stop the others", () => {
+  const page = createPage();
+
+  const adapter = browser({
+    target: createFailingTarget(page, { remove: "blur" }),
+  });
+
+  const cleanup = adapter.observe(silentObserver);
+
+  expect(cleanup).toThrow("removing blur threw");
+  expect(page.registrations.map(({ type }) => type)).toEqual(["blur"]);
+  expect(() => cleanup()).not.toThrow();
+});

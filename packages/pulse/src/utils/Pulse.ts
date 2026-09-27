@@ -124,7 +124,14 @@ export class Pulse {
 
     const observer: LifecycleObserver = Object.freeze({
       next: (state: LifecycleState) => this.#accept(token, state),
-      error: (error: unknown) => this.#acceptError(token, error),
+      error: (error: unknown) => {
+        if (this.#getLive(token) === null) {
+          return;
+        }
+
+        this.#queue.push({ kind: "error", error });
+        this.#drain();
+      },
     });
 
     let answer: unknown;
@@ -312,15 +319,6 @@ export class Pulse {
       reports,
     });
 
-    this.#drain();
-  }
-
-  #acceptError(token: object, error: unknown) {
-    if (this.#getLive(token) === null) {
-      return;
-    }
-
-    this.#queue.push({ kind: "error", error });
     this.#drain();
   }
 

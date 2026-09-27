@@ -245,6 +245,7 @@ test("C-017 a dispose before start acquires nothing, and start then throws", () 
 
 test("C-018 C-019 C-020 disposal is terminal, idempotent and keeps the last state readable", () => {
   const cleanup = vi.fn();
+
   const { adapter } = createCapturingAdapter((observer) => {
     observer.next(FOREGROUND);
 
@@ -294,6 +295,7 @@ test("C-022 the same function registered twice is two independent registrations"
 
   pulse.state.subscribe(listener);
   pulse.on("background", onBackground);
+
   const stopEvent = pulse.on("background", onBackground);
 
   pulse.start();

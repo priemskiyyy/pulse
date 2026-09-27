@@ -1,0 +1,59 @@
+name: packages-test
+
+on:
+  workflow_call:
+  workflow_dispatch:
+  pull_request:
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
+  push:
+    branches:
+      - "main"
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
+
+permissions:
+  contents: read
+
+env:
+  TZ: UTC
+
+# Named, not derived from the workflow: when publish calls this workflow, every
+# called workflow shares the caller's name and they would cancel each other.
+concurrency:
+  group: packages-test-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ["22.18.0", "24"]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup workspace
+        uses: ./.github/actions/setup
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Build packages
+        run: pnpm build
+
+      - name: Linting Typescript
+        run: pnpm lint:typescript
+
+      - name: Linting Eslint
+        run: pnpm lint:eslint
+
+      # Every host is faked in process, so the whole suite runs here with no
+      # browser, no device and no credentials.
+      - name: Unit tests
+        run: pnpm test:unit

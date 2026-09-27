@@ -1,7 +1,7 @@
 import { PulseError } from "src/utils/PulseError";
 
 export const sampleClock = (now: () => number) => {
-  let timestamp: unknown;
+  let timestamp: number;
 
   try {
     timestamp = now();
@@ -16,7 +16,8 @@ export const sampleClock = (now: () => number) => {
     };
   }
 
-  if (typeof timestamp !== "number" || !Number.isFinite(timestamp)) {
+  // The type allows NaN and the infinities; an epoch time is finite.
+  if (!Number.isFinite(timestamp)) {
     return {
       timestamp: null,
       error: new PulseError({

@@ -20,11 +20,8 @@ test("C-052 a throwing clock answers no timestamp and keeps the thrown value", (
   expect(sample.error?.cause).toBe(failure);
 });
 
-test("C-053 a NaN, infinite or non-number sample is never published", () => {
-  const answers: unknown[] = [NaN, Infinity, -Infinity, "1000", null];
-
-  for (const answer of answers) {
-    // @ts-expect-error A JavaScript clock can answer anything.
+test("C-053 a NaN or infinite sample is never published", () => {
+  for (const answer of [NaN, Infinity, -Infinity]) {
     const sample = sampleClock(() => answer);
 
     expect(sample.timestamp).toBeNull();

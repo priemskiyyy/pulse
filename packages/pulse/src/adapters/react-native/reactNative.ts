@@ -92,7 +92,8 @@ export const reactNative = ({
         return "UNKNOWN";
       }
 
-      if (!Object.hasOwn(classifications, status)) {
+      // hasOwnProperty rather than Object.hasOwn, which older Hermes engines lack.
+      if (!Object.prototype.hasOwnProperty.call(classifications, status)) {
         return "UNKNOWN";
       }
 

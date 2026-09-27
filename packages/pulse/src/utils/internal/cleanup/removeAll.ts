@@ -1,10 +1,10 @@
-// One failure is rethrown as itself; several are kept together so none is lost.
+// One failure is rethrown as itself; several are kept on `errors` so none is lost. A plain Error, since older Hermes engines lack AggregateError.
 const throwFailures = (failures: unknown[], message: string) => {
   if (failures.length === 1) {
     throw failures[0];
   }
 
-  throw new AggregateError(failures, message);
+  throw Object.assign(new Error(message), { errors: failures });
 };
 
 /** Runs every removal, newest first, even when one throws, then rethrows what failed. */

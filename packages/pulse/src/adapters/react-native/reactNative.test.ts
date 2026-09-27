@@ -2,10 +2,10 @@ import { afterEach, expect, test, vi } from "vitest";
 
 import { reactNative } from "src/adapters/react-native/reactNative";
 import { createAppState } from "src/adapters/react-native/reactNative.fixture";
+import type { AppStateStatus } from "src/adapters/react-native/types/AppStateStatus";
 import { createTestClock } from "src/testing/createTestClock";
 import { testLifecycleAdapter } from "src/testing/testLifecycleAdapter";
 import type { ForegroundEvent } from "src/types/ForegroundEvent";
-import type { PulseErrorContext } from "src/types/PulseErrorContext";
 import { UNKNOWN_LIFECYCLE_STATE } from "src/utils/constants/states";
 import { Pulse } from "src/utils/Pulse";
 import { recordDelivery } from "src/utils/Pulse.fixture";
@@ -19,12 +19,10 @@ const startOn = (
   platform: "ios" | "android",
 ) => {
   const clock = createTestClock(1_000);
-  const reports: Array<[unknown, PulseErrorContext]> = [];
 
   const pulse = new Pulse({
     adapter: reactNative({ appState: host.appState, platform }),
     now: clock.now,
-    onError: (error, context) => reports.push([error, context]),
   });
 
   const log = recordDelivery(pulse);
@@ -33,7 +31,7 @@ const startOn = (
   pulse.on("foreground", (event) => entries.push(event));
   pulse.start();
 
-  return { pulse, log, clock, entries, reports };
+  return { pulse, log, clock, entries };
 };
 
 const getState = (pulse: Pulse) => {
@@ -121,7 +119,9 @@ test("N-008 an unresolved current state is unknown, with listeners attached and 
     vi.spyOn(globalThis, "setInterval"),
   ];
 
-  for (const initial of [null, undefined, "unknown"]) {
+  const initials: Array<AppStateStatus | null> = [null, "unknown"];
+
+  for (const initial of initials) {
     const host = createAppState(initial);
     const { pulse, log } = startOn(host, "ios");
 
@@ -136,12 +136,12 @@ test("N-008 an unresolved current state is unknown, with listeners attached and 
   expect(timers.every((timer) => timer.mock.calls.length === 0)).toBe(true);
 });
 
-test("N-009 N-018 extension, unknown and unmapped values are unknown on both axes", () => {
-  const cases: Array<["ios" | "android", string]> = [
+test("N-009 N-018 extension, unknown and statuses outside a platform are unknown on both axes", () => {
+  const cases: Array<["ios" | "android", AppStateStatus]> = [
     ["ios", "extension"],
     ["ios", "unknown"],
-    ["ios", "suspended"],
     ["android", "inactive"],
+    ["android", "unknown"],
     ["android", "extension"],
   ];
 
@@ -252,7 +252,7 @@ test("N-020 a focus during registration does not skip the app state read", () =>
 
   Object.defineProperty(host.appState, "currentState", { get: read });
 
-  host.faults.subscribe = (type) => {
+  host.hooks.subscribe = (type) => {
     if (type === "blur") {
       host.focus();
     }
@@ -319,78 +319,6 @@ test("iOS registers no Android-only focus or blur listener", () => {
 
   expect(host.listeners.focus.size + host.listeners.blur.size).toBe(0);
   expect(host.subscriptionCount()).toBe(1);
-});
-
-test("N-025 a failed or unusable registration removes every subscription already acquired", () => {
-  const refused = createAppState("active");
-  const failure = new Error("registration refused");
-
-  refused.faults.subscribe = (type) => {
-    if (type === "blur") {
-      throw failure;
-    }
-  };
-
-  const pulse = new Pulse({
-    adapter: reactNative({ appState: refused.appState, platform: "android" }),
-  });
-
-  expect(() => pulse.start()).toThrow(
-    expect.objectContaining({ code: "START_FAILED", cause: failure }),
-  );
-  expect(refused.subscriptionCount()).toBe(0);
-
-  const unusable = createAppState("active");
-  const addEventListener = unusable.appState.addEventListener;
-
-  unusable.appState.addEventListener = (
-    type,
-    listener,
-  ): { remove: () => void } => {
-    const subscription = addEventListener(type, listener);
-    const broken = {};
-
-    // @ts-expect-error A broken AppState can answer anything.
-    return type === "focus" ? broken : subscription;
-  };
-
-  expect(() =>
-    new Pulse({
-      adapter: reactNative({
-        appState: unusable.appState,
-        platform: "android",
-      }),
-    }).start(),
-  ).toThrow(expect.objectContaining({ code: "START_FAILED" }));
-  expect(unusable.listeners.change.size).toBe(0);
-});
-
-test("N-026 a throwing removal lets the others run, is reported once and never retried", () => {
-  const host = createAppState("active");
-  const failure = new Error("removal refused");
-
-  const remove = vi.fn((type: string) => {
-    if (type === "focus") {
-      throw failure;
-    }
-  });
-
-  host.faults.remove = remove;
-
-  const { pulse, reports } = startOn(host, "android");
-
-  pulse.dispose();
-  pulse.dispose();
-
-  expect(remove.mock.calls).toEqual([["blur"], ["focus"], ["change"]]);
-  expect(host.listeners.focus.size).toBe(1);
-  expect(host.listeners.change.size + host.listeners.blur.size).toBe(0);
-  expect(reports).toEqual([
-    [
-      expect.objectContaining({ errors: [failure] }),
-      { origin: "cleanup", adapter: { name: "react-native" }, sequence: 1 },
-    ],
-  ]);
 });
 
 test("N-027 N-028 N-029 observations of one adapter are independent, and a closed one is silent", () => {

@@ -1,9 +1,15 @@
 // Typechecked, never imported: these assignments fail compilation if React
 // Native's AppState stops satisfying the structural type the adapter uses.
+import type { AppStateStatus as ReactNativeAppStateStatus } from "react-native";
 import { AppState, Platform } from "react-native";
+import { expectTypeOf } from "vitest";
 
 import { reactNative } from "src/adapters/react-native/reactNative";
 import type { AppStateLike } from "src/adapters/react-native/types/AppStateLike";
+import type { AppStateStatus } from "src/adapters/react-native/types/AppStateStatus";
+
+// A status React Native adds must get a mapping here before it compiles.
+expectTypeOf<AppStateStatus>().toEqualTypeOf<ReactNativeAppStateStatus>();
 
 export const appState: AppStateLike = AppState;
 

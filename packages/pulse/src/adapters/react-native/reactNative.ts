@@ -1,22 +1,26 @@
+import type { AppStateClassification } from "src/adapters/react-native/types/internal/AppStateClassification";
+import type { AppStateStatus } from "src/adapters/react-native/types/AppStateStatus";
+import type { ReactNativeOptions } from "src/adapters/react-native/types/ReactNativeOptions";
+import {
+  ANDROID_CLASSIFICATIONS,
+  IOS_CLASSIFICATIONS,
+} from "src/adapters/react-native/utils/constants/classifications";
 import {
   ACTIVE_STATE,
   BACKGROUND_STATE,
   INACTIVE_STATE,
   UNKNOWN_STATE,
 } from "src/adapters/react-native/utils/constants/states";
-import type { ReactNativeOptions } from "src/adapters/react-native/types/ReactNativeOptions";
 import type { InteractionState } from "src/types/InteractionState";
 import type { LifecycleAdapter } from "src/types/LifecycleAdapter";
-
-type Classification =
-  "UNINITIALIZED" | "ACTIVE" | "INACTIVE" | "BACKGROUND" | "UNKNOWN";
 
 /**
  * Observes React Native's `AppState`. On iOS, `active` is foreground and
  * available and `inactive` foreground and unavailable; on Android, `active` is
  * foreground with interaction unknown until a `focus` or `blur` arrives after
- * the last background or unknown. Anything unrecognized is unknown on both axes,
- * and on any other platform, the web included, the adapter is unavailable.
+ * the last background or unknown. `unknown` and `extension` are unknown on
+ * both axes, and on any other platform, the web included, the adapter is
+ * unavailable.
  *
  * @example
  * ```ts
@@ -32,25 +36,42 @@ export const reactNative = ({
   platform,
 }: ReactNativeOptions): LifecycleAdapter => ({
   name: "react-native",
-  // The web belongs to browser(), and other platforms have no mapping here.
-  available: () =>
-    (platform === "ios" || platform === "android") &&
-    appState.isAvailable !== false,
+  available: () => {
+    if (!appState.isAvailable) {
+      return false;
+    }
+
+    if (platform === "ios") {
+      return true;
+    }
+
+    if (platform === "android") {
+      return true;
+    }
+
+    // The web belongs to browser(), and other platforms have no mapping here.
+    return false;
+  },
   observe: (observer) => {
+    const classifications =
+      platform === "ios" ? IOS_CLASSIFICATIONS : ANDROID_CLASSIFICATIONS;
+
     let closed = false;
     let receivedChange = false;
-    let classification: Classification = "UNINITIALIZED";
+    let classification: AppStateClassification = "UNINITIALIZED";
     // Android focus evidence, valid only since the last background or unknown app state.
     let focus: InteractionState = "unknown";
     const subscriptions: Array<{ remove: () => void }> = [];
 
     const publish = () => {
       if (classification === "ACTIVE") {
-        observer.next(
-          platform === "ios"
-            ? ACTIVE_STATE
-            : { phase: "foreground", interaction: focus },
-        );
+        if (platform === "ios") {
+          observer.next(ACTIVE_STATE);
+
+          return;
+        }
+
+        observer.next({ phase: "foreground", interaction: focus });
 
         return;
       }
@@ -61,32 +82,32 @@ export const reactNative = ({
         return;
       }
 
-      observer.next(
-        classification === "BACKGROUND" ? BACKGROUND_STATE : UNKNOWN_STATE,
-      );
+      if (classification === "BACKGROUND") {
+        observer.next(BACKGROUND_STATE);
+
+        return;
+      }
+
+      observer.next(UNKNOWN_STATE);
     };
 
-    const accept = (value: unknown) => {
-      let next: Classification = "UNKNOWN";
-
-      if (value === "active") {
-        next = "ACTIVE";
+    // A repeated background keeps focus that arrived for the next active.
+    const isStaleFocusBoundary = (next: AppStateClassification) => {
+      if (next === classification) {
+        return false;
       }
 
-      if (value === "background") {
-        next = "BACKGROUND";
+      if (next === "BACKGROUND") {
+        return true;
       }
 
-      // Only iOS documents inactive; on Android it is outside the mapping.
-      if (value === "inactive" && platform === "ios") {
-        next = "INACTIVE";
-      }
+      return next === "UNKNOWN";
+    };
 
-      // A distinct move into background or unknown makes earlier focus evidence stale.
-      if (
-        next !== classification &&
-        (next === "BACKGROUND" || next === "UNKNOWN")
-      ) {
+    const accept = (status: AppStateStatus | null) => {
+      const next = status === null ? "UNKNOWN" : classifications[status];
+
+      if (isStaleFocusBoundary(next)) {
         focus = "unknown";
       }
 
@@ -94,83 +115,47 @@ export const reactNative = ({
       publish();
     };
 
-    const subscribe = (
-      type: "change" | "focus" | "blur",
-      listener: (state: string) => void,
-    ) => {
-      const subscription = appState.addEventListener(type, listener);
-
-      if (typeof subscription?.remove !== "function") {
-        throw new Error(
-          `AppState answered no removable subscription for "${type}".`,
-        );
+    const handleChange = (status: AppStateStatus) => {
+      if (closed) {
+        return;
       }
 
-      subscriptions.push(subscription);
+      receivedChange = true;
+      accept(status);
     };
 
-    const removeAll = () => {
-      const failures: unknown[] = [];
-
-      for (const subscription of subscriptions.reverse()) {
-        try {
-          subscription.remove();
-        } catch (error) {
-          failures.push(error);
-        }
+    const handleFocus = () => {
+      if (closed) {
+        return;
       }
 
-      subscriptions.length = 0;
-
-      return failures;
+      focus = "available";
+      publish();
     };
 
-    try {
-      subscribe("change", (state) => {
-        if (closed) {
-          return;
-        }
-
-        receivedChange = true;
-        accept(state);
-      });
-
-      if (platform === "android") {
-        subscribe("focus", () => {
-          if (!closed) {
-            focus = "available";
-            publish();
-          }
-        });
-        subscribe("blur", () => {
-          if (!closed) {
-            focus = "unavailable";
-            publish();
-          }
-        });
+    const handleBlur = () => {
+      if (closed) {
+        return;
       }
 
-      // The listener is in place first, so a change during the read wins over it.
+      focus = "unavailable";
+      publish();
+    };
+
+    subscriptions.push(appState.addEventListener("change", handleChange));
+
+    if (platform === "android") {
+      subscriptions.push(appState.addEventListener("focus", handleFocus));
+      subscriptions.push(appState.addEventListener("blur", handleBlur));
+    }
+
+    // The change listener is in place first, so a change during the read wins over it.
+    if (!receivedChange) {
+      const baseline = appState.currentState;
+
       if (!receivedChange) {
-        const baseline = appState.currentState;
-
-        if (!closed && !receivedChange) {
-          accept(baseline);
-        }
+        accept(baseline);
       }
-    } catch (error) {
-      closed = true;
-
-      const failures = removeAll();
-
-      if (failures.length > 0) {
-        throw new AggregateError(
-          [error, ...failures],
-          "Observing AppState failed, and so did removing its subscriptions.",
-        );
-      }
-
-      throw error;
     }
 
     return () => {
@@ -180,13 +165,8 @@ export const reactNative = ({
 
       closed = true;
 
-      const failures = removeAll();
-
-      if (failures.length > 0) {
-        throw new AggregateError(
-          failures,
-          "Removing the AppState subscriptions failed.",
-        );
+      for (const subscription of subscriptions.reverse()) {
+        subscription.remove();
       }
     };
   },

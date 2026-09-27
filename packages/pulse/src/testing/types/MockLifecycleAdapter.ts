@@ -23,7 +23,7 @@ export type MockLifecycleAdapter = {
   /** Reports each deferred baseline that no later `emit` has superseded. */
   resolveInitial: () => void;
   stats: () => MockAdapterStats;
-  /** Deliberately calls the latest observation's callbacks after its cleanup. */
+  /** Calls the latest observation's callbacks whether or not it was cleaned up, to test that the core drops late calls. */
   unsafe: {
     emitAfterCleanup: (state: LifecycleState) => void;
     errorAfterCleanup: (error: unknown) => void;

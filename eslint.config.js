@@ -106,7 +106,7 @@ const react = [
 
 const reactNative = [
   ["react-native"],
-  "Only the React Native adapter imports React Native.",
+  "No entry point imports React Native at runtime; the application passes AppState in.",
 ];
 
 const browserSource = [
@@ -262,7 +262,13 @@ export default tseslint.config(
     ],
     ignores: tests,
     rules: {
-      ...platformImports([react, browserSource, reactSource, testRunners]),
+      ...platformImports([
+        react,
+        reactNative,
+        browserSource,
+        reactSource,
+        testRunners,
+      ]),
       "no-restricted-globals": ["error", ...timers, ...hostGlobals],
     },
   },

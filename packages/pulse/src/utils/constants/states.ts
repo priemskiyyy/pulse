@@ -1,5 +1,4 @@
 import type { InteractionState } from "src/types/InteractionState";
-import type { LifecyclePhase } from "src/types/LifecyclePhase";
 import type { LifecycleState } from "src/types/LifecycleState";
 
 /**
@@ -16,11 +15,14 @@ export const UNKNOWN_LIFECYCLE_STATE: LifecycleState = Object.freeze({
   interaction: "unknown",
 });
 
+type LifecycleStateTable = {
+  foreground: Record<InteractionState, LifecycleState>;
+  background: { available: null; unavailable: LifecycleState; unknown: null };
+  unknown: Record<InteractionState, LifecycleState>;
+};
+
 /** Every valid snapshot, interned so an unchanged state keeps its identity; `null` marks a combination the contract forbids. */
-export const LIFECYCLE_STATES: Record<
-  LifecyclePhase,
-  Record<InteractionState, LifecycleState | null>
-> = Object.freeze({
+export const LIFECYCLE_STATES: LifecycleStateTable = Object.freeze({
   foreground: Object.freeze({
     available: Object.freeze({ phase: "foreground", interaction: "available" }),
     unavailable: Object.freeze({

@@ -83,16 +83,22 @@ export const createMockAdapter = ({
       }
 
       for (const observation of observations) {
-        if (open.has(observation)) {
-          observation.observer.next(state);
+        // A cleanup from an earlier callback in this loop closes that observation.
+        if (!open.has(observation)) {
+          continue;
         }
+
+        observation.observer.next(state);
       }
     },
     error: (error: unknown) => {
       for (const observation of [...open]) {
-        if (open.has(observation)) {
-          observation.observer.error(error);
+        // A cleanup from an earlier callback in this loop closes that observation.
+        if (!open.has(observation)) {
+          continue;
         }
+
+        observation.observer.error(error);
       }
     },
     resolveInitial: () => {

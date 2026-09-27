@@ -30,6 +30,12 @@ importers:
         specifier: 8.70.0
         version: 8.70.0(eslint@9.39.4)(typescript@5.8.3)
 
+  packages/pulse:
+    dependencies:
+      react:
+        specifier: '>=18.3.0 <20'
+        version: 19.3.0
+
 packages:
 
   '@babel/code-frame@7.29.7':
@@ -574,6 +580,10 @@ packages:
   punycode@2.3.1:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
+
+  react@19.3.0:
+    resolution: {integrity: sha512-E8LUcbtBWt20bbl2YoHfx4ZDBdxVTfOKtCZn9cDSJ4l6/nuoApcpIBcj47t2wZoVX8g2ZHuMHbiShgCR1T5Sog==}
+    engines: {node: '>=0.10.0'}
 
   resolve-from@4.0.0:
     resolution: {integrity: sha512-pb/MYmXstAkysRFx8piNI1tGFNQIFA3vkE3Gq4EuA1dF6gHp/+vgZqsCGJapvy8N3Q+4o7FwvquPJcnZ7RYy4g==}
@@ -1251,6 +1261,8 @@ snapshots:
   prettier@3.9.6: {}
 
   punycode@2.3.1: {}
+
+  react@19.3.0: {}
 
   resolve-from@4.0.0: {}
 

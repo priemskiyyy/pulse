@@ -34,6 +34,7 @@ Seven combinations are valid: three foreground, one background, three unknown. B
 | foreground | background | yes                    | `background` |
 | background | foreground | yes                    | `foreground` |
 | foreground | foreground | if interaction changed | none         |
+| unknown    | unknown    | if interaction changed | none         |
 | any known  | unknown    | yes                    | none         |
 
 Discovering the first state is a baseline, not a transition, so startup never looks like a return. An unknown phase breaks continuity: `foreground`, `unknown`, `foreground` is no event, and neither is `background`, `unknown`, `foreground`. A foreground event can be the first entry after a background baseline, so it is not called a return.

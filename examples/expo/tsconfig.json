@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "types": ["node", "react"],
+    "baseUrl": ".",
+    // The check follows the native platform files; each web file is also checked on its own.
+    "moduleSuffixes": [".native", ""],
+    "paths": {
+      "src/*": ["./src/*"]
+    }
+  },
+  "include": ["*.ts", "*.tsx", "src/**/*.ts", "src/**/*.tsx"]
+}

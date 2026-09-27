@@ -1,0 +1,18 @@
+{
+  "expo": {
+    "name": "Lifecycle lab",
+    "slug": "pulse-lifecycle-lab",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "platforms": ["ios", "android", "web"],
+    "ios": {
+      "bundleIdentifier": "dev.pulse.example"
+    },
+    "android": {
+      "package": "dev.pulse.example"
+    },
+    "web": {
+      "bundler": "metro"
+    }
+  }
+}

@@ -70,3 +70,8 @@ jobs:
       # browser, no device and no credentials.
       - name: Unit tests
         run: pnpm test:unit
+
+      # Line coverage cannot see a rule that was quietly weakened, so the rules
+      # where a wrong answer is silent are mutated instead.
+      - name: Mutation tests
+        run: pnpm test:mutation

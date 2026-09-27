@@ -19,7 +19,8 @@
     "test:package": "node scripts/verify-packages.mjs",
     "test:size": "node scripts/measure-size.mjs",
     "verify:release": "node scripts/verify-release.mjs",
-    "check:release": "pnpm check && pnpm test:package && pnpm test:size && pnpm verify:release"
+    "check:release": "pnpm check && pnpm test:package && pnpm test:size && pnpm verify:release && pnpm test:mutation",
+    "test:mutation": "node scripts/mutate.mjs"
   },
   "devDependencies": {
     "@eslint/js": "9.39.4",

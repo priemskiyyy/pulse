@@ -4,7 +4,7 @@ description: "Application recipes for foreground eligibility and TanStack Query 
 
 # Recipes
 
-These are application code, not Pulse exports. Each one is compiled and tested in [`examples/recipes`](../examples/recipes/src), and each states its own policy for unknown.
+These are application code, not Pulse exports. Each one is compiled and tested in [`examples/recipes`](https://github.com/priemskiyyy/pulse/tree/main/examples/recipes/src), and each states its own policy for unknown.
 
 ## Foreground eligibility
 

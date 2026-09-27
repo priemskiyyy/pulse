@@ -20,7 +20,7 @@ One Pulse owns one observation of its host. It reports a `phase` and an `interac
 
 Given the same ordered observations, clock samples and listener operations, Pulse produces the same snapshots and the same transitions. It does not promise that the platform reports every physical change, reports it at once, or gives JavaScript time to finish anything. A snapshot is the latest usable evidence under a documented mapping; `unknown` means there is none.
 
-It is not a scheduler, an exit hook, a presence tracker or a security signal; see [what Pulse is not](../README.md#what-pulse-is-not).
+It is not a scheduler, an exit hook, a presence tracker or a security signal; see [what Pulse is not](https://github.com/priemskiyyy/pulse#what-pulse-is-not).
 
 ## Where to go next
 

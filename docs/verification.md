@@ -34,7 +34,7 @@ The specification names 200 scenarios. The tests carry their IDs:
 - `B-001` to `B-046`, the browser adapter: `src/adapters/browser/**`. `B-047`, a real back/forward cache restore, is a host exercise.
 - `N-001` to `N-030`, the native adapter: `src/adapters/react-native/**`. `N-031`, device multi-window and credential picker traces, is a host exercise.
 - `R-001` to `R-018`, React: `src/react/**`.
-- `I-001` to `I-011` and `I-017`, integrations: `examples/recipes/src/**`.
+- `I-001` to `I-011` and `I-017`, integrations: `examples/shared/recipes/**`.
 - `P-001` to `P-015`, packaging: `scripts/verify-packages.mjs`, `scripts/measure-size.mjs` and `scripts/verify-release.mjs`.
 
 Malformed snapshots and options are ruled out by the types and the `*.contracts.ts` files instead of runtime checks, and a throwing getter simply propagates; see [decisions](decisions.md).

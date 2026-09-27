@@ -17,7 +17,7 @@ pnpm check
 - `src/adapters/<name>/` holds one adapter: its factory, its tests and fixture, and its own `types/`, `utils/` and `utils/constants/`.
 - `src/react/` holds the hook, `src/testing/` the mock adapter, the test clock and the conformance suite.
 - `*.contracts.ts` files are type checked and never run: they pin the public types, with `@ts-expect-error` negatives.
-- `examples/recipes` holds the compiled integration recipes; `examples/shared` the lab both example apps share, and `examples/react` and `examples/expo` the apps for exercising real hosts.
+- `examples/shared` holds the lab both example apps share and the compiled integration recipes; `examples/react` and `examples/expo` the apps for exercising real hosts.
 
 ## Code
 

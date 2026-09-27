@@ -16,7 +16,8 @@
     "test:unit:watch": "vitest",
     "check": "pnpm build && pnpm lint:typescript && pnpm lint:eslint && pnpm test:lint && pnpm lint:prettier && pnpm test:unit",
     "test:lint": "node scripts/verify-lint-rules.mjs",
-    "test:package": "node scripts/verify-packages.mjs"
+    "test:package": "node scripts/verify-packages.mjs",
+    "test:size": "node scripts/measure-size.mjs"
   },
   "devDependencies": {
     "@eslint/js": "9.39.4",
@@ -35,6 +36,7 @@
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "react-native": "0.86.3",
+    "rolldown": "1.2.11",
     "tsdown": "0.22.14",
     "typescript": "5.8.3",
     "typescript-eslint": "8.70.0",

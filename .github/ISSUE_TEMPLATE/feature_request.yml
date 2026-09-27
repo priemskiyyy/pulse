@@ -1,0 +1,21 @@
+name: Feature request
+description: Propose a change with the problem it solves.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Use case
+      description: What does your application need to know about its lifecycle that Pulse cannot tell it today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: The states or transitions you expect, and on which platforms.
+  - type: textarea
+    id: platform
+    attributes:
+      label: Platform
+      description: The host or adapter involved, for example a browser, React Native, Expo, Capacitor or a custom source.

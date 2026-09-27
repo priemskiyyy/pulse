@@ -1,0 +1,30 @@
+name: Bug report
+description: Report incorrect behavior with a reproducible example.
+labels: [bug]
+body:
+  - type: textarea
+    id: behavior
+    attributes:
+      label: What happened?
+      description: Describe the actual state or transition and what you expected.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Link a minimal repository or give steps and a small example. Say which adapter you use and whether it happened before `start()`, during the first delivery, or after `dispose()`.
+    validations:
+      required: true
+  - type: textarea
+    id: versions
+    attributes:
+      label: Environment
+      description: Include the Pulse version, the browser and its version, or React Native, Expo, iOS or Android and their versions.
+    validations:
+      required: true
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Signals and diagnostics
+      description: The raw platform signals in the order they arrived, next to the `onDiagnostic` records. Remove anything personal.

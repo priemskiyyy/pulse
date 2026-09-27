@@ -1,9 +1,9 @@
 import type { PulseErrorCode } from "src/types/PulseErrorCode";
 
 /**
- * An error Pulse created, with a `code` to branch on. What an adapter,
- * listener or clock throws reaches `onError` as it was thrown, or as the
- * `cause` of one of these.
+ * An error Pulse created, with a `code` to branch on. `start()` throws a
+ * failed probe or setup as `START_FAILED` with the original as `cause`; what
+ * a running adapter, listener or clock throws reaches `onError`.
  *
  * @example
  * ```ts

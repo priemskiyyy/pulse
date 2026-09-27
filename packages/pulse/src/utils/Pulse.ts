@@ -113,8 +113,8 @@ export class Pulse {
   });
 
   /**
-   * Begins the adapter's observation, once. A repeat is a no-op, a failed
-   * setup throws `START_FAILED`, and a known state may arrive later.
+   * Begins the adapter's observation, once. A repeat is a no-op, a probe or
+   * setup that throws becomes `START_FAILED`, and a known state may arrive later.
    *
    * @example
    * ```ts

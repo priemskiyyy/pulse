@@ -82,7 +82,11 @@ const entryPoints = [
   "packages/pulse/src/testing.ts",
 ];
 
-const tests = ["**/*.test.{ts,tsx}", "**/*.contracts.{ts,tsx}"];
+const tests = [
+  "**/*.test.{ts,tsx}",
+  "**/*.contracts.{ts,tsx}",
+  "**/*.fixture.{ts,tsx}",
+];
 
 // Each entry point reaches only its own platform: the core and the testing
 // helpers are platform neutral, and no adapter or binding imports another.

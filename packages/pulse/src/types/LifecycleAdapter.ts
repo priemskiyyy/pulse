@@ -1,11 +1,9 @@
 import type { LifecycleObserver } from "src/types/LifecycleObserver";
 
 /**
- * A plain `{ name, available, observe }` over one platform source.
- * `available` is a cheap, synchronous probe of the host; when it answers false,
- * `start()` observes nothing and the state stays unknown. `observe` registers
- * synchronously, may report its baseline now or later, and answers a
- * synchronous cleanup that removes only its own subscriptions.
+ * A plain `{ name, available, observe }` over one host: `available` probes it
+ * cheaply, and `observe` registers synchronously and answers a synchronous
+ * cleanup that removes only its own subscriptions.
  *
  * @example
  * ```ts

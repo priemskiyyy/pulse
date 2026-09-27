@@ -55,8 +55,8 @@ export const observer: Pick<Pulse, "state" | "on"> = pulse;
 export const custom: LifecycleAdapter = {
   name: "custom-host",
   available: () => true,
-  observe: (next) => {
-    next.next({ phase: "unknown", interaction: "available" });
+  observe: (observer) => {
+    observer.next({ phase: "unknown", interaction: "available" });
 
     return () => {};
   },

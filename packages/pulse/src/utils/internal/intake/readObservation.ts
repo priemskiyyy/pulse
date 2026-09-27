@@ -5,12 +5,11 @@ import {
 } from "src/utils/constants/states";
 import { PulseError } from "src/utils/PulseError";
 
-// Reading each field once copies the snapshot into its interned state, so the
-// adapter's object is never kept. The flat type allows one combination the
-// contract forbids: background with any interaction but unavailable.
+// Each field is read once into its interned state, so the adapter's object is never kept.
 export const readObservation = ({ phase, interaction }: LifecycleState) => {
   const state = LIFECYCLE_STATES[phase][interaction];
 
+  // The flat type allows background with an interaction; the contract does not.
   if (state === null) {
     return {
       state: UNKNOWN_LIFECYCLE_STATE,

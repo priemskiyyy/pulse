@@ -5,8 +5,7 @@
  *
  * @example
  * ```ts
- * const fromListener = (origin: PulseErrorOrigin) =>
- *   origin === "state-listener" || origin === "transition-listener";
+ * const origin: PulseErrorOrigin = "transition-listener";
  * ```
  */
 export type PulseErrorOrigin =

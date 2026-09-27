@@ -12,7 +12,7 @@ import type { LifecycleState } from "src/types/LifecycleState";
  * ```
  */
 export type LifecycleObserver = {
-  /** Reports a complete snapshot; a duplicate is legal and changes nothing. */
+  /** Reports a complete snapshot; a duplicate is legal and commits nothing. */
   next: (state: LifecycleState) => void;
   /** Reports a failure without changing the state. */
   error: (error: unknown) => void;

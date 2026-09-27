@@ -41,12 +41,6 @@ const createFailedError = () =>
 const createInvalidArgument = (message: string) =>
   new PulseError({ code: "INVALID_OPTIONS", message });
 
-const createRollbackError = () =>
-  new PulseError({
-    code: "INVALID_CLOCK",
-    message: "The clock moved backwards, so no away time is paired across it.",
-  });
-
 /**
  * One application-owned observation of a host's lifecycle: an immutable
  * `phase` and `interaction` snapshot, and deduplicated `foreground` and
@@ -368,9 +362,18 @@ export class Pulse {
 
     this.#timeline = reduction.timeline;
 
-    const reports: Report[] = reduction.rolledBack
-      ? [...intake.reports, { error: createRollbackError(), origin: "clock" }]
-      : [...intake.reports];
+    const reports = [...intake.reports];
+
+    if (reduction.rolledBack) {
+      reports.push({
+        error: new PulseError({
+          code: "INVALID_CLOCK",
+          message:
+            "The clock moved backwards, so no away time is paired across it.",
+        }),
+        origin: "clock",
+      });
+    }
 
     const { commit, event } = reduction;
     const { sequence } = reduction.timeline;

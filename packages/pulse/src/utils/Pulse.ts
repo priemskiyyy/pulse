@@ -387,13 +387,12 @@ export class Pulse {
       return;
     }
 
-    const stateRegistrations = [...this.#listeners.state];
-
+    // Both groups are captured before the first callback: a registration added now waits for the next commit.
     const eventRegistrations =
       event === null ? [] : [...this.#listeners[event.type]];
 
     // Disposal clears the registries, so it also skips every remaining turn.
-    for (const registration of stateRegistrations) {
+    for (const registration of [...this.#listeners.state]) {
       const { listener } = registration;
 
       if (

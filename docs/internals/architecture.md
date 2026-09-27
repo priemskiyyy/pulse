@@ -17,11 +17,12 @@ reduceObservation ─► commit snapshot ─► state listeners ─► transitio
 
 ```text
 CREATED ─► STARTING ─► RUNNING ─► DISPOSED
-               └──► FAILED ──────► DISPOSED
+   │           └──► FAILED ──────► DISPOSED
+   └─ unavailable ─► RUNNING, observing nothing
 CREATED, STARTING ───────────────► DISPOSED
 ```
 
-`Pulse` holds its ownership as a discriminated union. Only `STARTING` and `RUNNING` carry the observation token and the host callbacks; an observer callback whose token is not the current one is ignored, so a failed or disposed observation can never publish. `start()` calls `available()` first; when it is false the instance runs with no observation. During setup, observations are only queued: nothing is delivered before the adapter's cleanup is owned. A dispose during setup runs that cleanup once, as soon as setup returns.
+`Pulse` holds its ownership as a discriminated union. Only `STARTING` and `RUNNING` carry the observation token; an observer callback whose token is not the current one is ignored, so a failed or disposed observation can never publish. `start()` calls `available()` first; when it is false the instance runs with no observation. During setup, observations are only queued: nothing is delivered before the adapter's cleanup is owned. A dispose during setup runs that cleanup once, as soon as setup returns.
 
 ## Intake and the reducer
 

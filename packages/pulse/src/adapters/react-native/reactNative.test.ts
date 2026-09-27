@@ -376,3 +376,56 @@ test("the adapter passes the conformance suite on both platforms", async () => {
     expect(report.passed).toHaveLength(8);
   }
 });
+
+test("N-025 a subscription that throws removes the ones already acquired", () => {
+  const host = createAppState("active");
+  const failure = new Error("blur subscription threw");
+
+  host.hooks.subscribe = (type) => {
+    if (type === "blur") {
+      throw failure;
+    }
+  };
+
+  const pulse = new Pulse({
+    adapter: reactNative({ appState: host.appState, platform: "android" }),
+  });
+
+  expect(() => pulse.start()).toThrow(
+    expect.objectContaining({ code: "START_FAILED", cause: failure }),
+  );
+  expect(host.subscriptionCount()).toBe(0);
+});
+
+test("N-026 a removal that throws does not stop the others, and cleanup is not retried", () => {
+  const host = createAppState("active");
+  const failure = new Error("focus removal threw");
+  const { addEventListener } = host.appState;
+  let focusRemovals = 0;
+
+  host.appState.addEventListener = (type, listener) => {
+    const subscription = addEventListener(type, listener);
+
+    if (type !== "focus") {
+      return subscription;
+    }
+
+    return {
+      remove: () => {
+        focusRemovals += 1;
+        throw failure;
+      },
+    };
+  };
+
+  const cleanup = reactNative({
+    appState: host.appState,
+    platform: "android",
+  }).observe({ next: () => {}, error: () => {} });
+
+  expect(cleanup).toThrow(failure);
+  expect(host.listeners.change.size).toBe(0);
+  expect(host.listeners.blur.size).toBe(0);
+  expect(() => cleanup()).not.toThrow();
+  expect(focusRemovals).toBe(1);
+});

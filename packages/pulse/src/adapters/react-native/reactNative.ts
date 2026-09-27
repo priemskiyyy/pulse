@@ -9,6 +9,7 @@ import { CLASSIFICATION_STATES } from "src/adapters/react-native/utils/constants
 import type { InteractionState } from "src/types/InteractionState";
 import type { LifecycleAdapter } from "src/types/LifecycleAdapter";
 import { LIFECYCLE_STATES } from "src/utils/constants/states";
+import { removeAll, rollBack } from "src/utils/internal/cleanup/removeAll";
 
 /**
  * Observes React Native's `AppState` on iOS and Android; an Android `active`
@@ -54,7 +55,7 @@ export const reactNative = ({
     let classification: AppStateClassification = "UNINITIALIZED";
     // Android focus evidence, valid only since the last background or unknown app state.
     let focus: InteractionState = "unknown";
-    const subscriptions: Array<{ remove: () => void }> = [];
+    const removals: Array<() => void> = [];
 
     const publish = () => {
       if (classification !== "ACTIVE") {
@@ -123,18 +124,32 @@ export const reactNative = ({
       publish();
     };
 
-    subscriptions.push(appState.addEventListener("change", handleChange));
+    const listen = (
+      type: "change" | "focus" | "blur",
+      handler: (status: AppStateStatus) => void,
+    ) => {
+      const subscription = appState.addEventListener(type, handler);
 
-    if (platform === "android") {
-      subscriptions.push(appState.addEventListener("focus", handleFocus));
-      subscriptions.push(appState.addEventListener("blur", handleBlur));
-    }
+      removals.push(() => subscription.remove());
+    };
 
-    // The change listener is in place first, so a change during the read wins over it.
-    const baseline = appState.currentState;
+    try {
+      listen("change", handleChange);
 
-    if (!receivedChange) {
-      accept(baseline);
+      if (platform === "android") {
+        listen("focus", handleFocus);
+        listen("blur", handleBlur);
+      }
+
+      // The change listener is in place first, so a change during the read wins over it.
+      const baseline = appState.currentState;
+
+      if (!receivedChange) {
+        accept(baseline);
+      }
+    } catch (error) {
+      closed = true;
+      rollBack(removals, error);
     }
 
     return () => {
@@ -143,10 +158,7 @@ export const reactNative = ({
       }
 
       closed = true;
-
-      for (const subscription of subscriptions.reverse()) {
-        subscription.remove();
-      }
+      removeAll(removals);
     };
   },
 });

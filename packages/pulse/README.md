@@ -74,7 +74,7 @@ Only an observed, adjacent change between known phases is a transition. Discover
 | -------------------- | ------------------------------------------------------------------------------------- |
 | `state`              | `get()` and `subscribe(listener)`: the frozen snapshot, stable until the next commit. |
 | `on(type, listener)` | Listens to `foreground` or `background`. Events never replay.                         |
-| `start()`            | Begins the observation once. A setup that throws becomes `START_FAILED`.              |
+| `start()`            | Begins the observation once. A probe or setup that throws becomes `START_FAILED`.     |
 | `dispose()`          | Ends it for good; the last snapshot stays readable.                                   |
 
 ## Options

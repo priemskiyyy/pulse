@@ -83,7 +83,7 @@ Only an observed, adjacent change between known phases is a transition. Discover
 | -------------- | ---------- | ---------------------------------------------------------------------------- |
 | `adapter`      | required   | `browser()`, `reactNative(...)`, or your own `{ name, available, observe }`. |
 | `now`          | `Date.now` | Epoch milliseconds, sampled once per observation.                            |
-| `onError`      | console    | Receives listener, clock, adapter and cleanup errors with a context.         |
+| `onError`      | console    | Receives every reported error with its context.                              |
 | `onDiagnostic` | none       | Receives `started`, `unavailable`, `commit` and `duplicate` records.         |
 
 ## Entry points

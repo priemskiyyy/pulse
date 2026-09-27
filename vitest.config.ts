@@ -38,6 +38,14 @@ export default defineConfig({
           environment: "node",
         },
       },
+      {
+        extends: true,
+        test: {
+          name: "example-shared",
+          include: ["examples/shared/**/*.test.ts"],
+          environment: "node",
+        },
+      },
     ],
   },
 });

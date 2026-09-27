@@ -1,0 +1,24 @@
+{
+  "name": "example-shared",
+  "private": true,
+  "type": "module",
+  "description": "The lifecycle lab both examples share: one Pulse, a stale-data refresh, a simulation, the timeline and the Tailwind styles.",
+  "exports": {
+    "./lab/*": "./lab/*.ts",
+    "./formatting/*": "./formatting/*.ts",
+    "./types/*": "./types/*.ts",
+    "./utils/*": "./utils/*.ts",
+    "./ui/theme.css": "./ui/theme.css",
+    "./ui/constants/*": "./ui/constants/*.ts",
+    "./ui/styles/*": "./ui/styles/*.ts",
+    "./ui/types/*": "./ui/types/*.ts"
+  },
+  "scripts": {
+    "lint:typescript": "tsc --noEmit -p ."
+  },
+  "dependencies": {
+    "@priemskiyyy/pulse": "workspace:*",
+    "class-variance-authority": "0.7.1",
+    "ts-pattern": "5.9.0"
+  }
+}

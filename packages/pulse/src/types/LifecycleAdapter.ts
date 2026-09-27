@@ -19,6 +19,5 @@ import type { LifecycleObserver } from "src/types/LifecycleObserver";
  */
 export type LifecycleAdapter = {
   name: string;
-  // Method syntax keeps the receiver: a custom adapter may use `this`.
-  observe(observer: LifecycleObserver): () => void;
+  observe: (observer: LifecycleObserver) => () => void;
 };

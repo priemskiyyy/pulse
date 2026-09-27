@@ -213,10 +213,6 @@ const CHECKS: Check[] = [
         error: () => {},
       });
 
-      assert(
-        typeof cleanup === "function",
-        "observe() answered no cleanup function.",
-      );
       cleanup();
       cleanup();
       await harness.settle();

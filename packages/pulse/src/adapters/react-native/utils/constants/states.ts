@@ -1,25 +1,17 @@
+import type { AppStateClassification } from "src/adapters/react-native/types/internal/AppStateClassification";
 import type { LifecycleState } from "src/types/LifecycleState";
+import {
+  LIFECYCLE_STATES,
+  UNKNOWN_LIFECYCLE_STATE,
+} from "src/utils/constants/states";
 
-/** iOS `active`. */
-export const ACTIVE_STATE: LifecycleState = Object.freeze({
-  phase: "foreground",
-  interaction: "available",
-});
-
-/** iOS `inactive`: still foreground, but not taking input. */
-export const INACTIVE_STATE: LifecycleState = Object.freeze({
-  phase: "foreground",
-  interaction: "unavailable",
-});
-
-/** `background` on either platform. */
-export const BACKGROUND_STATE: LifecycleState = Object.freeze({
-  phase: "background",
-  interaction: "unavailable",
-});
-
-/** Unresolved, `unknown`, `extension`, or any value outside a platform's mapping. */
-export const UNKNOWN_STATE: LifecycleState = Object.freeze({
-  phase: "unknown",
-  interaction: "unknown",
+/** The snapshot each classification publishes; `ACTIVE` depends on the platform and Android focus instead. */
+export const CLASSIFICATION_STATES: Record<
+  Exclude<AppStateClassification, "ACTIVE">,
+  LifecycleState
+> = Object.freeze({
+  UNINITIALIZED: UNKNOWN_LIFECYCLE_STATE,
+  INACTIVE: LIFECYCLE_STATES.foreground.unavailable,
+  BACKGROUND: LIFECYCLE_STATES.background.unavailable,
+  UNKNOWN: UNKNOWN_LIFECYCLE_STATE,
 });

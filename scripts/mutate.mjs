@@ -101,8 +101,8 @@ const MUTANTS = [
   },
   {
     file: `${source}/adapters/react-native/reactNative.ts`,
-    find: "      if (!receivedChange) {",
-    replace: "      if (true) {",
+    find: "    if (!receivedChange) {",
+    replace: "    if (true) {",
     describes: "a stale AppState baseline overwriting a change",
   },
   {

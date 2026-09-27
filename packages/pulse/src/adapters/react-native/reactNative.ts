@@ -5,22 +5,15 @@ import {
   ANDROID_CLASSIFICATIONS,
   IOS_CLASSIFICATIONS,
 } from "src/adapters/react-native/utils/constants/classifications";
-import {
-  ACTIVE_STATE,
-  BACKGROUND_STATE,
-  INACTIVE_STATE,
-  UNKNOWN_STATE,
-} from "src/adapters/react-native/utils/constants/states";
+import { CLASSIFICATION_STATES } from "src/adapters/react-native/utils/constants/states";
 import type { InteractionState } from "src/types/InteractionState";
 import type { LifecycleAdapter } from "src/types/LifecycleAdapter";
+import { LIFECYCLE_STATES } from "src/utils/constants/states";
 
 /**
- * Observes React Native's `AppState`. On iOS, `active` is foreground and
- * available and `inactive` foreground and unavailable; on Android, `active` is
- * foreground with interaction unknown until a `focus` or `blur` arrives after
- * the last background or unknown. `unknown` and `extension` are unknown on
- * both axes, and on any other platform, the web included, the adapter is
- * unavailable.
+ * Observes React Native's `AppState` on iOS and Android; an Android `active`
+ * has interaction unknown until a `focus` or `blur`. Every other platform, the
+ * web included, is unavailable.
  *
  * @example
  * ```ts
@@ -64,31 +57,19 @@ export const reactNative = ({
     const subscriptions: Array<{ remove: () => void }> = [];
 
     const publish = () => {
-      if (classification === "ACTIVE") {
-        if (platform === "ios") {
-          observer.next(ACTIVE_STATE);
-
-          return;
-        }
-
-        observer.next({ phase: "foreground", interaction: focus });
+      if (classification !== "ACTIVE") {
+        observer.next(CLASSIFICATION_STATES[classification]);
 
         return;
       }
 
-      if (classification === "INACTIVE") {
-        observer.next(INACTIVE_STATE);
+      if (platform === "ios") {
+        observer.next(LIFECYCLE_STATES.foreground.available);
 
         return;
       }
 
-      if (classification === "BACKGROUND") {
-        observer.next(BACKGROUND_STATE);
-
-        return;
-      }
-
-      observer.next(UNKNOWN_STATE);
+      observer.next(LIFECYCLE_STATES.foreground[focus]);
     };
 
     // A repeated background keeps focus that arrived for the next active.
@@ -150,12 +131,10 @@ export const reactNative = ({
     }
 
     // The change listener is in place first, so a change during the read wins over it.
-    if (!receivedChange) {
-      const baseline = appState.currentState;
+    const baseline = appState.currentState;
 
-      if (!receivedChange) {
-        accept(baseline);
-      }
+    if (!receivedChange) {
+      accept(baseline);
     }
 
     return () => {

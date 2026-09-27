@@ -31,11 +31,12 @@ Not a background task runner, a scheduler, a guaranteed exit hook, a session or 
 ## Documentation
 
 - [The package readme](packages/pulse/README.md): installation, the API and the entry points.
-- [Documentation](docs/index.md): states and transitions, the adapters, React, testing and verification.
+- [Documentation](docs/index.md): states and transitions, the adapters, React, testing and verification. `pnpm dev:docs` serves it as a site.
+- [The browser lab](examples/browser-lifecycle-lab) and [the Expo lab](examples/expo-lifecycle-lab): Pulse next to the raw host signals, for exercising a real browser or device.
 
 ## Status
 
-Nothing is published yet. The package is `0.1.0` and its changelog entry is `Unreleased`. The adapters are verified against jsdom pages and a fake `AppState`; real browsers and devices are not yet exercised.
+Nothing is published yet. The package is `0.1.0` and its changelog entry is `Unreleased`. The adapters are verified against jsdom pages and a fake `AppState`, and the labs run in real Chromium. Tab switching, freeze, the back/forward cache and physical devices are not yet exercised; see [verification](docs/verification.md).
 
 ## Development
 

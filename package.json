@@ -10,7 +10,9 @@
     "format": "prettier --write .",
     "lint:prettier": "prettier --check .",
     "lint:typescript": "tsc --noEmit && pnpm -r lint:typescript",
-    "lint:eslint": "eslint ."
+    "lint:eslint": "eslint .",
+    "test:unit": "vitest run",
+    "test:unit:watch": "vitest"
   },
   "devDependencies": {
     "@eslint/js": "9.39.4",
@@ -19,6 +21,7 @@
     "eslint-plugin-react-hooks": "7.1.1",
     "prettier": "3.9.6",
     "typescript": "5.8.3",
-    "typescript-eslint": "8.70.0"
+    "typescript-eslint": "8.70.0",
+    "vitest": "4.1.10"
   }
 }

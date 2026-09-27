@@ -1,5 +1,5 @@
-import { sampleDocument } from "src/browser/sampleDocument";
-import type { BrowserOptions } from "src/browser/types/BrowserOptions";
+import { sampleDocument } from "src/adapters/browser/utils/sampleDocument";
+import type { BrowserOptions } from "src/adapters/browser/types/BrowserOptions";
 import type { LifecycleAdapter } from "src/types/LifecycleAdapter";
 import type { LifecycleState } from "src/types/LifecycleState";
 

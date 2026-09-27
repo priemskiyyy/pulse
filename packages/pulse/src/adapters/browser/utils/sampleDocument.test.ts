@@ -1,7 +1,7 @@
 import { JSDOM } from "jsdom";
 import { expect, test, vi } from "vitest";
 
-import { sampleDocument } from "src/browser/sampleDocument";
+import { sampleDocument } from "src/adapters/browser/utils/sampleDocument";
 
 const createDocument = (overrides: PropertyDescriptorMap = {}) => {
   const { document } = new JSDOM("<!doctype html>", {

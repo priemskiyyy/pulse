@@ -1,7 +1,7 @@
 import { afterEach, expect, test, vi } from "vitest";
 
-import { browser } from "src/browser/browser";
-import { createPage } from "src/browser/browser.fixture";
+import { browser } from "src/adapters/browser/browser";
+import { createPage } from "src/adapters/browser/browser.fixture";
 import { createTestClock } from "src/testing/createTestClock";
 import type { ForegroundEvent } from "src/types/ForegroundEvent";
 import { Pulse } from "src/utils/Pulse";

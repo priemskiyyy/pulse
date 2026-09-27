@@ -110,17 +110,17 @@ const reactNative = [
 ];
 
 const browserSource = [
-  ["src/browser", "src/browser/*"],
+  ["src/adapters/browser", "src/adapters/browser/**"],
   "Only the browser entry point imports the browser adapter.",
 ];
 
 const reactNativeSource = [
-  ["src/react-native", "src/react-native/*"],
+  ["src/adapters/react-native", "src/adapters/react-native/**"],
   "Only the React Native entry point imports its adapter.",
 ];
 
 const reactSource = [
-  ["src/react", "src/react/*"],
+  ["src/react", "src/react/**"],
   "Only the React entry point imports the binding.",
 ];
 
@@ -223,7 +223,8 @@ export default tseslint.config(
     ignores: [
       ...tests,
       "packages/pulse/src/{browser,react-native,react}.ts",
-      "packages/pulse/src/{browser,react-native,react}/**",
+      "packages/pulse/src/adapters/**",
+      "packages/pulse/src/react/**",
     ],
     rules: {
       ...platformImports([
@@ -240,7 +241,7 @@ export default tseslint.config(
   {
     files: [
       "packages/pulse/src/browser.ts",
-      "packages/pulse/src/browser/**/*.ts",
+      "packages/pulse/src/adapters/browser/**/*.ts",
     ],
     ignores: tests,
     rules: {
@@ -257,7 +258,7 @@ export default tseslint.config(
   {
     files: [
       "packages/pulse/src/react-native.ts",
-      "packages/pulse/src/react-native/**/*.ts",
+      "packages/pulse/src/adapters/react-native/**/*.ts",
     ],
     ignores: tests,
     rules: {

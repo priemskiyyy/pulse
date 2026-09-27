@@ -1,7 +1,7 @@
 import { afterEach, expect, test, vi } from "vitest";
 
-import { browser } from "src/browser/browser";
-import { createPage } from "src/browser/browser.fixture";
+import { browser } from "src/adapters/browser/browser";
+import { createPage } from "src/adapters/browser/browser.fixture";
 import { testLifecycleAdapter } from "src/testing/testLifecycleAdapter";
 import type { LifecycleObserver } from "src/types/LifecycleObserver";
 import type { LifecycleState } from "src/types/LifecycleState";

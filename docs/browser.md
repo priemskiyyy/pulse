@@ -25,7 +25,7 @@ Visibility and focus answer different questions. A visible window that loses foc
 
 ## Listeners
 
-The adapter registers capture-phase listeners for `visibilitychange`, `freeze`, `resume` and `prerenderingchange` on the document, and `focus`, `blur`, `pagehide` and `pageshow` on the window. Every event resamples the document; none is trusted for its name. Focus moving between controls, or into an iframe, never changes interaction: only the window's own focus events resample. It registers no `unload`, `beforeunload`, activity, router or timer listener, and never sets an `on*` handler property. Cleanup removes exactly its own listeners.
+The adapter registers capture-phase listeners for `visibilitychange`, `freeze`, `resume` and `prerenderingchange` on the document, and `focus`, `blur`, `pagehide` and `pageshow` on the window. `pagehide` and `pageshow` set and clear a hold, below; every other event only resamples the document. Focus moving between controls, or into an iframe, never changes interaction: only the window's own focus events resample. It registers no `unload`, `beforeunload`, activity, router or timer listener, and never sets an `on*` handler property. Cleanup removes exactly its own listeners.
 
 ## pagehide and pageshow
 

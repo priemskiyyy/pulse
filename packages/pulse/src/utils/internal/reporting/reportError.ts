@@ -1,6 +1,20 @@
 import type { PulseHost } from "src/types/internal/PulseHost";
 import type { PulseErrorContext } from "src/types/PulseErrorContext";
-import { reportToConsole } from "src/utils/internal/reporting/reportToConsole";
+
+// The core compiles without DOM or Node types, where no console is declared.
+declare const console: { error?: unknown } | undefined;
+
+const writeToConsole = (...values: unknown[]) => {
+  try {
+    if (typeof console === "undefined" || typeof console.error !== "function") {
+      return;
+    }
+
+    console.error(...values);
+  } catch {
+    // A missing or throwing console must not break the delivery around it.
+  }
+};
 
 export const reportError = (
   { onError }: PulseHost,
@@ -8,7 +22,7 @@ export const reportError = (
   context: PulseErrorContext,
 ) => {
   if (onError === null) {
-    reportToConsole(`Pulse: ${context.origin} error`, error);
+    writeToConsole(`Pulse: ${context.origin} error`, error);
 
     return;
   }
@@ -17,6 +31,6 @@ export const reportError = (
     onError(error, context);
   } catch (failure) {
     // onError never hears about its own failure, so a throwing reporter cannot loop.
-    reportToConsole("Pulse: onError threw", failure, error);
+    writeToConsole("Pulse: onError threw", failure, error);
   }
 };

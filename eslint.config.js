@@ -312,6 +312,11 @@ export default tseslint.config(
     rules: reactHooks.configs.recommended.rules,
   },
   {
+    // A global script declares the snippets' ambient names; it cannot import, so it names types with import().
+    files: ["scripts/snippets.ambient.d.ts"],
+    rules: { "@typescript-eslint/consistent-type-imports": "off" },
+  },
+  {
     files: ["**/*.{js,mjs}"],
     languageOptions: {
       globals: {

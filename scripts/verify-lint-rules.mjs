@@ -181,6 +181,10 @@ const allowed = [
   ],
   ["export const view = globalThis.window;", BROWSER],
   [
+    'declare const pulse: import("@priemskiyyy/pulse").Pulse;',
+    "scripts/snippets.ambient.d.ts",
+  ],
+  [
     'export { reactNative } from "src/adapters/react-native/reactNative";',
     "packages/pulse/src/react-native.ts",
   ],

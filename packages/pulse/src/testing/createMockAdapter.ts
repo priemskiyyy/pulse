@@ -45,31 +45,32 @@ export const createMockAdapter = ({
     return latest;
   };
 
-  const observe = (observer: LifecycleObserver) => {
-    const observation: Observation = {
-      observer,
-      baseline: deferInitial ? current : null,
-    };
-
-    started += 1;
-    latest = observer;
-    open.add(observation);
-
-    if (!deferInitial) {
-      observer.next(current);
-    }
-
-    return () => {
-      if (!open.delete(observation)) {
-        return;
-      }
-
-      closed += 1;
-    };
-  };
-
   return Object.freeze({
-    adapter: Object.freeze({ name: "mock", observe }),
+    adapter: Object.freeze({
+      name: "mock",
+      observe: (observer: LifecycleObserver) => {
+        const observation: Observation = {
+          observer,
+          baseline: deferInitial ? current : null,
+        };
+
+        started += 1;
+        latest = observer;
+        open.add(observation);
+
+        if (!deferInitial) {
+          observer.next(current);
+        }
+
+        return () => {
+          if (!open.delete(observation)) {
+            return;
+          }
+
+          closed += 1;
+        };
+      },
+    }),
     emit: (state: LifecycleState) => {
       current = state;
 

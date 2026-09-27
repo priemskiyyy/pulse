@@ -19,15 +19,20 @@ import type { LifecycleAdapter } from "src/types/LifecycleAdapter";
  */
 export const browser = ({ target }: BrowserOptions = {}): LifecycleAdapter => ({
   name: "browser",
-  // A server render or a detached frame has no live document to observe.
   available: () => {
     const targetWindow = target ?? globalThis.window;
 
-    return (
-      typeof targetWindow === "object" &&
-      targetWindow !== null &&
-      targetWindow.document?.defaultView === targetWindow
-    );
+    // A server render has no window.
+    if (typeof targetWindow !== "object") {
+      return false;
+    }
+
+    if (targetWindow === null) {
+      return false;
+    }
+
+    // A detached frame's window has no live document.
+    return targetWindow.document?.defaultView === targetWindow;
   },
   observe: (observer) => {
     const targetWindow = target ?? globalThis.window;
@@ -48,8 +53,12 @@ export const browser = ({ target }: BrowserOptions = {}): LifecycleAdapter => ({
       const sampled = generation;
       const state = latched ? BACKGROUND_STATE : sampleDocument(targetDocument);
 
+      if (closed) {
+        return;
+      }
+
       // An event handled while the getters ran has already published newer evidence.
-      if (closed || sampled !== generation) {
+      if (sampled !== generation) {
         return;
       }
 
@@ -58,7 +67,13 @@ export const browser = ({ target }: BrowserOptions = {}): LifecycleAdapter => ({
 
     // Focus moving between elements reaches the window in its capture phase; only the window's own counts.
     const handleFocusChange = (event: Event) => {
-      if (event.target === targetWindow || event.target === targetDocument) {
+      if (event.target === targetWindow) {
+        publish();
+
+        return;
+      }
+
+      if (event.target === targetDocument) {
         publish();
       }
     };

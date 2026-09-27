@@ -2,10 +2,11 @@ import { BACKGROUND_STATE } from "src/adapters/browser/utils/constants/states";
 import type { LifecycleState } from "src/types/LifecycleState";
 
 export const sampleDocument = (targetDocument: Document): LifecycleState => {
-  if (
-    "prerendering" in targetDocument &&
-    targetDocument.prerendering === true
-  ) {
+  // A browser without prerendering support reports nothing, which is no evidence of it.
+  const prerendering =
+    "prerendering" in targetDocument ? targetDocument.prerendering : false;
+
+  if (prerendering === true) {
     return BACKGROUND_STATE;
   }
 

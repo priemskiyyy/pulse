@@ -48,7 +48,8 @@ and Trace, and it follows their conventions. Before changing code, read
   blank-line rule. Published data is frozen at runtime instead.
 - **Comments**: only why, in one line. Public exports carry a one or two
   sentence JSDoc with an `@example`.
-- **Tests**: `<Source>.test.ts` beside the source, flat `test()` calls named
+- **Tests**: `<Source>.test.ts` beside the source, or a behavior file such as
+  `delivery.test.ts` beside it, flat `test()` calls named
   for the invariant, spec scenario IDs (`C-012`, `B-023`, `N-014`, `R-006`)
   in the name, `globals: false`, fixtures in `*.fixture.ts`. A new test is
   watched failing before it is trusted: break the code on purpose.

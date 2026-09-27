@@ -33,7 +33,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node: ["22.18.0", "24"]
+        # The oldest supported Node with the oldest supported React, and the newest with the newest.
+        include:
+          - node: "22.18.0"
+            react: "18.3.1"
+          - node: "24"
+            react: "19.2.8"
     steps:
       - uses: actions/checkout@v4
         with:
@@ -43,6 +48,11 @@ jobs:
         uses: ./.github/actions/setup
         with:
           node-version: ${{ matrix.node }}
+
+      - name: Install the React version under test
+        env:
+          REACT_VERSION: ${{ matrix.react }}
+        run: pnpm add -Dw --ignore-scripts "react@$REACT_VERSION" "react-dom@$REACT_VERSION"
 
       - name: Build packages
         run: pnpm build

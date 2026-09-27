@@ -11,6 +11,9 @@ importers:
       '@eslint/js':
         specifier: 9.39.4
         version: 9.39.4
+      '@playwright/test':
+        specifier: 1.63.0
+        version: 1.63.0
       '@testing-library/dom':
         specifier: 10.4.2
         version: 10.4.2
@@ -68,12 +71,21 @@ importers:
       typescript-eslint:
         specifier: 8.70.0
         version: 8.70.0(eslint@9.39.4)(typescript@5.8.3)
+      vite:
+        specifier: 8.3.0
+        version: 8.3.0(@types/node@22.20.2)(terser@5.51.2)(yaml@2.9.1)
       vitepress:
         specifier: 1.6.4
         version: 1.6.4(@algolia/client-search@5.59.0)(@types/node@22.20.2)(@types/react@19.2.17)(lightningcss@1.33.0)(postcss@8.5.28)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(search-insights@2.17.3)(terser@5.51.2)(typescript@5.8.3)
       vitest:
         specifier: 4.1.10
-        version: 4.1.10(@types/node@22.20.2)(jsdom@27.4.0)(vite@8.3.1(@types/node@22.20.2)(terser@5.51.2)(yaml@2.9.1))
+        version: 4.1.10(@types/node@22.20.2)(jsdom@27.4.0)(vite@8.3.0(@types/node@22.20.2)(terser@5.51.2)(yaml@2.9.1))
+
+  examples/browser-lifecycle-lab:
+    dependencies:
+      '@priemskiyyy/pulse':
+        specifier: workspace:*
+        version: link:../../packages/pulse
 
   examples/recipes:
     dependencies:
@@ -561,6 +573,11 @@ packages:
 
   '@oxc-project/types@0.151.0':
     resolution: {integrity: sha512-J1yXrIlNDZVzE3ada310xeAw7nH8yCAyLPuUIsjKatFPmfn5bS1oW+cM+QsGOtVWd5nhSpbwZWx/rue+r5Z+PA==}
+
+  '@playwright/test@1.63.0':
+    resolution: {integrity: sha512-oxMK4vllB9RK5NQ2l1pq1IfOf2AvnEuj/vYGDj0H2nMtmtZpKtCwt/l00GEO6xjGfpBNAvjovvYdCm50dRQkpQ==}
+    engines: {node: '>=20'}
+    hasBin: true
 
   '@publint/pack@0.1.7':
     resolution: {integrity: sha512-4EDEmvxWtgsCnnVeBvtFIFZtUhPPt1+bA9JrSwU4Sa//6oKtzCSlGGXYJr44OD9aGISymbieJ4mCKHUygUDU+g==}
@@ -2314,6 +2331,16 @@ packages:
     resolution: {integrity: sha512-qcJu88Q2IWqJsDD529JKMdwGm/dvInW4HvQnRwiH9JtihJvzGOscDtHE3x1pBKeUOTysQ8kVmLnJ2kJu7yhcGA==}
     engines: {node: '>=12'}
 
+  playwright-core@1.63.0:
+    resolution: {integrity: sha512-rYCsBF/M5HjUch52bbtVONEFjv6Xu8sm8h72dNlR5bzIE1fvC/bxgspzkjSfU+MweEMmPM8KJebG6nnyxo5mCg==}
+    engines: {node: '>=20'}
+    hasBin: true
+
+  playwright@1.63.0:
+    resolution: {integrity: sha512-+7ziBLidS4NaNCdt57SUDT+wYmmd5fmiQejUic/kb+YsYSCPyOOE9sebzMjNmQrsnNpDJqd4WHvV/8lfKfUDUg==}
+    engines: {node: '>=20'}
+    hasBin: true
+
   postcss@8.5.28:
     resolution: {integrity: sha512-RRuzqDtt5Y9h3quz5hWhK+TPnsmVs6WwSU6LkJMeY4HstUEDuYTG8UJSdawMRzmzAtV+KEoG8N3Qg2qLy5vM/A==}
     engines: {node: ^10 || ^12 || >=14}
@@ -2794,8 +2821,8 @@ packages:
       terser:
         optional: true
 
-  vite@8.3.1:
-    resolution: {integrity: sha512-/bvH9E9tmCXRGp2uXY3WbOldqpTwFkbha/8ANaEQ6VkxhH60KyqLwgZq6lG2y+4uT55x9+9eUHMpQ7uGnOCKjA==}
+  vite@8.3.0:
+    resolution: {integrity: sha512-lhZBVvEHefgE+HQZC9O7EBJgCU/nVzFNl7vkS4RE0APtWLP02/8QVIkQtzBxPquh7lq5/78NHipTj7ODQ6XuyQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
     peerDependencies:
@@ -3492,6 +3519,10 @@ snapshots:
 
   '@oxc-project/types@0.151.0': {}
 
+  '@playwright/test@1.63.0':
+    dependencies:
+      playwright: 1.63.0
+
   '@publint/pack@0.1.7':
     dependencies:
       tinyexec: 1.3.1
@@ -3936,13 +3967,13 @@ snapshots:
       chai: 6.2.2
       tinyrainbow: 3.1.1
 
-  '@vitest/mocker@4.1.10(vite@8.3.1(@types/node@22.20.2)(terser@5.51.2)(yaml@2.9.1))':
+  '@vitest/mocker@4.1.10(vite@8.3.0(@types/node@22.20.2)(terser@5.51.2)(yaml@2.9.1))':
     dependencies:
       '@vitest/spy': 4.1.10
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 8.3.1(@types/node@22.20.2)(terser@5.51.2)(yaml@2.9.1)
+      vite: 8.3.0(@types/node@22.20.2)(terser@5.51.2)(yaml@2.9.1)
 
   '@vitest/pretty-format@4.1.10':
     dependencies:
@@ -5225,6 +5256,12 @@ snapshots:
 
   picomatch@4.0.7: {}
 
+  playwright-core@1.63.0: {}
+
+  playwright@1.63.0:
+    dependencies:
+      playwright-core: 1.63.0
+
   postcss@8.5.28:
     dependencies:
       nanoid: 3.3.19
@@ -5719,7 +5756,7 @@ snapshots:
       lightningcss: 1.33.0
       terser: 5.51.2
 
-  vite@8.3.1(@types/node@22.20.2)(terser@5.51.2)(yaml@2.9.1):
+  vite@8.3.0(@types/node@22.20.2)(terser@5.51.2)(yaml@2.9.1):
     dependencies:
       lightningcss: 1.33.0
       picomatch: 4.0.7
@@ -5782,10 +5819,10 @@ snapshots:
       - typescript
       - universal-cookie
 
-  vitest@4.1.10(@types/node@22.20.2)(jsdom@27.4.0)(vite@8.3.1(@types/node@22.20.2)(terser@5.51.2)(yaml@2.9.1)):
+  vitest@4.1.10(@types/node@22.20.2)(jsdom@27.4.0)(vite@8.3.0(@types/node@22.20.2)(terser@5.51.2)(yaml@2.9.1)):
     dependencies:
       '@vitest/expect': 4.1.10
-      '@vitest/mocker': 4.1.10(vite@8.3.1(@types/node@22.20.2)(terser@5.51.2)(yaml@2.9.1))
+      '@vitest/mocker': 4.1.10(vite@8.3.0(@types/node@22.20.2)(terser@5.51.2)(yaml@2.9.1))
       '@vitest/pretty-format': 4.1.10
       '@vitest/runner': 4.1.10
       '@vitest/snapshot': 4.1.10
@@ -5802,7 +5839,7 @@ snapshots:
       tinyexec: 1.3.1
       tinyglobby: 0.2.17
       tinyrainbow: 3.1.1
-      vite: 8.3.1(@types/node@22.20.2)(terser@5.51.2)(yaml@2.9.1)
+      vite: 8.3.0(@types/node@22.20.2)(terser@5.51.2)(yaml@2.9.1)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 22.20.2

@@ -8,9 +8,12 @@
   },
   "scripts": {
     "format": "prettier --write .",
-    "lint:prettier": "prettier --check ."
+    "lint:prettier": "prettier --check .",
+    "lint:typescript": "tsc --noEmit && pnpm -r lint:typescript"
   },
   "devDependencies": {
-    "prettier": "3.9.6"
+    "@types/node": "22.20.2",
+    "prettier": "3.9.6",
+    "typescript": "5.8.3"
   }
 }

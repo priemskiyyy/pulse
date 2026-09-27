@@ -83,6 +83,32 @@ test("a reentrant resolveInitial during an emit cannot publish a stale baseline"
   expect(second.next.mock.calls).toEqual([[BACKGROUND]]);
 });
 
+test("a reentrant emit leaves every observation on the newest state", () => {
+  const mock = createMockAdapter({ initial: FOREGROUND });
+  const second = createObserver();
+  let reentered = false;
+
+  mock.adapter.observe({
+    next: (state) => {
+      if (state !== BACKGROUND) {
+        return;
+      }
+
+      if (reentered) {
+        return;
+      }
+
+      reentered = true;
+      mock.emit(FOREGROUND);
+    },
+    error: () => {},
+  });
+  mock.adapter.observe(second.observer);
+  mock.emit(BACKGROUND);
+
+  expect(second.next.mock.calls.at(-1)).toEqual([FOREGROUND]);
+});
+
 test("errors reach every open observation and change nothing", () => {
   const mock = createMockAdapter();
   const { observer, error, next } = createObserver();

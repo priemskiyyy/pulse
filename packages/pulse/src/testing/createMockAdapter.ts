@@ -35,6 +35,7 @@ export const createMockAdapter = ({
   let started = 0;
   let closed = 0;
   let latest: LifecycleObserver | null = null;
+  let emissions = 0;
   const open = new Set<Observation>();
 
   const getLatest = () => {
@@ -74,7 +75,9 @@ export const createMockAdapter = ({
     }),
     emit: (state: LifecycleState) => {
       current = state;
+      emissions += 1;
 
+      const emission = emissions;
       const observations = [...open];
 
       // Every pending baseline is stale now, even for a reentrant resolveInitial().
@@ -83,6 +86,11 @@ export const createMockAdapter = ({
       }
 
       for (const observation of observations) {
+        // A reentrant emit already reached every open observation with a newer state.
+        if (emission !== emissions) {
+          return;
+        }
+
         // A cleanup from an earlier callback in this loop closes that observation.
         if (!open.has(observation)) {
           continue;

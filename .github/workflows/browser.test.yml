@@ -49,12 +49,12 @@ jobs:
 
       # Metro resolves the package's exports for both native platforms; a device still has to run them.
       - name: Expo native bundles
-        run: pnpm --filter example-expo-lifecycle-lab build:native
+        run: pnpm --filter example-expo build:native
 
       - name: Upload results
         uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: lab-results
-          path: .artifacts/lab-results
+          name: example-results
+          path: .artifacts/example-results
           retention-days: 7

@@ -106,6 +106,18 @@ const MUTANTS = [
     describes: "a failed native setup leaving its subscriptions attached",
   },
   {
+    file: `${source}/adapters/react-native/reactNative.ts`,
+    find: "      if (!Object.prototype.hasOwnProperty.call(classifications, status)) {",
+    replace: "      if (false) {",
+    describes: "an unmapped AppState status crashing the adapter",
+  },
+  {
+    file: `${source}/adapters/browser/browser.ts`,
+    find: "        // A listener of the state above can publish newer evidence, which this report would then follow.\n        if (sampled !== generation) {",
+    replace: "        if (false) {",
+    describes: "a getter error reported after newer evidence",
+  },
+  {
     file: `${source}/utils/Pulse.ts`,
     find: "    try {\n      available = adapter.available();\n    } catch (error) {\n      throw this.#failStart(host, error);\n    }",
     replace: "    available = adapter.available();",
@@ -125,8 +137,8 @@ const MUTANTS = [
   },
   {
     file: `${source}/adapters/react-native/reactNative.ts`,
-    find: "    if (!receivedChange) {",
-    replace: "    if (true) {",
+    find: "      if (!changedBeforeBaseline) {",
+    replace: "      if (true) {",
     describes: "a stale AppState baseline overwriting a change",
   },
   {

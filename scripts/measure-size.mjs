@@ -55,7 +55,7 @@ const rows = [];
 for (const { name, files, budget } of ENTRIES) {
   const size = await measure(files);
 
-  rows.push({ entry: name, ...size, budget: budget ?? "none" });
+  rows.push({ entry: name, ...size, "gzip budget": budget ?? "none" });
 
   if (budget !== null) {
     assert(
@@ -67,5 +67,5 @@ for (const { name, files, budget } of ENTRIES) {
 
 console.table(rows);
 console.log(
-  "Rolldown bundle of the built entries, minified, peers external; gzip by node:zlib.",
+  "Bytes of a Rolldown bundle of the built entries, minified, peers external; the budget applies to gzip, by node:zlib.",
 );

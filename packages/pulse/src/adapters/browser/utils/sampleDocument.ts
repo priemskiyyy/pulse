@@ -1,9 +1,5 @@
+import { BACKGROUND_STATE } from "src/adapters/browser/utils/constants/states";
 import type { LifecycleState } from "src/types/LifecycleState";
-
-const BACKGROUND: LifecycleState = Object.freeze({
-  phase: "background",
-  interaction: "unavailable",
-});
 
 // Every getter is optional or may throw; a failure leaves only its own axis unknown.
 export const sampleDocument = (
@@ -16,7 +12,7 @@ export const sampleDocument = (
       "prerendering" in targetDocument &&
       targetDocument.prerendering === true
     ) {
-      return { state: BACKGROUND, failures };
+      return { state: BACKGROUND_STATE, failures };
     }
   } catch (error) {
     failures.push(error);
@@ -31,7 +27,7 @@ export const sampleDocument = (
   }
 
   if (visibility === "hidden") {
-    return { state: BACKGROUND, failures };
+    return { state: BACKGROUND_STATE, failures };
   }
 
   const phase = visibility === "visible" ? "foreground" : "unknown";

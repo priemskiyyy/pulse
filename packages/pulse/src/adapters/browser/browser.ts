@@ -1,12 +1,7 @@
-import { sampleDocument } from "src/adapters/browser/utils/sampleDocument";
 import type { BrowserOptions } from "src/adapters/browser/types/BrowserOptions";
+import { BACKGROUND_STATE } from "src/adapters/browser/utils/constants/states";
+import { sampleDocument } from "src/adapters/browser/utils/sampleDocument";
 import type { LifecycleAdapter } from "src/types/LifecycleAdapter";
-import type { LifecycleState } from "src/types/LifecycleState";
-
-const LATCHED: LifecycleState = Object.freeze({
-  phase: "background",
-  interaction: "unavailable",
-});
 
 /**
  * Observes one document: visibility is the phase, `document.hasFocus()` the
@@ -57,7 +52,7 @@ export const browser = ({ target }: BrowserOptions = {}): LifecycleAdapter => ({
       const sampled = generation;
 
       const { state, failures } = latched
-        ? { state: LATCHED, failures: [] }
+        ? { state: BACKGROUND_STATE, failures: [] }
         : sampleDocument(targetDocument);
 
       // An event handled while the getters ran has already published newer evidence.

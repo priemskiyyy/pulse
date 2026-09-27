@@ -28,6 +28,8 @@ The hook never starts, disposes or configures the source, and replays no transit
 
 Never start and dispose a shared instance in an effect: Strict Mode runs the cleanup once in development, and a disposed Pulse cannot start again.
 
+<!-- snippet: fragment -->
+
 ```tsx
 // Do not do this.
 useEffect(() => {

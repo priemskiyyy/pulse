@@ -44,6 +44,10 @@ Expo on iOS and Android uses this adapter; there is no Expo-specific one. For a 
 
 ```ts
 // lifecycle.native.ts
+import { Pulse } from "@priemskiyyy/pulse";
+import { reactNative } from "@priemskiyyy/pulse/react-native";
+import { AppState, Platform } from "react-native";
+
 export const pulse = new Pulse({
   adapter: reactNative({ appState: AppState, platform: Platform.OS }),
 });
@@ -51,6 +55,9 @@ export const pulse = new Pulse({
 
 ```ts
 // lifecycle.web.ts
+import { Pulse } from "@priemskiyyy/pulse";
+import { browser } from "@priemskiyyy/pulse/browser";
+
 export const pulse = new Pulse({ adapter: browser() });
 ```
 

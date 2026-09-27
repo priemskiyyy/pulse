@@ -1,11 +1,15 @@
 import type { BackgroundEvent } from "src/types/BackgroundEvent";
 import type { ForegroundEvent } from "src/types/ForegroundEvent";
-import type { Timeline } from "src/types/internal/Timeline";
 import type { BackgroundState } from "src/types/internal/BackgroundState";
 import type { ForegroundState } from "src/types/internal/ForegroundState";
+import type { Intake } from "src/types/internal/Intake";
+import type { Timeline } from "src/types/internal/Timeline";
 import type { LifecycleState } from "src/types/LifecycleState";
 
-type Observation = { state: LifecycleState; timestamp: number | null };
+type Observation = Pick<
+  Extract<Intake, { kind: "observation" }>,
+  "state" | "timestamp"
+>;
 
 // The flat state type does not narrow on its phase, so the event payloads need these.
 const isForegroundState = (state: LifecycleState): state is ForegroundState =>
@@ -55,11 +59,11 @@ export const reduceObservation = (
   timeline: Timeline,
   { state, timestamp }: Observation,
 ) => {
+  // The clock is checked before duplicates: a duplicate can reveal a discontinuity.
   const rolledBack = isRolledBack(timestamp, timeline.lastSample);
   // A failed or backward sample can time nothing.
   const usableTimestamp = rolledBack ? null : timestamp;
   const lastSample = timestamp === null ? timeline.lastSample : timestamp;
-  // The clock is checked before duplicates: a duplicate can reveal a discontinuity.
   const departure = usableTimestamp === null ? null : timeline.departure;
 
   if (state === timeline.state) {

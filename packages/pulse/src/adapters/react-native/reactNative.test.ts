@@ -154,6 +154,27 @@ test("N-009 N-018 extension, unknown and statuses outside a platform are unknown
   }
 });
 
+test("N-009 a status React Native adds later, or an inherited key, is unknown instead of a crash", () => {
+  // Untyped host values, as a newer React Native could deliver them.
+  const unmapped: AppStateStatus[] = JSON.parse('["hibernating", "toString"]');
+
+  const platforms: Array<"ios" | "android"> = ["ios", "android"];
+
+  for (const platform of platforms) {
+    for (const value of unmapped) {
+      const host = createAppState("active");
+      const { pulse } = startOn(host, platform);
+
+      host.change(value);
+      expect(getState(pulse)).toBe("unknown/unknown");
+
+      const baseline = startOn(createAppState(value), platform);
+
+      expect(getState(baseline.pulse)).toBe("unknown/unknown");
+    }
+  }
+});
+
 test("N-010 an Android active baseline has unknown interaction", () => {
   const { log } = startOn(createAppState("active"), "android");
 

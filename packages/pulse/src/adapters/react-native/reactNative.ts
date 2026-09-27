@@ -51,7 +51,7 @@ export const reactNative = ({
       platform === "ios" ? IOS_CLASSIFICATIONS : ANDROID_CLASSIFICATIONS;
 
     let closed = false;
-    let receivedChange = false;
+    let changedBeforeBaseline = false;
     let classification: AppStateClassification = "UNINITIALIZED";
     // Android focus evidence, valid only since the last background or unknown app state.
     let focus: InteractionState = "unknown";
@@ -86,8 +86,21 @@ export const reactNative = ({
       return next === "UNKNOWN";
     };
 
+    // React Native can add a status before its types do, so anything unmapped is no evidence.
+    const classify = (status: AppStateStatus | null) => {
+      if (status === null) {
+        return "UNKNOWN";
+      }
+
+      if (!Object.hasOwn(classifications, status)) {
+        return "UNKNOWN";
+      }
+
+      return classifications[status];
+    };
+
     const accept = (status: AppStateStatus | null) => {
-      const next = status === null ? "UNKNOWN" : classifications[status];
+      const next = classify(status);
 
       if (isStaleFocusBoundary(next)) {
         focus = "unknown";
@@ -102,7 +115,7 @@ export const reactNative = ({
         return;
       }
 
-      receivedChange = true;
+      changedBeforeBaseline = true;
       accept(status);
     };
 
@@ -144,7 +157,7 @@ export const reactNative = ({
       // The change listener is in place first, so a change during the read wins over it.
       const baseline = appState.currentState;
 
-      if (!receivedChange) {
+      if (!changedBeforeBaseline) {
         accept(baseline);
       }
     } catch (error) {

@@ -4,7 +4,7 @@ import type { BackgroundEvent } from "src/types/BackgroundEvent";
 import type { ForegroundEvent } from "src/types/ForegroundEvent";
 import type { LifecycleAdapter } from "src/types/LifecycleAdapter";
 import type { LifecycleObserver } from "src/types/LifecycleObserver";
-import type { LifecycleState } from "src/types/LifecycleState";
+import type { LifecyclePhase } from "src/types/LifecyclePhase";
 import { readObservation } from "src/utils/internal/intake/readObservation";
 import { Pulse } from "src/utils/Pulse";
 
@@ -55,28 +55,13 @@ const startPulse = (adapter: LifecycleAdapter) => {
   return { pulse, events };
 };
 
-const expectPhase = (pulse: Pulse, expected: LifecycleState, when: string) => {
-  const state = pulse.state.get();
-  const message = `After ${when}, the adapter reported ${state.phase}/${state.interaction} instead of ${expected.phase}/${expected.interaction}.`;
+const expectPhase = (pulse: Pulse, expected: LifecyclePhase, when: string) => {
+  const { phase, interaction } = pulse.state.get();
 
-  assert(state.phase === expected.phase, message);
-
-  // Foreground interaction is platform evidence; only background fixes it.
-  if (expected.phase !== "background") {
-    return;
-  }
-
-  assert(state.interaction === expected.interaction, message);
-};
-
-const FOREGROUND: LifecycleState = {
-  phase: "foreground",
-  interaction: "unknown",
-};
-
-const BACKGROUND: LifecycleState = {
-  phase: "background",
-  interaction: "unavailable",
+  assert(
+    phase === expected,
+    `After ${when}, the adapter reported ${phase}/${interaction} instead of a ${expected} phase.`,
+  );
 };
 
 const CHECKS: Check[] = [
@@ -127,7 +112,7 @@ const CHECKS: Check[] = [
 
       try {
         await harness.settle();
-        expectPhase(pulse, FOREGROUND, "start in a foreground host");
+        expectPhase(pulse, "foreground", "start in a foreground host");
         assert(events.length === 0, "The baseline produced a transition.");
         assert(invalid.length === 0, `Invalid snapshot: ${invalid.join(" ")}`);
       } finally {
@@ -145,10 +130,10 @@ const CHECKS: Check[] = [
         await harness.settle();
         await harness.background();
         await harness.settle();
-        expectPhase(pulse, BACKGROUND, "the host entered background");
+        expectPhase(pulse, "background", "the host entered background");
         await harness.foreground();
         await harness.settle();
-        expectPhase(pulse, FOREGROUND, "the host returned to foreground");
+        expectPhase(pulse, "foreground", "the host returned to foreground");
         assert(
           events.map((event) => event.type).join(",") ===
             "background,foreground",
@@ -166,12 +151,16 @@ const CHECKS: Check[] = [
       const before = harness.subscriptionCount();
       const { pulse } = startPulse(harness.adapter);
 
-      await harness.settle();
-      assert(
-        harness.subscriptionCount() > before,
-        "Starting installed no host subscription the harness can count.",
-      );
-      pulse.dispose();
+      try {
+        await harness.settle();
+        assert(
+          harness.subscriptionCount() > before,
+          "Starting installed no host subscription the harness can count.",
+        );
+      } finally {
+        pulse.dispose();
+      }
+
       assert(
         harness.subscriptionCount() === before,
         "A host subscription remained once cleanup returned.",
@@ -194,7 +183,7 @@ const CHECKS: Check[] = [
         );
         await harness.background();
         await harness.settle();
-        expectPhase(second.pulse, BACKGROUND, "the first observation closed");
+        expectPhase(second.pulse, "background", "the first observation closed");
       } finally {
         first.pulse.dispose();
         second.pulse.dispose();
@@ -244,9 +233,13 @@ const CHECKS: Check[] = [
 
       const cleanup = harness.adapter.observe(observer);
 
-      await harness.settle();
-      cleanup();
-      closed = true;
+      try {
+        await harness.settle();
+      } finally {
+        cleanup();
+        closed = true;
+      }
+
       await harness.background();
       await harness.foreground();
       await harness.settle();

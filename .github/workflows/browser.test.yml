@@ -1,0 +1,56 @@
+name: browser-test
+
+on:
+  workflow_call:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "packages/**"
+      - "examples/browser-lifecycle-lab/**"
+      - ".github/actions/setup/**"
+      - ".github/workflows/browser.test.yml"
+  push:
+    branches:
+      - "main"
+    paths:
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "packages/**"
+      - "examples/browser-lifecycle-lab/**"
+      - ".github/actions/setup/**"
+      - ".github/workflows/browser.test.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: browser-test-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup workspace
+        uses: ./.github/actions/setup
+
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Lab in Chromium
+        run: pnpm test:browser
+
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: lab-results
+          path: .artifacts/lab-results
+          retention-days: 7

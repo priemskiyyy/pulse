@@ -288,11 +288,23 @@ export class Pulse {
   #getLive(token: object) {
     const ownership = this.#ownership;
 
-    if (ownership.state !== "STARTING" && ownership.state !== "RUNNING") {
+    if (ownership.state === "CREATED") {
       return null;
     }
 
-    return ownership.token === token ? ownership : null;
+    if (ownership.state === "FAILED") {
+      return null;
+    }
+
+    if (ownership.state === "DISPOSED") {
+      return null;
+    }
+
+    if (ownership.token !== token) {
+      return null;
+    }
+
+    return ownership;
   }
 
   #accept(token: object, value: LifecycleState) {
@@ -325,7 +337,11 @@ export class Pulse {
   }
 
   #drain() {
-    if (this.#draining || !this.#isRunning()) {
+    if (this.#draining) {
+      return;
+    }
+
+    if (!this.#isRunning()) {
       return;
     }
 
@@ -397,10 +413,11 @@ export class Pulse {
     for (const registration of [...this.#listeners.state]) {
       const { listener } = registration;
 
-      if (
-        !this.#listeners.state.has(registration) ||
-        typeof listener !== "function"
-      ) {
+      if (!this.#listeners.state.has(registration)) {
+        continue;
+      }
+
+      if (typeof listener !== "function") {
         continue;
       }
 
@@ -417,7 +434,11 @@ export class Pulse {
       for (const registration of eventRegistrations) {
         const { listener } = registration;
 
-        if (!registry.has(registration) || typeof listener !== "function") {
+        if (!registry.has(registration)) {
+          continue;
+        }
+
+        if (typeof listener !== "function") {
           continue;
         }
 
@@ -461,7 +482,11 @@ export class Pulse {
   #diagnose(host: PulseHost, build: () => PulseDiagnostic) {
     const { onDiagnostic } = host;
 
-    if (onDiagnostic === null || !this.#isRunning()) {
+    if (onDiagnostic === null) {
+      return;
+    }
+
+    if (!this.#isRunning()) {
       return;
     }
 

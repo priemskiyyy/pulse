@@ -11,22 +11,56 @@ type Observation = { state: LifecycleState; timestamp: number | null };
 const isForegroundState = (state: LifecycleState): state is ForegroundState =>
   state.phase === "foreground";
 
-const isBackgroundState = (state: LifecycleState): state is BackgroundState =>
-  state.phase === "background" && state.interaction === "unavailable";
+const isBackgroundState = (state: LifecycleState): state is BackgroundState => {
+  if (state.phase !== "background") {
+    return false;
+  }
+
+  return state.interaction === "unavailable";
+};
+
+// A sample earlier than the last one is a clock discontinuity, not elapsed time.
+const isRolledBack = (timestamp: number | null, lastSample: number | null) => {
+  if (timestamp === null) {
+    return false;
+  }
+
+  if (lastSample === null) {
+    return false;
+  }
+
+  return timestamp < lastSample;
+};
+
+const getObservedAway = (departure: number | null, entry: number | null) => {
+  if (departure === null) {
+    return null;
+  }
+
+  if (entry === null) {
+    return null;
+  }
+
+  const away = entry - departure;
+
+  // A usable entry never precedes its departure, but two finite extremes can overflow.
+  if (!Number.isFinite(away)) {
+    return null;
+  }
+
+  return away;
+};
 
 export const reduceObservation = (
   timeline: Timeline,
   { state, timestamp }: Observation,
 ) => {
-  const rolledBack =
-    timestamp !== null &&
-    timeline.lastSample !== null &&
-    timestamp < timeline.lastSample;
-
-  const usable = timestamp !== null && !rolledBack;
+  const rolledBack = isRolledBack(timestamp, timeline.lastSample);
+  // A failed or backward sample can time nothing.
+  const usableTimestamp = rolledBack ? null : timestamp;
   const lastSample = timestamp === null ? timeline.lastSample : timestamp;
   // The clock is checked before duplicates: a duplicate can reveal a discontinuity.
-  const departure = usable ? timeline.departure : null;
+  const departure = usableTimestamp === null ? null : timeline.departure;
 
   if (state === timeline.state) {
     return {
@@ -55,7 +89,7 @@ export const reduceObservation = (
         state,
         sequence,
         lastSample,
-        departure: usable ? timestamp : null,
+        departure: usableTimestamp,
       },
       commit,
       event,
@@ -64,16 +98,13 @@ export const reduceObservation = (
   }
 
   if (isBackgroundState(from) && isForegroundState(state)) {
-    const away = departure === null || !usable ? null : timestamp - departure;
-
     const event: ForegroundEvent = Object.freeze({
       type: "foreground",
       sequence,
       from,
       to: state,
       observedAt: timestamp,
-      // A usable entry never precedes its departure, but two finite extremes can overflow.
-      observedAway: away !== null && Number.isFinite(away) ? away : null,
+      observedAway: getObservedAway(departure, usableTimestamp),
     });
 
     return {

@@ -7,7 +7,8 @@ import type { LifecycleAdapter } from "src/types/LifecycleAdapter";
  * Observes one document: visibility is the phase, `document.hasFocus()` the
  * interaction. A `pagehide` holds the phase at background until `pageshow`,
  * and a positively prerendering document is background. It registers no
- * unload, activity or timer listener, and creating it reads nothing.
+ * unload, activity or timer listener, creating it reads nothing, and it is
+ * unavailable where there is no live document, such as on a server.
  *
  * @example
  * ```ts
@@ -18,24 +19,19 @@ import type { LifecycleAdapter } from "src/types/LifecycleAdapter";
  */
 export const browser = ({ target }: BrowserOptions = {}): LifecycleAdapter => ({
   name: "browser",
-  observe: (observer) => {
+  // A server render or a detached frame has no live document to observe.
+  available: () => {
     const targetWindow = target ?? globalThis.window;
 
-    if (typeof targetWindow !== "object" || targetWindow === null) {
-      throw new Error(
-        "There is no window to observe. Start the browser adapter in a browser, or pass { target }.",
-      );
-    }
-
+    return (
+      typeof targetWindow === "object" &&
+      targetWindow !== null &&
+      targetWindow.document?.defaultView === targetWindow
+    );
+  },
+  observe: (observer) => {
+    const targetWindow = target ?? globalThis.window;
     const targetDocument = targetWindow.document;
-
-    if (
-      typeof targetDocument !== "object" ||
-      targetDocument === null ||
-      targetDocument.defaultView !== targetWindow
-    ) {
-      throw new Error("The target window has no live document to observe.");
-    }
 
     let closed = false;
     let latched = false;

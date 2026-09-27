@@ -23,7 +23,10 @@ test("C-001 constructing observes nothing, reads no host and samples no clock", 
   const observe = vi.fn(() => () => {});
   const now = vi.fn(() => 0);
 
-  const pulse = new Pulse({ adapter: { name: "spy", observe }, now });
+  const pulse = new Pulse({
+    adapter: { name: "spy", available: () => true, observe },
+    now,
+  });
 
   pulse.state.get();
   expect(observe).not.toHaveBeenCalled();
@@ -106,6 +109,7 @@ test("C-009 a setup-time baseline is delivered only once the cleanup is owned", 
 
   const adapter: LifecycleAdapter = {
     name: "synchronous",
+    available: () => true,
     observe: (observer) => {
       observer.next(FOREGROUND);
       order.push("setup returned");
@@ -160,7 +164,12 @@ test("C-011 a setup that reports an error then throws surfaces the failure once"
 
 test("C-012 a setup answering no function fails, and a promise is not a cleanup", () => {
   for (const answer of [undefined, null, {}, Promise.resolve(() => {})]) {
-    const adapter = { name: "bad", observe: () => answer };
+    const adapter = {
+      name: "bad",
+      available: () => true,
+      observe: () => answer,
+    };
+
     // @ts-expect-error A JavaScript adapter can answer anything.
     const pulse = new Pulse({ adapter });
 
@@ -219,7 +228,10 @@ test("C-015 C-016 a failed instance never retries and refuses new registrations"
     throw new Error("no host");
   });
 
-  const pulse = new Pulse({ adapter: { name: "failing", observe } });
+  const pulse = new Pulse({
+    adapter: { name: "failing", available: () => true, observe },
+  });
+
   const stop = pulse.state.subscribe(() => {});
 
   expectCode(() => pulse.start(), "START_FAILED");
@@ -306,4 +318,29 @@ test("C-022 the same function registered twice is two independent registrations"
   mock.emit(BACKGROUND);
   expect(listener).toHaveBeenCalledTimes(3);
   expect(onBackground).toHaveBeenCalledTimes(1);
+});
+
+test("an unavailable adapter is never observed, and the state stays unknown", () => {
+  const observe = vi.fn(() => () => {});
+  const onDiagnostic = vi.fn();
+  const listener = vi.fn();
+
+  const pulse = new Pulse({
+    adapter: { name: "server", available: () => false, observe },
+    onDiagnostic,
+  });
+
+  pulse.state.subscribe(listener);
+  pulse.start();
+  pulse.start();
+
+  expect(observe).not.toHaveBeenCalled();
+  expect(pulse.state.get()).toBe(UNKNOWN_LIFECYCLE_STATE);
+  expect(onDiagnostic.mock.calls).toEqual([
+    [{ type: "unavailable", adapter: { name: "server" } }],
+  ]);
+  expect(listener).not.toHaveBeenCalled();
+  expect(() => pulse.on("foreground", () => {})).not.toThrow();
+  pulse.dispose();
+  expectCode(() => pulse.start(), "DISPOSED");
 });

@@ -31,6 +31,7 @@ export const createCapturingAdapter = (
 
   const adapter: LifecycleAdapter = {
     name: "capturing",
+    available: () => true,
     observe: (observer) => {
       observers.push(observer);
 

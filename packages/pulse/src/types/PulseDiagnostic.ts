@@ -1,8 +1,8 @@
 import type { LifecycleState } from "src/types/LifecycleState";
 
 /**
- * One frozen record of what the runtime did: it `started`, it made a `commit`,
- * or it suppressed a `duplicate`. It carries no source event, raw value or
+ * One frozen record of what the runtime did: it `started`, found its adapter
+ * `unavailable`, made a `commit`, or suppressed a `duplicate`. It carries no source event, raw value or
  * history.
  *
  * @example
@@ -16,6 +16,7 @@ import type { LifecycleState } from "src/types/LifecycleState";
  */
 export type PulseDiagnostic =
   | { type: "started"; adapter: { name: string } }
+  | { type: "unavailable"; adapter: { name: string } }
   | {
       type: "commit";
       sequence: number;

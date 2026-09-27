@@ -54,6 +54,7 @@ export const observer: Pick<Pulse, "state" | "on"> = pulse;
 // A plain object is an adapter; there is no helper to build one.
 export const custom: LifecycleAdapter = {
   name: "custom-host",
+  available: () => true,
   observe: (next) => {
     next.next({ phase: "unknown", interaction: "available" });
 
@@ -63,6 +64,7 @@ export const custom: LifecycleAdapter = {
 
 export const asynchronous: LifecycleAdapter = {
   name: "async",
+  available: () => true,
   // @ts-expect-error An adapter answers a synchronous cleanup, not a promise.
   observe: async () => () => {},
 };
@@ -71,4 +73,10 @@ export const unknownPhase: LifecycleState = {
   // @ts-expect-error A phase outside the union is refused at compile time.
   phase: "active",
   interaction: "available",
+};
+
+// @ts-expect-error Every adapter declares whether its host is available.
+export const withoutProbe: LifecycleAdapter = {
+  name: "bare",
+  observe: () => () => {},
 };

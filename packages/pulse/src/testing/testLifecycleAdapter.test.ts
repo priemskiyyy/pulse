@@ -18,6 +18,7 @@ const BACKGROUND: LifecycleState = {
 };
 
 const CHECK_NAMES = [
+  "is available in a working host",
   "creates no host subscription before start",
   "reports a valid foreground baseline",
   "maps background and foreground",
@@ -65,6 +66,7 @@ const createCompliantAdapter = (
   host: ReturnType<typeof createHost>,
 ): LifecycleAdapter => ({
   name: "host",
+  available: () => true,
   observe: (observer: LifecycleObserver) => {
     let closed = false;
 
@@ -120,6 +122,7 @@ test("a leaking, noisy adapter fails the named checks and every host is still di
 
   const leaking = (host: ReturnType<typeof createHost>): LifecycleAdapter => ({
     name: "leaking",
+    available: () => true,
     observe: (observer) => {
       host.listeners.add((state) => observer.next(state));
       observer.next(host.read());
@@ -142,6 +145,7 @@ test("a leaking, noisy adapter fails the named checks and every host is still di
 test("an adapter reporting an invalid snapshot fails with a description", async () => {
   const invalid = (): LifecycleAdapter => ({
     name: "invalid",
+    available: () => true,
     observe: (observer) => {
       observer.next({ phase: "background", interaction: "available" });
 

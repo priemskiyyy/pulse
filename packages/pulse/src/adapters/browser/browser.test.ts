@@ -52,20 +52,18 @@ test("B-001 creating the adapter reads no window or document", () => {
   expect(() => browser({ target })).not.toThrow();
 });
 
-test("B-002 starting without a DOM fails clearly and fabricates no state", () => {
+test("B-002 without a DOM the adapter is unavailable, and nothing is fabricated", () => {
   vi.stubGlobal("window", undefined);
 
-  const pulse = new Pulse({ adapter: browser() });
+  const onDiagnostic = vi.fn();
+  const pulse = new Pulse({ adapter: browser(), onDiagnostic });
 
-  expect(() => pulse.start()).toThrow(
-    expect.objectContaining({
-      code: "START_FAILED",
-      cause: new Error(
-        "There is no window to observe. Start the browser adapter in a browser, or pass { target }.",
-      ),
-    }),
-  );
+  expect(browser().available()).toBe(false);
+  expect(() => pulse.start()).not.toThrow();
   expect(pulse.state.get()).toBe(UNKNOWN_LIFECYCLE_STATE);
+  expect(onDiagnostic.mock.calls).toEqual([
+    [{ type: "unavailable", adapter: { name: "browser" } }],
+  ]);
 });
 
 test("the default target is the global window, resolved when observation starts", () => {
@@ -99,7 +97,7 @@ test("B-003 B-004 an injected window from another realm is observed through its 
   pulse.dispose();
 });
 
-test("B-005 a detached window fails setup and leaves no listener behind", () => {
+test("B-005 a detached window is unavailable and gets no listener", () => {
   const page = createPage();
   const iframe = page.document.querySelector("iframe");
   const child = iframe?.contentWindow;
@@ -108,16 +106,11 @@ test("B-005 a detached window fails setup and leaves no listener behind", () => 
     throw new Error("The fixture has no iframe window.");
   }
 
+  const adapter = browser({ target: child });
+
+  expect(adapter.available()).toBe(true);
   iframe?.remove();
-
-  const pulse = new Pulse({ adapter: browser({ target: child }) });
-
-  expect(() => pulse.start()).toThrow(
-    expect.objectContaining({
-      code: "START_FAILED",
-      cause: new Error("The target window has no live document to observe."),
-    }),
-  );
+  expect(adapter.available()).toBe(false);
 });
 
 test("B-006 B-007 B-008 each baseline commits without a transition", () => {
@@ -418,5 +411,5 @@ test("the browser adapter passes the conformance suite on a real document", asyn
     };
   });
 
-  expect(report.passed).toHaveLength(7);
+  expect(report.passed).toHaveLength(8);
 });

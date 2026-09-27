@@ -40,8 +40,8 @@ const createFailedError = () =>
 /**
  * One application-owned observation of a host's lifecycle: an immutable
  * `phase` and `interaction` snapshot, and deduplicated `foreground` and
- * `background` transitions. Constructing it observes nothing; `start()` begins
- * and `dispose()` ends it for good.
+ * `background` transitions. Constructing it observes nothing; `start()` begins,
+ * unless the adapter is unavailable, and `dispose()` ends it for good.
  *
  * @example
  * ```ts
@@ -126,6 +126,23 @@ export class Pulse {
     }
 
     const { adapter, host } = ownership;
+
+    // An unavailable host, such as a server render, is observed as unknown rather than as a failure.
+    if (!adapter.available()) {
+      this.#ownership = {
+        state: "RUNNING",
+        token: {},
+        host,
+        cleanup: () => {},
+      };
+      this.#diagnose(host, () => ({
+        type: "unavailable",
+        adapter: host.adapter,
+      }));
+
+      return;
+    }
+
     const token = {};
 
     this.#ownership = { state: "STARTING", token, host };

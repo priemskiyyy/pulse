@@ -282,48 +282,34 @@ test("N-021 a change during the initial read wins over the stale baseline", () =
   expect(log).toEqual(["state background/unavailable"]);
 });
 
-test("N-022 an unavailable AppState fails setup and leaves nothing subscribed", () => {
-  const host = createAppState("active");
+test("N-022 N-023 N-024 an unavailable AppState, the web and unmapped platforms are unavailable", () => {
+  const unavailable = createAppState("active");
 
-  host.appState.isAvailable = false;
+  unavailable.appState.isAvailable = false;
 
-  const pulse = new Pulse({
-    adapter: reactNative({ appState: host.appState, platform: "ios" }),
-  });
-
-  expect(() => pulse.start()).toThrow(
-    expect.objectContaining({
-      code: "START_FAILED",
-      cause: new Error("React Native's AppState is not available to observe."),
-    }),
-  );
-  expect(host.subscriptionCount()).toBe(0);
-});
-
-test("N-023 N-024 the web and unmapped platforms fail setup with guidance", () => {
-  const cases: Array<[string, RegExp]> = [
-    ["web", /browser\(\) from "@priemskiyyy\/pulse\/browser"/],
-    ["windows", /ios and android only, not "windows"/],
-    ["macos", /ios and android only, not "macos"/],
+  const cases: Array<[ReturnType<typeof createAppState>, string]> = [
+    [unavailable, "ios"],
+    [createAppState("active"), "web"],
+    [createAppState("active"), "windows"],
+    [createAppState("active"), "macos"],
   ];
 
-  for (const [platform, message] of cases) {
-    const host = createAppState("active");
+  for (const [host, platform] of cases) {
+    const adapter = reactNative({ appState: host.appState, platform });
+    const pulse = new Pulse({ adapter });
 
-    const pulse = new Pulse({
-      adapter: reactNative({ appState: host.appState, platform }),
-    });
-
-    expect(() => pulse.start()).toThrow(
-      expect.objectContaining({
-        code: "START_FAILED",
-        cause: expect.objectContaining({
-          message: expect.stringMatching(message),
-        }),
-      }),
-    );
+    expect(adapter.available()).toBe(false);
+    pulse.start();
+    expect(pulse.state.get()).toBe(UNKNOWN_LIFECYCLE_STATE);
     expect(host.subscriptionCount()).toBe(0);
   }
+
+  expect(
+    reactNative({
+      appState: createAppState("active").appState,
+      platform: "android",
+    }).available(),
+  ).toBe(true);
 });
 
 test("iOS registers no Android-only focus or blur listener", () => {
@@ -459,6 +445,6 @@ test("the adapter passes the conformance suite on both platforms", async () => {
       };
     });
 
-    expect(report.passed).toHaveLength(7);
+    expect(report.passed).toHaveLength(8);
   }
 });

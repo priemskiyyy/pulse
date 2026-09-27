@@ -48,6 +48,7 @@ export const createMockAdapter = ({
   return Object.freeze({
     adapter: Object.freeze({
       name: "mock",
+      available: () => true,
       observe: (observer: LifecycleObserver) => {
         const observation: Observation = {
           observer,

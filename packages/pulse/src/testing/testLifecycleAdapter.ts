@@ -25,6 +25,7 @@ const inspect = (adapter: LifecycleAdapter) => {
 
   const inspected: LifecycleAdapter = {
     name: adapter.name,
+    available: () => adapter.available(),
     observe: (observer) =>
       adapter.observe({
         next: (state) => {
@@ -77,6 +78,15 @@ const BACKGROUND: LifecycleState = {
 
 const CHECKS: Check[] = [
   {
+    name: "is available in a working host",
+    run: async (harness) => {
+      assert(
+        harness.adapter.available(),
+        "available() answered false in a host that should support it.",
+      );
+    },
+  },
+  {
     name: "creates no host subscription before start",
     run: async (harness) => {
       const before = harness.subscriptionCount();
@@ -85,6 +95,7 @@ const CHECKS: Check[] = [
       const pulse = new Pulse({
         adapter: {
           name: harness.adapter.name,
+          available: () => harness.adapter.available(),
           observe: (observer) => {
             observed += 1;
 
@@ -255,7 +266,7 @@ const CHECKS: Check[] = [
  * test("the custom adapter conforms", async () => {
  *   const report = await testLifecycleAdapter(() => createHostHarness());
  *
- *   expect(report.passed).toHaveLength(7);
+ *   expect(report.passed).toHaveLength(8);
  * });
  * ```
  */

@@ -15,7 +15,8 @@ type Classification =
  * Observes React Native's `AppState`. On iOS, `active` is foreground and
  * available and `inactive` foreground and unavailable; on Android, `active` is
  * foreground with interaction unknown until a `focus` or `blur` arrives after
- * the last background or unknown. Anything unrecognized is unknown on both axes.
+ * the last background or unknown. Anything unrecognized is unknown on both axes,
+ * and on any other platform, the web included, the adapter is unavailable.
  *
  * @example
  * ```ts
@@ -31,28 +32,11 @@ export const reactNative = ({
   platform,
 }: ReactNativeOptions): LifecycleAdapter => ({
   name: "react-native",
+  // The web belongs to browser(), and other platforms have no mapping here.
+  available: () =>
+    (platform === "ios" || platform === "android") &&
+    appState.isAvailable !== false,
   observe: (observer) => {
-    if (platform === "web") {
-      throw new Error(
-        'React Native reports the platform "web": observe the document with browser() from "@priemskiyyy/pulse/browser" instead.',
-      );
-    }
-
-    if (platform !== "ios" && platform !== "android") {
-      throw new Error(
-        `Pulse maps AppState on ios and android only, not "${platform}"; write a custom adapter with its own mapping.`,
-      );
-    }
-
-    if (
-      typeof appState !== "object" ||
-      appState === null ||
-      appState.isAvailable === false ||
-      typeof appState.addEventListener !== "function"
-    ) {
-      throw new Error("React Native's AppState is not available to observe.");
-    }
-
     let closed = false;
     let receivedChange = false;
     let classification: Classification = "UNINITIALIZED";

@@ -30,8 +30,10 @@ export const fromHost = (host: Host): LifecycleAdapter => ({
     });
 
     // Subscribe first: a change during the read wins over the baseline.
+    const baseline = host.read();
+
     if (!received) {
-      observer.next(host.read());
+      observer.next(baseline);
     }
 
     return () => {
@@ -66,4 +68,4 @@ import { testLifecycleAdapter } from "@priemskiyyy/pulse/testing";
 const report = await testLifecycleAdapter(() => createHostHarness());
 ```
 
-The harness supplies the adapter over a host that starts in foreground, moves it to `background()` and `foreground()`, flushes its own delivery with `settle()`, counts the subscriptions the adapter installed with `subscriptionCount()`, and cleans up with `disposeHost()`. The suite checks availability, a valid foreground baseline, the phase mapping, cleanup that removes everything, independent observations, idempotent cleanup and silence afterwards. It never requires every state combination, and passing it proves nothing about a real device; see [verification](verification.md).
+The harness supplies the adapter over a host that starts in foreground, moves it to `background()` and `foreground()`, flushes its own delivery with `settle()`, counts the subscriptions the adapter installed with `subscriptionCount()`, and cleans up with `disposeHost()`. The suite checks availability, no subscription before start, a valid foreground baseline, the phase mapping, cleanup that removes everything, independent observations, idempotent cleanup and silence afterwards. It never requires every state combination, and passing it proves nothing about a real device; see [verification](verification.md).

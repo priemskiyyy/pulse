@@ -1,7 +1,5 @@
 # Pulse
 
-**Trustworthy, reactive application-lifecycle observations for TypeScript.**
-
 Pulse gives an application one owned observation of its lifecycle, on the web and in React Native: a `phase` (`foreground`, `background` or `unknown`) and an `interaction` (`available`, `unavailable` or `unknown`) as immutable snapshots, and deduplicated `foreground` and `background` transitions with an estimate of how long the app was away. It reports what its platform observed. It does not decide what your application is allowed to run.
 
 ```ts

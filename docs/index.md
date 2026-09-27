@@ -14,15 +14,13 @@ pulse.on("foreground", (event) => refreshIfStale(event.observedAway));
 pulse.start();
 ```
 
-One Pulse owns one observation of its host. It reports a `phase` and an `interaction` as frozen snapshots, and `foreground` and `background` transitions between known phases. That is the whole model: one owned observation session, two state fields, two phase events, and precise cleanup.
+One Pulse owns one observation of its host. It reports a `phase` and an `interaction` as frozen snapshots, and `foreground` and `background` transitions between known phases.
 
 ## The guarantee, and where it ends
 
 Given the same ordered observations, clock samples and listener operations, Pulse produces the same snapshots and the same transitions. It does not promise that the platform reports every physical change, reports it at once, or gives JavaScript time to finish anything. A snapshot is the latest usable evidence under a documented mapping; `unknown` means there is none.
 
-## What Pulse is not
-
-Not a scheduler, a background task runner, an exit hook, a presence or engagement tracker, or a security signal. A foreground event is not permission to run; a background event does not mean JavaScript keeps running.
+It is not a scheduler, an exit hook, a presence tracker or a security signal; see [what Pulse is not](../README.md#what-pulse-is-not).
 
 ## Where to go next
 

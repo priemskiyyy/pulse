@@ -90,44 +90,58 @@ const tests = [
 
 // Each entry point reaches only its own platform: the core and the testing
 // helpers are platform neutral, and no adapter or binding imports another.
+// Package names are exact paths; a bare pattern would also match a folder.
 const platformImports = (forbidden) => ({
   "no-restricted-imports": [
     "error",
     {
-      patterns: forbidden.map(([group, message]) => ({ group, message })),
+      paths: forbidden.flatMap(({ names, message }) =>
+        names.map((name) => ({ name, message })),
+      ),
+      patterns: forbidden.map(({ groups, message }) => ({
+        group: groups,
+        message,
+      })),
     },
   ],
 });
 
-const react = [
-  ["react", "react-dom", "react-dom/*"],
-  "Only the React binding imports React.",
-];
+const react = {
+  names: ["react", "react-dom"],
+  groups: ["react-dom/*"],
+  message: "Only the React binding imports React.",
+};
 
-const reactNative = [
-  ["react-native"],
-  "No entry point imports React Native at runtime; the application passes AppState in.",
-];
+const reactNative = {
+  names: ["react-native"],
+  groups: ["react-native/*"],
+  message:
+    "No entry point imports React Native at runtime; the application passes AppState in.",
+};
 
-const browserSource = [
-  ["src/adapters/browser", "src/adapters/browser/**"],
-  "Only the browser entry point imports the browser adapter.",
-];
+const browserSource = {
+  names: [],
+  groups: ["src/adapters/browser", "src/adapters/browser/**"],
+  message: "Only the browser entry point imports the browser adapter.",
+};
 
-const reactNativeSource = [
-  ["src/adapters/react-native", "src/adapters/react-native/**"],
-  "Only the React Native entry point imports its adapter.",
-];
+const reactNativeSource = {
+  names: [],
+  groups: ["src/adapters/react-native", "src/adapters/react-native/**"],
+  message: "Only the React Native entry point imports its adapter.",
+};
 
-const reactSource = [
-  ["src/react", "src/react/**"],
-  "Only the React entry point imports the binding.",
-];
+const reactSource = {
+  names: [],
+  groups: ["src/react", "src/react/**"],
+  message: "Only the React entry point imports the binding.",
+};
 
-const testRunners = [
-  ["vitest", "vitest/*", "@testing-library/*"],
-  "Runtime code never imports a test runner.",
-];
+const testRunners = {
+  names: ["vitest"],
+  groups: ["vitest/*", "@testing-library/*"],
+  message: "Runtime code never imports a test runner.",
+};
 
 // A lifecycle observation schedules nothing: no heartbeat, polling or debounce.
 const timers = [

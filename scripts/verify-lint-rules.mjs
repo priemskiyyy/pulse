@@ -118,6 +118,11 @@ const boundaries = [
   ],
   ['import { AppState } from "react-native";', "no-restricted-imports", NATIVE],
   [
+    'import AppState from "react-native/Libraries/AppState/AppState";',
+    "no-restricted-imports",
+    NATIVE,
+  ],
+  [
     'import { browser } from "src/adapters/browser/browser";',
     "no-restricted-imports",
     NATIVE,
@@ -175,6 +180,18 @@ const allowed = [
     "packages/pulse/src/adapters/browser/browser.fixture.ts",
   ],
   ["export const view = globalThis.window;", BROWSER],
+  [
+    'export { reactNative } from "src/adapters/react-native/reactNative";',
+    "packages/pulse/src/react-native.ts",
+  ],
+  [
+    'import type { ReactNativeOptions } from "src/adapters/react-native/types/ReactNativeOptions";\n\nexport type Options = ReactNativeOptions;',
+    "packages/pulse/src/adapters/react-native/reactNative.ts",
+  ],
+  [
+    'export { useLifecycle } from "src/react/useLifecycle";',
+    "packages/pulse/src/react.ts",
+  ],
   [
     'import { UNKNOWN_LIFECYCLE_STATE } from "src/utils/constants/states";\n\nexport const state = UNKNOWN_LIFECYCLE_STATE;',
     REACT,

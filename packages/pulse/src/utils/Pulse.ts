@@ -391,11 +391,8 @@ export class Pulse {
     const eventRegistrations =
       event === null ? [] : [...this.#listeners[event.type]];
 
+    // Disposal clears the registries, so it also skips every remaining turn.
     for (const registration of stateRegistrations) {
-      if (!this.#isRunning()) {
-        return;
-      }
-
       const { listener } = registration;
 
       if (
@@ -412,24 +409,21 @@ export class Pulse {
       }
     }
 
-    for (const registration of eventRegistrations) {
-      if (!this.#isRunning() || event === null) {
-        return;
-      }
+    if (event !== null) {
+      const registry = this.#listeners[event.type];
 
-      const { listener } = registration;
+      for (const registration of eventRegistrations) {
+        const { listener } = registration;
 
-      if (
-        !this.#listeners[event.type].has(registration) ||
-        typeof listener !== "function"
-      ) {
-        continue;
-      }
+        if (!registry.has(registration) || typeof listener !== "function") {
+          continue;
+        }
 
-      try {
-        listener(event);
-      } catch (error) {
-        reports.push({ error, origin: "transition-listener" });
+        try {
+          listener(event);
+        } catch (error) {
+          reports.push({ error, origin: "transition-listener" });
+        }
       }
     }
 

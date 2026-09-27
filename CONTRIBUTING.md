@@ -7,7 +7,7 @@ pnpm install --frozen-lockfile
 pnpm check
 ```
 
-`pnpm check` builds the package, type checks it (the core also without DOM or Node types), lints it, proves the lint rules with probes, checks formatting and runs the unit tests. `pnpm check:release` adds the packed-package check, the size budgets and the release metadata.
+`pnpm check` builds the package, type checks it (the core also without DOM or Node types), lints it, proves the lint rules with probes, checks formatting and runs the unit tests. `pnpm check:release` adds the docs and snippet checks, the packed-package check, the size budgets, the release metadata and the mutation run.
 
 ## Layout
 
@@ -20,11 +20,11 @@ pnpm check
 
 ## Code
 
-The rules are in [AGENTS.md](AGENTS.md) and enforced by `eslint.config.js`. In short: types before runtime checks, guard clauses instead of compound conditions, a helper with one caller inlined, no `interface`, `enum`, `switch`, `any`, `as`, `!`, `void`, `readonly` or relative imports, and no import across platforms: the core imports no React, React Native, DOM global or test runner, and nothing schedules a timer.
+The rules are in [AGENTS.md](AGENTS.md) and enforced by `eslint.config.js`. In short: types before runtime checks, guard clauses instead of compound conditions, a helper with one caller inlined unless it names a whole stage, no `interface`, `enum`, `switch`, `any`, `as`, `!`, `void`, `readonly` or relative imports, and no import across platforms: the core imports no React, React Native, DOM global or test runner, and nothing schedules a timer.
 
 ## Adapters
 
-An adapter is a plain `{ name, available, observe }`. `available()` probes the host synchronously; `observe` registers first, then reports a complete snapshot, and answers a synchronous cleanup that removes only its own subscriptions. It never imports its platform: the application passes it in. Run `testLifecycleAdapter` from `@priemskiyyy/pulse/testing` against a harness over a fake or real host.
+An adapter is a plain `{ name, available, observe }` that never imports its platform. The contract and the conformance suite are in [custom adapters](docs/custom-adapters.md).
 
 ## Testing
 

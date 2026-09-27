@@ -17,6 +17,9 @@ A green test run proves the core's rules and the adapters' mappings against fake
 | Native adapter on a fake    | automated              | iOS and Android mapping, Android focus evidence, baseline races, cleanup            |
 | React on jsdom and a server | automated              | Passive subscriptions, Strict Mode, source replacement, server render, hydration    |
 | Packed tarball consumer     | automated              | Exports, declarations without DOM or Node types, platform isolation, Node smoke run |
+| Browser lab in Chromium     | automated              | A real page load, ordinary back navigation, disposal, the Expo web build            |
+| Expo native bundles         | automated              | Metro resolves the React Native entry for iOS and Android                           |
+| Tab switch and window focus | not yet verified       | Visibility and focus changes in a real browser; Playwright keeps pages visible      |
 | Real back/forward cache     | not yet verified       | Persisted restoration with the same document and live listeners                     |
 | Real freeze and discard     | not yet verified       | Engine behavior of `freeze`, `resume` and discarding                                |
 | Physical iOS and Android    | not yet verified       | AppState and focus order on real devices, interruptions, multi-window               |
@@ -35,6 +38,10 @@ The specification names 200 scenarios. The tests carry their IDs:
 - `P-001` to `P-015`, packaging: `scripts/verify-packages.mjs`, `scripts/measure-size.mjs` and `scripts/verify-release.mjs`.
 
 Malformed snapshots and options are ruled out by the types and the `*.contracts.ts` files instead of runtime checks, and a throwing getter simply propagates; see [decisions](decisions.md).
+
+## Running a platform exercise
+
+The [browser lab](https://github.com/priemskiyyy/pulse/tree/main/examples/browser-lifecycle-lab) and the [Expo lab](https://github.com/priemskiyyy/pulse/tree/main/examples/expo-lifecycle-lab) list their manual exercises and record the raw host signals next to the Pulse commits. The browser lab exports both as JSON.
 
 ## Reporting a platform exercise
 

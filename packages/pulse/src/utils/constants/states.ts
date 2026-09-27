@@ -15,14 +15,12 @@ export const UNKNOWN_LIFECYCLE_STATE: LifecycleState = Object.freeze({
   interaction: "unknown",
 });
 
-type LifecycleStateTable = {
+/** Every valid snapshot, interned so an unchanged state keeps its identity; `null` marks a combination the contract forbids. */
+export const LIFECYCLE_STATES: {
   foreground: Record<InteractionState, LifecycleState>;
   background: { available: null; unavailable: LifecycleState; unknown: null };
   unknown: Record<InteractionState, LifecycleState>;
-};
-
-/** Every valid snapshot, interned so an unchanged state keeps its identity; `null` marks a combination the contract forbids. */
-export const LIFECYCLE_STATES: LifecycleStateTable = Object.freeze({
+} = Object.freeze({
   foreground: Object.freeze({
     available: Object.freeze({ phase: "foreground", interaction: "available" }),
     unavailable: Object.freeze({

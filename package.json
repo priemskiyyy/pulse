@@ -7,6 +7,7 @@
     "node": ">=22.18.0"
   },
   "scripts": {
+    "build": "pnpm -r --filter ./packages/** build",
     "format": "prettier --write .",
     "lint:prettier": "prettier --check .",
     "lint:typescript": "tsc --noEmit && pnpm -r lint:typescript",
@@ -21,6 +22,8 @@
     "eslint-plugin-react-hooks": "7.1.1",
     "fast-check": "4.10.2",
     "prettier": "3.9.6",
+    "publint": "0.3.24",
+    "tsdown": "0.22.14",
     "typescript": "5.8.3",
     "typescript-eslint": "8.70.0",
     "vitest": "4.1.10"

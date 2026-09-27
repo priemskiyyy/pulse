@@ -7,7 +7,7 @@ pnpm install --frozen-lockfile
 pnpm check
 ```
 
-`pnpm check` builds the package, type checks it (the core also without DOM or Node types), lints it, proves the lint rules with probes, checks formatting and runs the unit tests. `pnpm check:release` adds the docs and snippet checks, the packed-package check, the size budgets, the release metadata and the mutation run.
+`pnpm check` builds the package, type checks it (the core also without DOM or Node types), lints it, proves the lint rules with probes, checks formatting and runs the unit tests. `pnpm check:release` adds the docs site build, the docs and snippet checks, the packed-package check, the size budgets, the release metadata and the mutation run. `pnpm test:browser` runs both labs in Chromium with Playwright.
 
 ## Layout
 
@@ -17,6 +17,7 @@ pnpm check
 - `src/adapters/<name>/` holds one adapter: its factory, its tests and fixture, and its own `types/`, `utils/` and `utils/constants/`.
 - `src/react/` holds the hook, `src/testing/` the mock adapter, the test clock and the conformance suite.
 - `*.contracts.ts` files are type checked and never run: they pin the public types, with `@ts-expect-error` negatives.
+- `examples/recipes` holds the compiled integration recipes; `examples/browser-lifecycle-lab` and `examples/expo-lifecycle-lab` the labs for exercising real hosts.
 
 ## Code
 

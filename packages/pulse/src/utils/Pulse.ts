@@ -150,7 +150,7 @@ export class Pulse {
     const observer: LifecycleObserver = Object.freeze({
       next: (state: LifecycleState) => this.#accept(token, state),
       error: (error: unknown) => {
-        if (this.#getLive(token) === null) {
+        if (this.#getLiveOwnership(token) === null) {
           return;
         }
 
@@ -164,13 +164,18 @@ export class Pulse {
     try {
       cleanup = adapter.observe(observer);
     } catch (error) {
-      throw this.#fail(
-        new PulseError({
-          code: "START_FAILED",
-          message: `The ${host.adapter.name} adapter's setup threw.`,
-          cause: error,
-        }),
-      );
+      // A dispose during setup already cleared everything and stays terminal.
+      if (!this.#isDisposed()) {
+        this.#ownership = { state: "FAILED" };
+        this.#queue = [];
+        this.#clearListeners();
+      }
+
+      throw new PulseError({
+        code: "START_FAILED",
+        message: `The ${host.adapter.name} adapter's setup threw.`,
+        cause: error,
+      });
     }
 
     if (this.#isDisposed()) {
@@ -180,6 +185,7 @@ export class Pulse {
     }
 
     this.#ownership = { state: "RUNNING", token, host, cleanup };
+    // Input sent from the started diagnostic waits for the drain below instead of committing inside it.
     this.#draining = true;
 
     try {
@@ -274,18 +280,7 @@ export class Pulse {
     this.#listeners.background.clear();
   }
 
-  #fail(error: PulseError) {
-    if (!this.#isDisposed()) {
-      this.#ownership = { state: "FAILED" };
-    }
-
-    this.#queue = [];
-    this.#clearListeners();
-
-    return error;
-  }
-
-  #getLive(token: object) {
+  #getLiveOwnership(token: object) {
     const ownership = this.#ownership;
 
     if (ownership.state === "CREATED") {
@@ -307,14 +302,14 @@ export class Pulse {
     return ownership;
   }
 
-  #accept(token: object, value: LifecycleState) {
-    const ownership = this.#getLive(token);
+  #accept(token: object, state: LifecycleState) {
+    const ownership = this.#getLiveOwnership(token);
 
     if (ownership === null) {
       return;
     }
 
-    const read = readObservation(value);
+    const observation = readObservation(state);
     const sample = sampleClock(ownership.host.now);
     const reports: Report[] = [];
 
@@ -322,13 +317,13 @@ export class Pulse {
       reports.push({ error: sample.error, origin: "clock" });
     }
 
-    if (read.error !== null) {
-      reports.push({ error: read.error, origin: "observation" });
+    if (observation.error !== null) {
+      reports.push({ error: observation.error, origin: "observation" });
     }
 
     this.#queue.push({
       kind: "observation",
-      state: read.state,
+      state: observation.state,
       timestamp: sample.timestamp,
       reports,
     });
@@ -378,7 +373,7 @@ export class Pulse {
 
     this.#timeline = reduction.timeline;
 
-    const reports = [...intake.reports];
+    const { reports } = intake;
 
     if (reduction.rolledBack) {
       reports.push({
@@ -461,7 +456,7 @@ export class Pulse {
     }));
   }
 
-  #getContext(host: PulseHost, origin: PulseErrorOrigin) {
+  #getErrorContext(host: PulseHost, origin: PulseErrorOrigin) {
     return Object.freeze({
       origin,
       adapter: host.adapter,
@@ -475,11 +470,11 @@ export class Pulse {
         return;
       }
 
-      reportError(host, error, this.#getContext(host, origin));
+      reportError(host, error, this.#getErrorContext(host, origin));
     }
   }
 
-  #diagnose(host: PulseHost, build: () => PulseDiagnostic) {
+  #diagnose(host: PulseHost, createDiagnostic: () => PulseDiagnostic) {
     const { onDiagnostic } = host;
 
     if (onDiagnostic === null) {
@@ -491,10 +486,10 @@ export class Pulse {
     }
 
     try {
-      onDiagnostic(Object.freeze(build()));
+      onDiagnostic(Object.freeze(createDiagnostic()));
     } catch (error) {
       if (this.#isRunning()) {
-        reportError(host, error, this.#getContext(host, "diagnostic"));
+        reportError(host, error, this.#getErrorContext(host, "diagnostic"));
       }
     }
   }
@@ -503,7 +498,7 @@ export class Pulse {
     try {
       cleanup();
     } catch (error) {
-      reportError(host, error, this.#getContext(host, "cleanup"));
+      reportError(host, error, this.#getErrorContext(host, "cleanup"));
     }
   }
 }

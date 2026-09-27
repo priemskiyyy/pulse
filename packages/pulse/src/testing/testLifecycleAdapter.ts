@@ -57,13 +57,16 @@ const startPulse = (adapter: LifecycleAdapter) => {
 
 const expectPhase = (pulse: Pulse, expected: LifecycleState, when: string) => {
   const state = pulse.state.get();
+  const message = `After ${when}, the adapter reported ${state.phase}/${state.interaction} instead of ${expected.phase}/${expected.interaction}.`;
 
-  assert(
-    state.phase === expected.phase &&
-      (expected.phase !== "background" ||
-        state.interaction === expected.interaction),
-    `After ${when}, the adapter reported ${state.phase}/${state.interaction} instead of ${expected.phase}/${expected.interaction}.`,
-  );
+  assert(state.phase === expected.phase, message);
+
+  // Foreground interaction is platform evidence; only background fixes it.
+  if (expected.phase !== "background") {
+    return;
+  }
+
+  assert(state.interaction === expected.interaction, message);
 };
 
 const FOREGROUND: LifecycleState = {

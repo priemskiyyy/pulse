@@ -101,9 +101,15 @@ export const createMockAdapter = ({
 
         observation.baseline = null;
 
-        if (baseline !== null && open.has(observation)) {
-          observation.observer.next(baseline);
+        if (baseline === null) {
+          continue;
         }
+
+        if (!open.has(observation)) {
+          continue;
+        }
+
+        observation.observer.next(baseline);
       }
     },
     stats: () =>

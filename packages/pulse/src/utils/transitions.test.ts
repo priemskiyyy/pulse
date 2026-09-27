@@ -89,16 +89,33 @@ test("C-028 an observed departure and entry pair their times", () => {
 });
 
 test("C-029 a duplicate snapshot notifies nothing and keeps identity and sequence", () => {
-  const { mock, pulse, log } = createStarted(FOREGROUND);
-  const snapshot = pulse.state.get();
+  const mock = createMockAdapter({ initial: FOREGROUND });
   const onDiagnostic = vi.fn();
+  const pulse = new Pulse({ adapter: mock.adapter, onDiagnostic });
+  const log = recordDelivery(pulse);
+
+  pulse.start();
+
+  const snapshot = pulse.state.get();
 
   mock.emit({ phase: "foreground", interaction: "available" });
   mock.emit(FOREGROUND);
 
   expect(log).toEqual(["state foreground/available"]);
   expect(pulse.state.get()).toBe(snapshot);
-  expect(onDiagnostic).not.toHaveBeenCalled();
+  expect(onDiagnostic.mock.calls.map(([diagnostic]) => diagnostic)).toEqual([
+    { type: "started", adapter: { name: "mock" } },
+    {
+      type: "commit",
+      sequence: 1,
+      from: UNKNOWN,
+      to: FOREGROUND,
+      observedAt: expect.any(Number),
+      transition: null,
+    },
+    { type: "duplicate", sequence: 1, state: FOREGROUND },
+    { type: "duplicate", sequence: 1, state: FOREGROUND },
+  ]);
 });
 
 test("C-030 an interaction-only change commits state and is no transition", () => {

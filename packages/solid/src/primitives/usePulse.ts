@@ -1,9 +1,9 @@
+import { PulseError } from "@priemskiyyy/pulse";
+import type { Pulse } from "@priemskiyyy/pulse";
 import { useContext } from "solid-js";
 import type { Accessor } from "solid-js";
 
-import { PulseContext } from "src/solid/PulseContext";
-import type { Pulse } from "src/utils/Pulse";
-import { PulseError } from "src/utils/PulseError";
+import { PulseContext } from "src/context/PulseContext";
 
 /**
  * Follows the nearest provider's Pulse as an accessor and throws

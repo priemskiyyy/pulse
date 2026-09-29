@@ -1,8 +1,8 @@
+import type { Pulse } from "@priemskiyyy/pulse";
 import { createComponent, createMemo } from "solid-js";
 import type { ParentProps } from "solid-js";
 
-import { PulseContext } from "src/solid/PulseContext";
-import type { Pulse } from "src/utils/Pulse";
+import { PulseContext } from "src/context/PulseContext";
 
 /**
  * The Pulse to publish to the tree below.

@@ -5,7 +5,7 @@
 - Breaking: `@priemskiyyy/pulse/react` moved to its own package, `@priemskiyyy/pulse-react`, like the other Priemskiyyy libraries.
 - `PulseProvider` and `usePulse()` in `@priemskiyyy/pulse-react` publish one Pulse to a tree. The provider never starts or disposes it.
 - `useLifecycle()` takes its source from the nearest `PulseProvider` when none is passed. With neither, it throws `PulseError` with the new code `INVALID_CONFIGURATION`, as does `usePulse()` outside a provider.
-- `./solid`: `PulseProvider`, `usePulse()` and `useLifecycle(source?)` for Solid 1.9, as accessors. `solid-js` is an optional peer.
+- `@priemskiyyy/pulse-solid`: `PulseProvider`, `usePulse()` and `useLifecycle(source?)` for Solid 1.9, as accessors.
 - `./vue`: `PulseProvider`, `usePulse()` and `useLifecycle(source?)` for Vue 3.5, as computed refs. `vue` is an optional peer.
 - `./svelte`: `setPulseContext`, `usePulse()` and `useLifecycle(source?)` for Svelte 5, with the snapshot on `current`. `svelte` is an optional peer.
 

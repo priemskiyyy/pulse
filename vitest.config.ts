@@ -21,10 +21,7 @@ export default defineConfig({
         test: {
           name: "pulse",
           include: ["packages/pulse/src/**/*.test.{ts,tsx}"],
-          exclude: [
-            "packages/pulse/src/solid/**",
-            "packages/pulse/src/svelte/**",
-          ],
+          exclude: ["packages/pulse/src/svelte/**"],
           environment: "node",
         },
       },
@@ -33,15 +30,16 @@ export default defineConfig({
         resolve: {
           alias: {
             src: fileURLToPath(
-              new URL("./packages/pulse/src", import.meta.url),
+              new URL("./packages/solid/src", import.meta.url),
             ),
           },
           // Node would resolve Solid's server build, which never runs effects.
           conditions: ["development", "browser"],
+          dedupe: ["solid-js"],
         },
         test: {
-          name: "pulse-solid",
-          include: ["packages/pulse/src/solid/**/*.test.ts"],
+          name: "solid",
+          include: ["packages/solid/src/**/*.test.ts"],
           environment: "jsdom",
           server: { deps: { inline: [/solid-js/] } },
         },

@@ -12,7 +12,8 @@ No dependencies, ESM only, no side effects on import.
 pnpm add @priemskiyyy/pulse@next
 ```
 
-For React, add `@priemskiyyy/pulse-react@next` beside it.
+Framework bindings are their own packages: add `@priemskiyyy/pulse-react@next`
+or `@priemskiyyy/pulse-solid@next` beside it.
 
 This is the `0.1.0-beta.1` public beta. Physical-device behavior and several real
 browser lifecycle scenarios remain unverified. Read the
@@ -111,7 +112,6 @@ Only an observed, adjacent change between known phases is a transition. Discover
 | `.`              | `Pulse`, `PulseError`, `UNKNOWN_LIFECYCLE_STATE` and the types        |
 | `./browser`      | `browser({ target? })`                                                |
 | `./react-native` | `reactNative({ appState, platform })`                                 |
-| `./solid`        | The same three names for Solid, as accessors                          |
 | `./vue`          | The same three names for Vue, as computed refs                        |
 | `./svelte`       | `setPulseContext`, `usePulse()`, `useLifecycle(source?)` for Svelte 5 |
 | `./testing`      | `createMockAdapter`, `createTestClock`, `testLifecycleAdapter`        |

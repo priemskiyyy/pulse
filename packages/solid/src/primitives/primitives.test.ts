@@ -1,15 +1,13 @@
+import { Pulse, UNKNOWN_LIFECYCLE_STATE } from "@priemskiyyy/pulse";
+import type { LifecycleSource, LifecycleState } from "@priemskiyyy/pulse";
+import { createMockAdapter } from "@priemskiyyy/pulse/testing";
 import { createComponent, createRoot, createSignal } from "solid-js";
 import type { Accessor } from "solid-js";
 import { expect, test } from "vitest";
 
-import { PulseProvider } from "src/solid/PulseProvider";
-import { useLifecycle } from "src/solid/useLifecycle";
-import { usePulse } from "src/solid/usePulse";
-import { createMockAdapter } from "src/testing/createMockAdapter";
-import type { LifecycleSource } from "src/types/LifecycleSource";
-import type { LifecycleState } from "src/types/LifecycleState";
-import { UNKNOWN_LIFECYCLE_STATE } from "src/utils/constants/states";
-import { Pulse } from "src/utils/Pulse";
+import { PulseProvider } from "src/context/PulseProvider";
+import { useLifecycle } from "src/primitives/useLifecycle";
+import { usePulse } from "src/primitives/usePulse";
 
 const createPulse = () => {
   const mock = createMockAdapter({

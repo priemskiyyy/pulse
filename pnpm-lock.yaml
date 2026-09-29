@@ -189,9 +189,6 @@ importers:
 
   packages/pulse:
     dependencies:
-      solid-js:
-        specifier: '>=1.9.0 <2'
-        version: 1.9.15
       svelte:
         specifier: '>=5.0.0 <6'
         version: 5.57.0(@typescript-eslint/types@8.70.0)
@@ -204,6 +201,16 @@ importers:
       react:
         specifier: '>=18.3.0 <20'
         version: 19.2.8
+    devDependencies:
+      '@priemskiyyy/pulse':
+        specifier: workspace:*
+        version: link:../pulse
+
+  packages/solid:
+    dependencies:
+      solid-js:
+        specifier: '>=1.9.0 <2'
+        version: 1.9.15
     devDependencies:
       '@priemskiyyy/pulse':
         specifier: workspace:*

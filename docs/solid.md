@@ -5,7 +5,7 @@ description: "PulseProvider publishes a Pulse to a Solid tree and useLifecycle r
 # Solid
 
 ```ts
-import { useLifecycle, usePulse } from "@priemskiyyy/pulse/solid";
+import { useLifecycle, usePulse } from "@priemskiyyy/pulse-solid";
 import { onCleanup } from "solid-js";
 
 export const useRefreshOnForeground = (refresh: () => void) => {
@@ -17,7 +17,7 @@ export const useRefreshOnForeground = (refresh: () => void) => {
 };
 ```
 
-`@priemskiyyy/pulse/solid` has the same three names as the React entry, with Solid shapes: `useLifecycle(source?)` returns an accessor of the frozen snapshot, and `usePulse()` returns an accessor of the provider's Pulse. It supports `solid-js` 1.9.
+`@priemskiyyy/pulse-solid`, installed beside `@priemskiyyy/pulse`, has the same three names as `@priemskiyyy/pulse-react`, with Solid shapes: `useLifecycle(source?)` returns an accessor of the frozen snapshot, and `usePulse()` returns an accessor of the provider's Pulse. It supports `solid-js` 1.9.
 
 <!-- snippet: fragment -->
 

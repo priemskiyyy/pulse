@@ -8,7 +8,7 @@ const TESTING = "packages/pulse/src/testing/lint-probe.ts";
 const BROWSER = "packages/pulse/src/adapters/browser/lint-probe.ts";
 const NATIVE = "packages/pulse/src/adapters/react-native/lint-probe.ts";
 const REACT = "packages/react/src/lint-probe.ts";
-const SOLID = "packages/pulse/src/solid/lint-probe.ts";
+const SOLID = "packages/solid/src/lint-probe.ts";
 const VUE = "packages/pulse/src/vue/lint-probe.ts";
 const SVELTE = "packages/pulse/src/svelte/lint-probe.ts";
 const TEST = "packages/pulse/src/utils/lint-probe.test.ts";
@@ -148,27 +148,7 @@ const boundaries = [
     "no-restricted-imports",
     SVELTE,
   ],
-  [
-    'import { useLifecycle } from "src/svelte/useLifecycle";',
-    "no-restricted-imports",
-    SOLID,
-  ],
   ['import { createSignal } from "solid-js";', "no-restricted-imports", VUE],
-  [
-    'import { useLifecycle } from "src/solid/useLifecycle";',
-    "no-restricted-imports",
-    VUE,
-  ],
-  [
-    'import { useLifecycle } from "src/vue/useLifecycle";',
-    "no-restricted-imports",
-    SOLID,
-  ],
-  [
-    'import { browser } from "src/adapters/browser/browser";',
-    "no-restricted-imports",
-    SOLID,
-  ],
   ["setTimeout(() => {}, 0);", "no-restricted-globals", CORE],
   ["queueMicrotask(() => {});", "no-restricted-globals", TESTING],
   ["setInterval(() => {}, 1_000);", "no-restricted-globals", BROWSER],
@@ -202,7 +182,7 @@ const entryPoints = [
   "packages/pulse/src/browser.ts",
   "packages/pulse/src/react-native.ts",
   "packages/react/src/index.ts",
-  "packages/pulse/src/solid.ts",
+  "packages/solid/src/index.ts",
   "packages/pulse/src/vue.ts",
   "packages/pulse/src/svelte.ts",
   "packages/pulse/src/testing.ts",

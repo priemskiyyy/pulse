@@ -40,11 +40,6 @@
       "import": "./dist/react-native.js",
       "default": "./dist/react-native.js"
     },
-    "./solid": {
-      "types": "./dist/solid.d.ts",
-      "import": "./dist/solid.js",
-      "default": "./dist/solid.js"
-    },
     "./vue": {
       "types": "./dist/vue.d.ts",
       "import": "./dist/vue.js",
@@ -65,17 +60,13 @@
     "build": "tsdown",
     "lint:typescript": "tsc --noEmit -p . && tsc --noEmit -p tsconfig.neutral.json",
     "lint:eslint": "eslint src",
-    "test:unit": "vitest run --root ../.. --project pulse --project pulse-solid --project pulse-svelte"
+    "test:unit": "vitest run --root ../.. --project pulse --project pulse-svelte"
   },
   "peerDependencies": {
-    "solid-js": ">=1.9.0 <2",
     "svelte": ">=5.0.0 <6",
     "vue": ">=3.5.0 <4"
   },
   "peerDependenciesMeta": {
-    "solid-js": {
-      "optional": true
-    },
     "svelte": {
       "optional": true
     },
@@ -93,7 +84,6 @@
     "foreground",
     "background",
     "focus",
-    "solid",
     "svelte",
     "vue",
     "react-native",

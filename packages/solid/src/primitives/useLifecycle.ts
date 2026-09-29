@@ -1,3 +1,5 @@
+import { PulseError, UNKNOWN_LIFECYCLE_STATE } from "@priemskiyyy/pulse";
+import type { LifecycleSource, LifecycleState } from "@priemskiyyy/pulse";
 import {
   createEffect,
   createSignal,
@@ -7,11 +9,7 @@ import {
 } from "solid-js";
 import type { Accessor } from "solid-js";
 
-import { PulseContext } from "src/solid/PulseContext";
-import type { LifecycleSource } from "src/types/LifecycleSource";
-import type { LifecycleState } from "src/types/LifecycleState";
-import { UNKNOWN_LIFECYCLE_STATE } from "src/utils/constants/states";
-import { PulseError } from "src/utils/PulseError";
+import { PulseContext } from "src/context/PulseContext";
 
 /**
  * Reads a lifecycle source's snapshot as an accessor, the given one or the

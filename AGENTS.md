@@ -23,7 +23,8 @@ and Trace, and it follows their conventions. Before changing code, read
   5. Pulse schedules nothing: no timer, no polling, no debounce.
 - The core package, `@priemskiyyy/pulse`, with the entry points `.`,
   `./browser`, `./react-native` and `./testing`, and one package per
-  framework binding, `@priemskiyyy/pulse-react` in `packages/react`. ESLint
+  framework binding, `@priemskiyyy/pulse-<framework>` in
+  `packages/<framework>`. ESLint
   keeps each entry to its own platform; `scripts/verify-lint-rules.mjs` proves
   it.
 - Layout: the core in `src/types` and `src/utils`, each adapter in

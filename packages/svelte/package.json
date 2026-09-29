@@ -37,7 +37,7 @@
     "build": "svelte-package -i src -o dist",
     "lint:typescript": "svelte-check --tsconfig ./tsconfig.json --fail-on-warnings",
     "lint:eslint": "eslint src",
-    "test:unit": "vitest run --root ../.. --project svelte"
+    "test:unit": "vitest run --root ../.. --project svelte --project svelte-ssr"
   },
   "peerDependencies": {
     "@priemskiyyy/pulse": ">=0.1.0 <0.2",

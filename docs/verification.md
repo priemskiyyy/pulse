@@ -33,7 +33,7 @@ The specification names 200 scenarios. The tests carry their IDs:
 - `C-001` to `C-072`, the core: `src/utils/*.test.ts` and `src/utils/internal/**`.
 - `B-001` to `B-046`, the browser adapter: `src/adapters/browser/**`. `B-047`, a real back/forward cache restore, is a host exercise.
 - `N-001` to `N-030`, the native adapter: `src/adapters/react-native/**`. `N-031`, device multi-window and credential picker traces, is a host exercise.
-- `R-001` to `R-021`, React: `packages/react/src/**`.
+- `R-001` to `R-021`, the framework bindings: `packages/{react,solid,vue,svelte}/src/**`, each rendered on the server and hydrated.
 - `I-001` to `I-011` and `I-017`, integrations: `examples/shared/recipes/**`.
 - `P-001` to `P-015`, packaging: `scripts/verify-packages.mjs`, `scripts/measure-size.mjs` and `scripts/verify-release.mjs`.
 

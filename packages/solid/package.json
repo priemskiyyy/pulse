@@ -35,7 +35,7 @@
     "build": "tsdown",
     "lint:typescript": "tsc --noEmit -p .",
     "lint:eslint": "eslint src",
-    "test:unit": "vitest run --root ../.. --project solid"
+    "test:unit": "vitest run --root ../.. --project solid --project solid-ssr --project solid-hydration"
   },
   "peerDependencies": {
     "@priemskiyyy/pulse": ">=0.1.0 <0.2",

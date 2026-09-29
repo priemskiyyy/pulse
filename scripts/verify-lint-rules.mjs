@@ -8,6 +8,7 @@ const TESTING = "packages/pulse/src/testing/lint-probe.ts";
 const BROWSER = "packages/pulse/src/adapters/browser/lint-probe.ts";
 const NATIVE = "packages/pulse/src/adapters/react-native/lint-probe.ts";
 const REACT = "packages/pulse/src/react/lint-probe.ts";
+const SOLID = "packages/pulse/src/solid/lint-probe.ts";
 const TEST = "packages/pulse/src/utils/lint-probe.test.ts";
 
 const syntax = [
@@ -128,6 +129,29 @@ const boundaries = [
     NATIVE,
   ],
   ['import { AppState } from "react-native";', "no-restricted-imports", REACT],
+  ['import { createSignal } from "solid-js";', "no-restricted-imports", CORE],
+  ['import { createSignal } from "solid-js";', "no-restricted-imports", REACT],
+  [
+    'import { isServer } from "solid-js/web";',
+    "no-restricted-imports",
+    BROWSER,
+  ],
+  [
+    'import { useLifecycle } from "src/solid/useLifecycle";',
+    "no-restricted-imports",
+    REACT,
+  ],
+  ['import { useState } from "react";', "no-restricted-imports", SOLID],
+  [
+    'import { useLifecycle } from "src/react/useLifecycle";',
+    "no-restricted-imports",
+    SOLID,
+  ],
+  [
+    'import { browser } from "src/adapters/browser/browser";',
+    "no-restricted-imports",
+    SOLID,
+  ],
   [
     'import { browser } from "src/adapters/browser/browser";',
     "no-restricted-imports",
@@ -141,6 +165,7 @@ const boundaries = [
   ["const view = window;", "no-restricted-globals", CORE],
   ["const page = document;", "no-restricted-globals", NATIVE],
   ["const root = globalThis;", "no-restricted-globals", REACT],
+  ["setTimeout(() => {}, 0);", "no-restricted-globals", SOLID],
   [
     'export { value } from "src/value";',
     "no-restricted-syntax",
@@ -163,6 +188,7 @@ const entryPoints = [
   "packages/pulse/src/browser.ts",
   "packages/pulse/src/react-native.ts",
   "packages/pulse/src/react.ts",
+  "packages/pulse/src/solid.ts",
   "packages/pulse/src/testing.ts",
 ];
 
@@ -207,6 +233,10 @@ const allowed = [
   [
     'import { Pulse } from "src/utils/Pulse";\n\nexport const create = Pulse;',
     BROWSER,
+  ],
+  [
+    'import { createSignal } from "solid-js";\n\nexport const signal = createSignal;',
+    SOLID,
   ],
 ];
 

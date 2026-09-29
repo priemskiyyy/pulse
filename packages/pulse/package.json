@@ -45,6 +45,11 @@
       "import": "./dist/react.js",
       "default": "./dist/react.js"
     },
+    "./solid": {
+      "types": "./dist/solid.d.ts",
+      "import": "./dist/solid.js",
+      "default": "./dist/solid.js"
+    },
     "./testing": {
       "types": "./dist/testing.d.ts",
       "import": "./dist/testing.js",
@@ -55,13 +60,17 @@
     "build": "tsdown",
     "lint:typescript": "tsc --noEmit -p . && tsc --noEmit -p tsconfig.neutral.json",
     "lint:eslint": "eslint src",
-    "test:unit": "vitest run --root ../.. --project pulse"
+    "test:unit": "vitest run --root ../.. --project pulse --project pulse-solid"
   },
   "peerDependencies": {
-    "react": ">=18.3.0 <20"
+    "react": ">=18.3.0 <20",
+    "solid-js": ">=1.9.0 <2"
   },
   "peerDependenciesMeta": {
     "react": {
+      "optional": true
+    },
+    "solid-js": {
       "optional": true
     }
   },
@@ -76,6 +85,7 @@
     "background",
     "focus",
     "react",
+    "solid",
     "react-native",
     "expo",
     "typescript",

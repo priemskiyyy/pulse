@@ -79,6 +79,7 @@ const entryPoints = [
   "packages/pulse/src/browser.ts",
   "packages/pulse/src/react-native.ts",
   "packages/pulse/src/react.ts",
+  "packages/pulse/src/solid.ts",
   "packages/pulse/src/testing.ts",
 ];
 
@@ -135,6 +136,18 @@ const reactSource = {
   names: [],
   groups: ["src/react", "src/react/**"],
   message: "Only the React entry point imports the binding.",
+};
+
+const solid = {
+  names: ["solid-js"],
+  groups: ["solid-js/*"],
+  message: "Only the Solid binding imports Solid.",
+};
+
+const solidSource = {
+  names: [],
+  groups: ["src/solid", "src/solid/**"],
+  message: "Only the Solid entry point imports the binding.",
 };
 
 const testRunners = {
@@ -226,17 +239,20 @@ export default tseslint.config(
     files: ["packages/pulse/src/**/*.{ts,tsx}"],
     ignores: [
       ...tests,
-      "packages/pulse/src/{browser,react-native,react}.ts",
+      "packages/pulse/src/{browser,react-native,react,solid}.ts",
       "packages/pulse/src/adapters/**",
       "packages/pulse/src/react/**",
+      "packages/pulse/src/solid/**",
     ],
     rules: {
       ...platformImports([
         react,
         reactNative,
+        solid,
         browserSource,
         reactNativeSource,
         reactSource,
+        solidSource,
         testRunners,
       ]),
       "no-restricted-globals": ["error", ...timers, ...hostGlobals],
@@ -252,8 +268,10 @@ export default tseslint.config(
       ...platformImports([
         react,
         reactNative,
+        solid,
         reactNativeSource,
         reactSource,
+        solidSource,
         testRunners,
       ]),
       "no-restricted-globals": ["error", ...timers],
@@ -269,8 +287,10 @@ export default tseslint.config(
       ...platformImports([
         react,
         reactNative,
+        solid,
         browserSource,
         reactSource,
+        solidSource,
         testRunners,
       ]),
       "no-restricted-globals": ["error", ...timers, ...hostGlobals],
@@ -285,8 +305,25 @@ export default tseslint.config(
     rules: {
       ...platformImports([
         reactNative,
+        solid,
         browserSource,
         reactNativeSource,
+        solidSource,
+        testRunners,
+      ]),
+      "no-restricted-globals": ["error", ...timers, ...hostGlobals],
+    },
+  },
+  {
+    files: ["packages/pulse/src/solid.ts", "packages/pulse/src/solid/**/*.ts"],
+    ignores: tests,
+    rules: {
+      ...platformImports([
+        react,
+        reactNative,
+        browserSource,
+        reactNativeSource,
+        reactSource,
         testRunners,
       ]),
       "no-restricted-globals": ["error", ...timers, ...hostGlobals],

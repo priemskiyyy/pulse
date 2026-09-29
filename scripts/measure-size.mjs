@@ -20,13 +20,14 @@ const ENTRIES = [
     budget: 8 * 1024,
   },
   { name: "react", files: ["react.js"], budget: 1024 },
+  { name: "solid", files: ["solid.js"], budget: 1024 },
   { name: "testing", files: ["testing.js"], budget: null },
 ];
 
 const measure = async (files) => {
   const bundle = await rolldown({
     input: files.map((file) => `${dist}${file}`),
-    external: ["react", "react-dom", "react-native"],
+    external: ["react", "react-dom", "react-native", "solid-js"],
     logLevel: "silent",
   });
 

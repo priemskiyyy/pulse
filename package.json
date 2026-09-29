@@ -46,6 +46,7 @@
     "react-dom": "19.2.8",
     "react-native": "0.86.3",
     "rolldown": "1.2.11",
+    "solid-js": "1.9.15",
     "tsdown": "0.22.14",
     "typescript": "5.8.3",
     "typescript-eslint": "8.70.0",

@@ -6,6 +6,7 @@ export default defineConfig({
     browser: "src/browser.ts",
     "react-native": "src/react-native.ts",
     react: "src/react.ts",
+    solid: "src/solid.ts",
     testing: "src/testing.ts",
   },
   format: ["esm"],

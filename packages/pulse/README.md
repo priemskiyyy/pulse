@@ -110,6 +110,7 @@ Only an observed, adjacent change between known phases is a transition. Discover
 | `./browser`      | `browser({ target? })`                                                  |
 | `./react-native` | `reactNative({ appState, platform })`                                   |
 | `./react`        | `PulseProvider`, `usePulse()`, `useLifecycle(source?)`, a client module |
+| `./solid`        | The same three names for Solid, as accessors                            |
 | `./testing`      | `createMockAdapter`, `createTestClock`, `testLifecycleAdapter`          |
 
 ## Tests

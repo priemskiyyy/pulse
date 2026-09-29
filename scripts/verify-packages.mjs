@@ -95,6 +95,7 @@ const ENTRIES = {
     packages: [],
   },
   "./react": { file: "dist/react.js", client: true, packages: ["react"] },
+  "./solid": { file: "dist/solid.js", client: false, packages: ["solid-js"] },
   "./testing": { file: "dist/testing.js", client: false, packages: [] },
 };
 
@@ -103,6 +104,7 @@ const RUNTIME_EXPORTS = {
   "./browser": ["browser"],
   "./react-native": ["reactNative"],
   "./react": ["PulseProvider", "useLifecycle", "usePulse"],
+  "./solid": ["PulseProvider", "useLifecycle", "usePulse"],
   "./testing": ["createMockAdapter", "createTestClock", "testLifecycleAdapter"],
 };
 
@@ -183,7 +185,7 @@ try {
 
   write(
     "package.json",
-    `${JSON.stringify({ name: "pulse-consumer", private: true, type: "module", dependencies: pick(["react", "react-dom", "@types/react", "typescript"]) }, null, 2)}\n`,
+    `${JSON.stringify({ name: "pulse-consumer", private: true, type: "module", dependencies: pick(["react", "react-dom", "@types/react", "solid-js", "typescript"]) }, null, 2)}\n`,
   );
   run("npm", [
     "install",
@@ -208,7 +210,13 @@ try {
     );
     assert(!graph.includes('from "src/'), `${subpath} kept a source alias.`);
 
-    for (const name of ["react", "react-dom", "react-native", "vitest"]) {
+    for (const name of [
+      "react",
+      "react-dom",
+      "react-native",
+      "solid-js",
+      "vitest",
+    ]) {
       assert.equal(
         importsPackage(graph, name),
         packages.includes(name),
@@ -261,6 +269,7 @@ try {
       'import { browser } from "@priemskiyyy/pulse/browser";',
       'import { useLifecycle } from "@priemskiyyy/pulse/react";',
       'import { reactNative, type AppStateLike } from "@priemskiyyy/pulse/react-native";',
+      'import { useLifecycle as useSolidLifecycle } from "@priemskiyyy/pulse/solid";',
       'import { Pulse } from "@priemskiyyy/pulse";',
       "",
       "declare const appState: AppStateLike;",
@@ -268,6 +277,7 @@ try {
       "export const web = new Pulse({ adapter: browser() });",
       'export const native = new Pulse({ adapter: reactNative({ appState, platform: "ios" }) });',
       "export const Label = () => <span>{useLifecycle(web).phase}</span>;",
+      "export const solidPhase = () => useSolidLifecycle(web)().phase;",
       "",
     ].join("\n"),
   );

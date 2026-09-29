@@ -20,7 +20,26 @@ export default defineConfig({
         test: {
           name: "pulse",
           include: ["packages/pulse/src/**/*.test.{ts,tsx}"],
+          exclude: ["packages/pulse/src/solid/**"],
           environment: "node",
+        },
+      },
+      {
+        extends: true,
+        resolve: {
+          alias: {
+            src: fileURLToPath(
+              new URL("./packages/pulse/src", import.meta.url),
+            ),
+          },
+          // Node would resolve Solid's server build, which never runs effects.
+          conditions: ["development", "browser"],
+        },
+        test: {
+          name: "pulse-solid",
+          include: ["packages/pulse/src/solid/**/*.test.ts"],
+          environment: "jsdom",
+          server: { deps: { inline: [/solid-js/] } },
         },
       },
       {

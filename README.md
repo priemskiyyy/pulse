@@ -70,6 +70,18 @@ For one listener in one component, use them directly. Pulse is for the moment se
 
 Not a background task runner, a scheduler, a guaranteed exit hook, a session or presence tracker, an analytics engagement timer, or a security signal. A foreground event is not permission to run, a background event does not mean JavaScript keeps running, and `observedAway` is an estimate, never a timeout you can trust for authorization.
 
+## Packages
+
+| Package                                        | What it is                                                               |
+| ---------------------------------------------- | ------------------------------------------------------------------------ |
+| [`@priemskiyyy/pulse`](packages/pulse)         | The runtime, the browser and React Native adapters, and the test helpers |
+| [`@priemskiyyy/pulse-react`](packages/react)   | A provider and hooks, with server rendering                              |
+| [`@priemskiyyy/pulse-solid`](packages/solid)   | A provider and primitives                                                |
+| [`@priemskiyyy/pulse-vue`](packages/vue)       | A provider and composables                                               |
+| [`@priemskiyyy/pulse-svelte`](packages/svelte) | A provider and utilities                                                 |
+
+Every package is ESM only, side-effect free and typed. The core has no dependencies.
+
 ## Documentation
 
 - [The package readme](packages/pulse/README.md): installation, the API and the entry points.

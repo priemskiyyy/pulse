@@ -1,7 +1,7 @@
 /**
  * What went wrong: an adapter whose probe or setup threw, an instance used
  * after it failed or was disposed, an adapter snapshot outside the contract,
- * a clock that failed or moved backwards, or a React hook with no source.
+ * a clock that failed or moved backwards, or a binding read with no source.
  *
  * @example
  * ```ts

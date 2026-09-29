@@ -24,7 +24,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      # The release tag is `pulse-v<version>`; the script validates it against the package.
+      # The release tag is `<package>-v<version>`, such as `pulse-react-v0.1.0`; the script validates it against that package.
       - id: verify
         run: node scripts/verify-release.mjs
         env:

@@ -28,7 +28,7 @@ export default defineConfig({
       { text: "Guide", link: "/getting-started" },
       { text: "Adapters", link: "/browser" },
       { text: "React", link: "/react" },
-      { text: "Live lab", link: `${base}demo/`, target: "_blank" },
+      { text: "Live lab", link: "/demo/", target: "_blank" },
       {
         text: "0.1.0-beta.1",
         link: `${repositoryUrl}/releases/tag/pulse-v0.1.0-beta.1`,

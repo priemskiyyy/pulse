@@ -56,6 +56,7 @@ export default defineConfig({
         items: [
           { text: "React", link: "/react" },
           { text: "Solid", link: "/solid" },
+          { text: "Vue", link: "/vue" },
           { text: "Recipes", link: "/recipes" },
           { text: "Testing", link: "/testing" },
         ],

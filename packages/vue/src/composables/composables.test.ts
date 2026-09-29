@@ -1,16 +1,14 @@
 // @vitest-environment jsdom
+import { Pulse, UNKNOWN_LIFECYCLE_STATE } from "@priemskiyyy/pulse";
+import type { LifecycleSource, LifecycleState } from "@priemskiyyy/pulse";
+import { createMockAdapter } from "@priemskiyyy/pulse/testing";
+import { expect, test } from "vitest";
 import { createApp, defineComponent, h, shallowRef } from "vue";
 import type { Ref } from "vue";
-import { expect, test } from "vitest";
 
-import { createMockAdapter } from "src/testing/createMockAdapter";
-import type { LifecycleSource } from "src/types/LifecycleSource";
-import type { LifecycleState } from "src/types/LifecycleState";
-import { UNKNOWN_LIFECYCLE_STATE } from "src/utils/constants/states";
-import { Pulse } from "src/utils/Pulse";
-import { PulseProvider } from "src/vue/PulseProvider";
-import { useLifecycle } from "src/vue/useLifecycle";
-import { usePulse } from "src/vue/usePulse";
+import { useLifecycle } from "src/composables/useLifecycle";
+import { usePulse } from "src/composables/usePulse";
+import { PulseProvider } from "src/context/PulseProvider";
 
 const createPulse = () => {
   const mock = createMockAdapter({

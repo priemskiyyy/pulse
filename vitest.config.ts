@@ -46,6 +46,20 @@ export default defineConfig({
       },
       {
         extends: true,
+        resolve: {
+          alias: {
+            src: fileURLToPath(new URL("./packages/vue/src", import.meta.url)),
+          },
+          dedupe: ["vue"],
+        },
+        test: {
+          name: "vue",
+          include: ["packages/vue/src/**/*.test.ts"],
+          environment: "jsdom",
+        },
+      },
+      {
+        extends: true,
         plugins: [svelte({ configFile: false })],
         resolve: {
           alias: {

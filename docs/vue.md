@@ -5,7 +5,7 @@ description: "PulseProvider publishes a Pulse to a Vue tree and useLifecycle rea
 # Vue
 
 ```ts
-import { useLifecycle, usePulse } from "@priemskiyyy/pulse/vue";
+import { useLifecycle, usePulse } from "@priemskiyyy/pulse-vue";
 import { computed, onScopeDispose } from "vue";
 
 export const useRefreshOnForeground = (refresh: () => void) => {
@@ -17,7 +17,7 @@ export const useRefreshOnForeground = (refresh: () => void) => {
 };
 ```
 
-`@priemskiyyy/pulse/vue` has the same three names as the React entry, with Vue shapes: `useLifecycle(source?)` returns a read-only computed ref of the frozen snapshot, and `usePulse()` returns a computed ref of the provider's Pulse. It supports Vue 3.5.
+`@priemskiyyy/pulse-vue`, installed beside `@priemskiyyy/pulse`, has the same three names as `@priemskiyyy/pulse-react`, with Vue shapes: `useLifecycle(source?)` returns a read-only computed ref of the frozen snapshot, and `usePulse()` returns a computed ref of the provider's Pulse. It supports Vue 3.5.
 
 <!-- snippet: fragment -->
 

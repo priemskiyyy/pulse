@@ -1,7 +1,7 @@
+import type { Pulse } from "@priemskiyyy/pulse";
 import { computed, defineComponent, provide } from "vue";
 
-import { PULSE_CONTEXT } from "src/vue/PulseContext";
-import type { Pulse } from "src/utils/Pulse";
+import { PULSE_CONTEXT } from "src/context/PulseContext";
 
 /**
  * The Pulse to publish to the components below.

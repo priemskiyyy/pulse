@@ -1,9 +1,9 @@
+import { PulseError } from "@priemskiyyy/pulse";
+import type { Pulse } from "@priemskiyyy/pulse";
 import { inject } from "vue";
 import type { ComputedRef } from "vue";
 
-import { PULSE_CONTEXT } from "src/vue/PulseContext";
-import type { Pulse } from "src/utils/Pulse";
-import { PulseError } from "src/utils/PulseError";
+import { PULSE_CONTEXT } from "src/context/PulseContext";
 
 /**
  * Returns the nearest provider's Pulse as a computed ref and throws

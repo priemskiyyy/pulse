@@ -9,7 +9,7 @@ const BROWSER = "packages/pulse/src/adapters/browser/lint-probe.ts";
 const NATIVE = "packages/pulse/src/adapters/react-native/lint-probe.ts";
 const REACT = "packages/react/src/lint-probe.ts";
 const SOLID = "packages/solid/src/lint-probe.ts";
-const VUE = "packages/pulse/src/vue/lint-probe.ts";
+const VUE = "packages/vue/src/lint-probe.ts";
 const SVELTE = "packages/pulse/src/svelte/lint-probe.ts";
 const TEST = "packages/pulse/src/utils/lint-probe.test.ts";
 
@@ -143,11 +143,6 @@ const boundaries = [
   ['import { onMount } from "svelte";', "no-restricted-imports", REACT],
   ['import { ref } from "vue";', "no-restricted-imports", SVELTE],
   ['import { useState } from "react";', "no-restricted-imports", SVELTE],
-  [
-    'import { useLifecycle } from "src/vue/useLifecycle";',
-    "no-restricted-imports",
-    SVELTE,
-  ],
   ['import { createSignal } from "solid-js";', "no-restricted-imports", VUE],
   ["setTimeout(() => {}, 0);", "no-restricted-globals", CORE],
   ["queueMicrotask(() => {});", "no-restricted-globals", TESTING],
@@ -183,7 +178,7 @@ const entryPoints = [
   "packages/pulse/src/react-native.ts",
   "packages/react/src/index.ts",
   "packages/solid/src/index.ts",
-  "packages/pulse/src/vue.ts",
+  "packages/vue/src/index.ts",
   "packages/pulse/src/svelte.ts",
   "packages/pulse/src/testing.ts",
 ];

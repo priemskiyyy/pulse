@@ -15,7 +15,7 @@ pnpm check
 - `src/types/` holds one public type per file; `src/types/internal/` the ones no entry exports.
 - `src/utils/` holds the core: `Pulse.ts`, `PulseError.ts`, `constants/` and `internal/` for the intake, the reducer and error reporting.
 - `src/adapters/<name>/` holds one adapter: its factory, its tests and fixture, and its own `types/`, `utils/` and `utils/constants/`.
-- `packages/react` is `@priemskiyyy/pulse-react` and `packages/solid` is `@priemskiyyy/pulse-solid`: `context/` holds the provider, `hooks/` or `primitives/` the rest. `src/testing/` the mock adapter, the test clock and the conformance suite.
+- `packages/react` is `@priemskiyyy/pulse-react` `packages/solid` is `@priemskiyyy/pulse-solid` and `packages/vue` is `@priemskiyyy/pulse-vue`: `context/` holds the provider, `hooks/`, `primitives/` or `composables/` the rest. `src/testing/` the mock adapter, the test clock and the conformance suite.
 - `*.contracts.ts` files are type checked and never run: they pin the public types, with `@ts-expect-error` negatives.
 - `examples/shared` holds the lab both example apps share and the compiled integration recipes; `examples/react` and `examples/expo` the apps for exercising real hosts.
 

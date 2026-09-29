@@ -1,3 +1,5 @@
+import { PulseError, UNKNOWN_LIFECYCLE_STATE } from "@priemskiyyy/pulse";
+import type { LifecycleSource, LifecycleState } from "@priemskiyyy/pulse";
 import {
   computed,
   inject,
@@ -8,11 +10,7 @@ import {
 } from "vue";
 import type { ComputedRef, ShallowRef, WatchSource } from "vue";
 
-import { PULSE_CONTEXT } from "src/vue/PulseContext";
-import type { LifecycleSource } from "src/types/LifecycleSource";
-import type { LifecycleState } from "src/types/LifecycleState";
-import { UNKNOWN_LIFECYCLE_STATE } from "src/utils/constants/states";
-import { PulseError } from "src/utils/PulseError";
+import { PULSE_CONTEXT } from "src/context/PulseContext";
 
 /**
  * Reads a lifecycle source's snapshot as a computed ref, the given one or the

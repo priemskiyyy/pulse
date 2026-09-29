@@ -5,7 +5,6 @@ import * as api from "src/index";
 import * as reactNative from "src/react-native";
 import * as svelte from "src/svelte";
 import * as testing from "src/testing";
-import * as vue from "src/vue";
 
 test("every entry exports exactly its public runtime names", () => {
   expect(Object.keys(api).sort()).toEqual([
@@ -17,11 +16,6 @@ test("every entry exports exactly its public runtime names", () => {
   expect(Object.keys(reactNative).sort()).toEqual(["reactNative"]);
   expect(Object.keys(svelte).sort()).toEqual([
     "setPulseContext",
-    "useLifecycle",
-    "usePulse",
-  ]);
-  expect(Object.keys(vue).sort()).toEqual([
-    "PulseProvider",
     "useLifecycle",
     "usePulse",
   ]);

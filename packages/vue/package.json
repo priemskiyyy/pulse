@@ -1,0 +1,58 @@
+{
+  "name": "@priemskiyyy/pulse-vue",
+  "version": "0.1.0-beta.1",
+  "description": "Vue bindings for Pulse: a provider, and composables for the Pulse and its lifecycle state that observe without starting or disposing anything.",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/priemskiyyy/pulse.git",
+    "directory": "packages/vue"
+  },
+  "bugs": {
+    "url": "https://github.com/priemskiyyy/pulse/issues"
+  },
+  "homepage": "https://priemskiyyy.github.io/pulse/vue",
+  "publishConfig": {
+    "access": "public"
+  },
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsdown",
+    "lint:typescript": "tsc --noEmit -p .",
+    "lint:eslint": "eslint src",
+    "test:unit": "vitest run --root ../.. --project vue"
+  },
+  "peerDependencies": {
+    "@priemskiyyy/pulse": ">=0.1.0-beta.1 <0.2",
+    "vue": ">=3.5.0 <4"
+  },
+  "devDependencies": {
+    "@priemskiyyy/pulse": "workspace:*"
+  },
+  "keywords": [
+    "vue",
+    "vue3",
+    "composables",
+    "lifecycle",
+    "app-state",
+    "page-visibility",
+    "foreground",
+    "background",
+    "pulse"
+  ]
+}

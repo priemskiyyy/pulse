@@ -79,7 +79,6 @@ const entryPoints = [
   "packages/pulse/src/index.ts",
   "packages/pulse/src/browser.ts",
   "packages/pulse/src/react-native.ts",
-  "packages/pulse/src/vue.ts",
   "packages/pulse/src/svelte.ts",
   "packages/pulse/src/testing.ts",
 ];
@@ -143,12 +142,6 @@ const vue = {
   names: ["vue"],
   groups: ["vue/*", "@vue/*"],
   message: "Only the Vue binding imports Vue.",
-};
-
-const vueSource = {
-  names: [],
-  groups: ["src/vue", "src/vue/**"],
-  message: "Only the Vue entry point imports the binding.",
 };
 
 const svelte = {
@@ -252,9 +245,8 @@ export default tseslint.config(
     files: ["packages/pulse/src/**/*.{ts,tsx}"],
     ignores: [
       ...tests,
-      "packages/pulse/src/{browser,react-native,vue,svelte}.ts",
+      "packages/pulse/src/{browser,react-native,svelte}.ts",
       "packages/pulse/src/adapters/**",
-      "packages/pulse/src/vue/**",
       "packages/pulse/src/svelte/**",
     ],
     rules: {
@@ -266,7 +258,6 @@ export default tseslint.config(
         svelte,
         browserSource,
         reactNativeSource,
-        vueSource,
         svelteSource,
         testRunners,
       ]),
@@ -287,7 +278,6 @@ export default tseslint.config(
         vue,
         svelte,
         reactNativeSource,
-        vueSource,
         svelteSource,
         testRunners,
       ]),
@@ -308,7 +298,6 @@ export default tseslint.config(
         vue,
         svelte,
         browserSource,
-        vueSource,
         svelteSource,
         testRunners,
       ]),
@@ -334,19 +323,11 @@ export default tseslint.config(
     },
   },
   {
-    files: ["packages/pulse/src/vue.ts", "packages/pulse/src/vue/**/*.ts"],
+    // The Vue binding reads Pulse's public API and nothing of another platform.
+    files: ["packages/vue/src/**/*.ts"],
     ignores: tests,
     rules: {
-      ...platformImports([
-        react,
-        reactNative,
-        solid,
-        svelte,
-        browserSource,
-        reactNativeSource,
-        svelteSource,
-        testRunners,
-      ]),
+      ...platformImports([react, reactNative, solid, svelte, testRunners]),
       "no-restricted-globals": ["error", ...timers, ...hostGlobals],
     },
   },
@@ -364,7 +345,6 @@ export default tseslint.config(
         vue,
         browserSource,
         reactNativeSource,
-        vueSource,
         testRunners,
       ]),
       "no-restricted-globals": ["error", ...timers, ...hostGlobals],

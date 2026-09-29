@@ -94,7 +94,6 @@ const ENTRIES = {
     client: false,
     packages: [],
   },
-  "./vue": { file: "dist/vue.js", client: false, packages: ["vue"] },
   "./svelte": { file: "dist/svelte.js", client: false, packages: ["svelte"] },
   "./testing": { file: "dist/testing.js", client: false, packages: [] },
 };
@@ -103,7 +102,6 @@ const RUNTIME_EXPORTS = {
   ".": ["Pulse", "PulseError", "UNKNOWN_LIFECYCLE_STATE"],
   "./browser": ["browser"],
   "./react-native": ["reactNative"],
-  "./vue": ["PulseProvider", "useLifecycle", "usePulse"],
   "./svelte": ["setPulseContext", "useLifecycle", "usePulse"],
   "./testing": ["createMockAdapter", "createTestClock", "testLifecycleAdapter"],
 };
@@ -270,7 +268,6 @@ try {
     [
       'import { browser } from "@priemskiyyy/pulse/browser";',
       'import { reactNative, type AppStateLike } from "@priemskiyyy/pulse/react-native";',
-      'import { useLifecycle as useVueLifecycle } from "@priemskiyyy/pulse/vue";',
       'import { useLifecycle as useSvelteLifecycle } from "@priemskiyyy/pulse/svelte";',
       'import { Pulse } from "@priemskiyyy/pulse";',
       "",
@@ -278,7 +275,6 @@ try {
       "",
       "export const web = new Pulse({ adapter: browser() });",
       'export const native = new Pulse({ adapter: reactNative({ appState, platform: "ios" }) });',
-      "export const vuePhase = () => useVueLifecycle(web).value.phase;",
       "export const sveltePhase = () => useSvelteLifecycle(web).current.phase;",
       "",
     ].join("\n"),

@@ -40,11 +40,6 @@
       "import": "./dist/react-native.js",
       "default": "./dist/react-native.js"
     },
-    "./vue": {
-      "types": "./dist/vue.d.ts",
-      "import": "./dist/vue.js",
-      "default": "./dist/vue.js"
-    },
     "./svelte": {
       "types": "./dist/svelte.d.ts",
       "import": "./dist/svelte.js",
@@ -63,14 +58,10 @@
     "test:unit": "vitest run --root ../.. --project pulse --project pulse-svelte"
   },
   "peerDependencies": {
-    "svelte": ">=5.0.0 <6",
-    "vue": ">=3.5.0 <4"
+    "svelte": ">=5.0.0 <6"
   },
   "peerDependenciesMeta": {
     "svelte": {
-      "optional": true
-    },
-    "vue": {
       "optional": true
     }
   },
@@ -85,7 +76,6 @@
     "background",
     "focus",
     "svelte",
-    "vue",
     "react-native",
     "expo",
     "typescript",

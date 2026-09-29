@@ -10,7 +10,7 @@ const NATIVE = "packages/pulse/src/adapters/react-native/lint-probe.ts";
 const REACT = "packages/react/src/lint-probe.ts";
 const SOLID = "packages/solid/src/lint-probe.ts";
 const VUE = "packages/vue/src/lint-probe.ts";
-const SVELTE = "packages/pulse/src/svelte/lint-probe.ts";
+const SVELTE = "packages/svelte/src/lint-probe.ts";
 const TEST = "packages/pulse/src/utils/lint-probe.test.ts";
 
 const syntax = [
@@ -179,7 +179,7 @@ const entryPoints = [
   "packages/react/src/index.ts",
   "packages/solid/src/index.ts",
   "packages/vue/src/index.ts",
-  "packages/pulse/src/svelte.ts",
+  "packages/svelte/src/index.ts",
   "packages/pulse/src/testing.ts",
 ];
 
@@ -232,6 +232,10 @@ const allowed = [
   ['import { ref } from "vue";\n\nexport const value = ref;', VUE],
   [
     'import { writable } from "svelte/store";\n\nexport const store = writable;',
+    SVELTE,
+  ],
+  [
+    'import { PULSE_CONTEXT } from "../context/PulseContext.js";\n\nexport const key = PULSE_CONTEXT;',
     SVELTE,
   ],
 ];

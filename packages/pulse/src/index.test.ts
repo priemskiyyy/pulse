@@ -3,7 +3,6 @@ import { expect, test } from "vitest";
 import * as browser from "src/browser";
 import * as api from "src/index";
 import * as reactNative from "src/react-native";
-import * as svelte from "src/svelte";
 import * as testing from "src/testing";
 
 test("every entry exports exactly its public runtime names", () => {
@@ -14,11 +13,6 @@ test("every entry exports exactly its public runtime names", () => {
   ]);
   expect(Object.keys(browser).sort()).toEqual(["browser"]);
   expect(Object.keys(reactNative).sort()).toEqual(["reactNative"]);
-  expect(Object.keys(svelte).sort()).toEqual([
-    "setPulseContext",
-    "useLifecycle",
-    "usePulse",
-  ]);
   expect(Object.keys(testing).sort()).toEqual([
     "createMockAdapter",
     "createTestClock",

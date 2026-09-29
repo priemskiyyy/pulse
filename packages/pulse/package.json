@@ -40,11 +40,6 @@
       "import": "./dist/react-native.js",
       "default": "./dist/react-native.js"
     },
-    "./svelte": {
-      "types": "./dist/svelte.d.ts",
-      "import": "./dist/svelte.js",
-      "default": "./dist/svelte.js"
-    },
     "./testing": {
       "types": "./dist/testing.d.ts",
       "import": "./dist/testing.js",
@@ -55,15 +50,7 @@
     "build": "tsdown",
     "lint:typescript": "tsc --noEmit -p . && tsc --noEmit -p tsconfig.neutral.json",
     "lint:eslint": "eslint src",
-    "test:unit": "vitest run --root ../.. --project pulse --project pulse-svelte"
-  },
-  "peerDependencies": {
-    "svelte": ">=5.0.0 <6"
-  },
-  "peerDependenciesMeta": {
-    "svelte": {
-      "optional": true
-    }
+    "test:unit": "vitest run --root ../.. --project pulse"
   },
   "keywords": [
     "lifecycle",
@@ -75,7 +62,6 @@
     "foreground",
     "background",
     "focus",
-    "svelte",
     "react-native",
     "expo",
     "typescript",

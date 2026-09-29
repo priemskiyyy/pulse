@@ -5,7 +5,6 @@ export default defineConfig({
     index: "src/index.ts",
     browser: "src/browser.ts",
     "react-native": "src/react-native.ts",
-    svelte: "src/svelte.ts",
     testing: "src/testing.ts",
   },
   format: ["esm"],

@@ -13,7 +13,8 @@ pnpm add @priemskiyyy/pulse@next
 ```
 
 Framework bindings are their own packages: add `@priemskiyyy/pulse-react@next`
-`@priemskiyyy/pulse-solid@next` or `@priemskiyyy/pulse-vue@next` beside it.
+`@priemskiyyy/pulse-solid@next`, `@priemskiyyy/pulse-vue@next` or
+`@priemskiyyy/pulse-svelte@next` beside it.
 
 This is the `0.1.0-beta.1` public beta. Physical-device behavior and several real
 browser lifecycle scenarios remain unverified. Read the
@@ -107,13 +108,12 @@ Only an observed, adjacent change between known phases is a transition. Discover
 
 ## Entry points
 
-| Entry            | Exports                                                               |
-| ---------------- | --------------------------------------------------------------------- |
-| `.`              | `Pulse`, `PulseError`, `UNKNOWN_LIFECYCLE_STATE` and the types        |
-| `./browser`      | `browser({ target? })`                                                |
-| `./react-native` | `reactNative({ appState, platform })`                                 |
-| `./svelte`       | `setPulseContext`, `usePulse()`, `useLifecycle(source?)` for Svelte 5 |
-| `./testing`      | `createMockAdapter`, `createTestClock`, `testLifecycleAdapter`        |
+| Entry            | Exports                                                        |
+| ---------------- | -------------------------------------------------------------- |
+| `.`              | `Pulse`, `PulseError`, `UNKNOWN_LIFECYCLE_STATE` and the types |
+| `./browser`      | `browser({ target? })`                                         |
+| `./react-native` | `reactNative({ appState, platform })`                          |
+| `./testing`      | `createMockAdapter`, `createTestClock`, `testLifecycleAdapter` |
 
 ## Tests
 

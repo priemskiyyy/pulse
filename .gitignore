@@ -6,6 +6,7 @@ node_modules/
 !.env.example
 dist/
 .expo/
+.svelte-kit/
 coverage/
 *.tgz
 .artifacts/

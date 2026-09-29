@@ -1,5 +1,6 @@
 import eslint from "@eslint/js";
 import reactHooks from "eslint-plugin-react-hooks";
+import sveltePlugin from "eslint-plugin-svelte";
 import tseslint from "typescript-eslint";
 
 const toRestrictions = (entries) =>
@@ -79,7 +80,6 @@ const entryPoints = [
   "packages/pulse/src/index.ts",
   "packages/pulse/src/browser.ts",
   "packages/pulse/src/react-native.ts",
-  "packages/pulse/src/svelte.ts",
   "packages/pulse/src/testing.ts",
 ];
 
@@ -150,12 +150,6 @@ const svelte = {
   message: "Only the Svelte binding imports Svelte.",
 };
 
-const svelteSource = {
-  names: [],
-  groups: ["src/svelte", "src/svelte/**"],
-  message: "Only the Svelte entry point imports the binding.",
-};
-
 const testRunners = {
   names: ["vitest"],
   groups: ["vitest/*", "@testing-library/*"],
@@ -188,7 +182,13 @@ const hostGlobals = [
 
 export default tseslint.config(
   {
-    ignores: ["**/dist/**", "**/node_modules/**", ".artifacts/**", "tasks/**"],
+    ignores: [
+      "**/dist/**",
+      "**/node_modules/**",
+      "**/.svelte-kit/**",
+      ".artifacts/**",
+      "tasks/**",
+    ],
   },
   {
     // No inline comment can switch a rule off; an exception is a file-scoped block here.
@@ -196,8 +196,14 @@ export default tseslint.config(
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
+  ...sveltePlugin.configs.recommended,
   {
-    files: ["**/*.{js,mjs,ts,tsx}"],
+    // Template comments disable rules through this plugin rule, which noInlineConfig does not reach.
+    files: ["**/*.svelte"],
+    rules: { "svelte/comment-directive": "off" },
+  },
+  {
+    files: ["**/*.{js,mjs,ts,tsx,svelte}"],
     rules: {
       "padding-line-between-statements": [
         "error",
@@ -215,7 +221,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ["**/*.{ts,tsx}"],
+    files: ["**/*.{ts,tsx,svelte}"],
     rules: {
       curly: ["error", "all"],
       "no-else-return": ["error", { allowElseIf: false }],
@@ -230,7 +236,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ["packages/**/src/**/*.{ts,tsx}"],
+    files: ["packages/**/src/**/*.{ts,tsx,svelte}"],
     ignores: entryPoints,
     rules: {
       "no-restricted-syntax": [
@@ -242,12 +248,21 @@ export default tseslint.config(
     },
   },
   {
+    // svelte-package rewrites no aliases, so the Svelte binding imports by relative path.
+    files: ["packages/svelte/**/*.{ts,svelte}"],
+    rules: { "no-restricted-syntax": ["error", ...bannedSyntax] },
+  },
+  {
+    files: ["packages/svelte/src/**/*.{ts,svelte}"],
+    ignores: entryPoints,
+    rules: { "no-restricted-syntax": ["error", ...bannedSyntax, ...reexports] },
+  },
+  {
     files: ["packages/pulse/src/**/*.{ts,tsx}"],
     ignores: [
       ...tests,
-      "packages/pulse/src/{browser,react-native,svelte}.ts",
+      "packages/pulse/src/{browser,react-native}.ts",
       "packages/pulse/src/adapters/**",
-      "packages/pulse/src/svelte/**",
     ],
     rules: {
       ...platformImports([
@@ -258,7 +273,6 @@ export default tseslint.config(
         svelte,
         browserSource,
         reactNativeSource,
-        svelteSource,
         testRunners,
       ]),
       "no-restricted-globals": ["error", ...timers, ...hostGlobals],
@@ -278,7 +292,6 @@ export default tseslint.config(
         vue,
         svelte,
         reactNativeSource,
-        svelteSource,
         testRunners,
       ]),
       "no-restricted-globals": ["error", ...timers],
@@ -298,7 +311,6 @@ export default tseslint.config(
         vue,
         svelte,
         browserSource,
-        svelteSource,
         testRunners,
       ]),
       "no-restricted-globals": ["error", ...timers, ...hostGlobals],
@@ -332,21 +344,11 @@ export default tseslint.config(
     },
   },
   {
-    files: [
-      "packages/pulse/src/svelte.ts",
-      "packages/pulse/src/svelte/**/*.ts",
-    ],
+    // The Svelte binding reads Pulse's public API and nothing of another platform.
+    files: ["packages/svelte/src/**/*.{ts,svelte}"],
     ignores: tests,
     rules: {
-      ...platformImports([
-        react,
-        reactNative,
-        solid,
-        vue,
-        browserSource,
-        reactNativeSource,
-        testRunners,
-      ]),
+      ...platformImports([react, reactNative, solid, vue, testRunners]),
       "no-restricted-globals": ["error", ...timers, ...hostGlobals],
     },
   },
@@ -359,6 +361,16 @@ export default tseslint.config(
     // A global script declares the snippets' ambient names; it cannot import, so it names types with import().
     files: ["scripts/snippets.ambient.d.ts"],
     rules: { "@typescript-eslint/consistent-type-imports": "off" },
+  },
+  {
+    files: ["**/*.svelte", "**/*.svelte.ts"],
+    languageOptions: {
+      parserOptions: {
+        parser: tseslint.parser,
+        extraFileExtensions: [".svelte"],
+      },
+    },
+    rules: { "no-undef": "off" },
   },
   {
     files: ["**/*.{js,mjs}"],

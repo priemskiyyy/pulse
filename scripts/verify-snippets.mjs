@@ -27,6 +27,7 @@ const pages = [
   path.join(workspace, "packages/react/README.md"),
   path.join(workspace, "packages/solid/README.md"),
   path.join(workspace, "packages/vue/README.md"),
+  path.join(workspace, "packages/svelte/README.md"),
   ...listPages(path.join(workspace, "docs")),
 ];
 
@@ -87,6 +88,9 @@ writeFileSync(
           ],
           "@priemskiyyy/pulse-vue": [
             path.join(workspace, "packages/vue/dist/index.d.ts"),
+          ],
+          "@priemskiyyy/pulse-svelte": [
+            path.join(workspace, "packages/svelte/dist/index.d.ts"),
           ],
           "@tanstack/query-core": [
             path.join(

@@ -5,6 +5,7 @@ coverage
 .idea
 .artifacts
 .expo
+.svelte-kit
 tasks
 docs/.vitepress/dist
 docs/.vitepress/cache

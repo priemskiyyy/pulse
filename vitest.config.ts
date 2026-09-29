@@ -21,7 +21,6 @@ export default defineConfig({
         test: {
           name: "pulse",
           include: ["packages/pulse/src/**/*.test.{ts,tsx}"],
-          exclude: ["packages/pulse/src/svelte/**"],
           environment: "node",
         },
       },
@@ -61,18 +60,11 @@ export default defineConfig({
       {
         extends: true,
         plugins: [svelte({ configFile: false })],
-        resolve: {
-          alias: {
-            src: fileURLToPath(
-              new URL("./packages/pulse/src", import.meta.url),
-            ),
-          },
-          // The client build, where onMount runs.
-          conditions: ["browser"],
-        },
+        // The client build, where effects run.
+        resolve: { conditions: ["browser"] },
         test: {
-          name: "pulse-svelte",
-          include: ["packages/pulse/src/svelte/**/*.test.ts"],
+          name: "svelte",
+          include: ["packages/svelte/src/**/*.test.ts"],
           environment: "jsdom",
         },
       },

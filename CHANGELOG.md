@@ -7,7 +7,7 @@
 - `useLifecycle()` takes its source from the nearest `PulseProvider` when none is passed. With neither, it throws `PulseError` with the new code `INVALID_CONFIGURATION`, as does `usePulse()` outside a provider.
 - `@priemskiyyy/pulse-solid`: `PulseProvider`, `usePulse()` and `useLifecycle(source?)` for Solid 1.9, as accessors.
 - `@priemskiyyy/pulse-vue`: `PulseProvider`, `usePulse()` and `useLifecycle(source?)` for Vue 3.5, as computed refs.
-- `./svelte`: `setPulseContext`, `usePulse()` and `useLifecycle(source?)` for Svelte 5, with the snapshot on `current`. `svelte` is an optional peer.
+- `@priemskiyyy/pulse-svelte`: `PulseProvider`, `usePulse()` and `useLifecycle(source?)` for Svelte 5, read through `current`.
 
 ## @priemskiyyy/pulse 0.1.0-beta.1 - 2026-09-29
 

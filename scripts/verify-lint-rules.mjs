@@ -9,6 +9,7 @@ const BROWSER = "packages/pulse/src/adapters/browser/lint-probe.ts";
 const NATIVE = "packages/pulse/src/adapters/react-native/lint-probe.ts";
 const REACT = "packages/pulse/src/react/lint-probe.ts";
 const SOLID = "packages/pulse/src/solid/lint-probe.ts";
+const VUE = "packages/pulse/src/vue/lint-probe.ts";
 const TEST = "packages/pulse/src/utils/lint-probe.test.ts";
 
 const syntax = [
@@ -142,6 +143,21 @@ const boundaries = [
     REACT,
   ],
   ['import { useState } from "react";', "no-restricted-imports", SOLID],
+  ['import { ref } from "vue";', "no-restricted-imports", CORE],
+  ['import { ref } from "vue";', "no-restricted-imports", SOLID],
+  ['import { ref } from "@vue/reactivity";', "no-restricted-imports", REACT],
+  ['import { useState } from "react";', "no-restricted-imports", VUE],
+  ['import { createSignal } from "solid-js";', "no-restricted-imports", VUE],
+  [
+    'import { useLifecycle } from "src/solid/useLifecycle";',
+    "no-restricted-imports",
+    VUE,
+  ],
+  [
+    'import { useLifecycle } from "src/vue/useLifecycle";',
+    "no-restricted-imports",
+    SOLID,
+  ],
   [
     'import { useLifecycle } from "src/react/useLifecycle";',
     "no-restricted-imports",
@@ -166,6 +182,7 @@ const boundaries = [
   ["const page = document;", "no-restricted-globals", NATIVE],
   ["const root = globalThis;", "no-restricted-globals", REACT],
   ["setTimeout(() => {}, 0);", "no-restricted-globals", SOLID],
+  ["const page = document;", "no-restricted-globals", VUE],
   [
     'export { value } from "src/value";',
     "no-restricted-syntax",
@@ -189,6 +206,7 @@ const entryPoints = [
   "packages/pulse/src/react-native.ts",
   "packages/pulse/src/react.ts",
   "packages/pulse/src/solid.ts",
+  "packages/pulse/src/vue.ts",
   "packages/pulse/src/testing.ts",
 ];
 
@@ -238,6 +256,7 @@ const allowed = [
     'import { createSignal } from "solid-js";\n\nexport const signal = createSignal;',
     SOLID,
   ],
+  ['import { ref } from "vue";\n\nexport const value = ref;', VUE],
 ];
 
 const getRuleIds = async (code, filePath) => {

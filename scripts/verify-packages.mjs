@@ -96,6 +96,7 @@ const ENTRIES = {
   },
   "./react": { file: "dist/react.js", client: true, packages: ["react"] },
   "./solid": { file: "dist/solid.js", client: false, packages: ["solid-js"] },
+  "./vue": { file: "dist/vue.js", client: false, packages: ["vue"] },
   "./testing": { file: "dist/testing.js", client: false, packages: [] },
 };
 
@@ -105,6 +106,7 @@ const RUNTIME_EXPORTS = {
   "./react-native": ["reactNative"],
   "./react": ["PulseProvider", "useLifecycle", "usePulse"],
   "./solid": ["PulseProvider", "useLifecycle", "usePulse"],
+  "./vue": ["PulseProvider", "useLifecycle", "usePulse"],
   "./testing": ["createMockAdapter", "createTestClock", "testLifecycleAdapter"],
 };
 
@@ -185,7 +187,7 @@ try {
 
   write(
     "package.json",
-    `${JSON.stringify({ name: "pulse-consumer", private: true, type: "module", dependencies: pick(["react", "react-dom", "@types/react", "solid-js", "typescript"]) }, null, 2)}\n`,
+    `${JSON.stringify({ name: "pulse-consumer", private: true, type: "module", dependencies: pick(["react", "react-dom", "@types/react", "solid-js", "vue", "typescript"]) }, null, 2)}\n`,
   );
   run("npm", [
     "install",
@@ -215,6 +217,7 @@ try {
       "react-dom",
       "react-native",
       "solid-js",
+      "vue",
       "vitest",
     ]) {
       assert.equal(
@@ -270,6 +273,7 @@ try {
       'import { useLifecycle } from "@priemskiyyy/pulse/react";',
       'import { reactNative, type AppStateLike } from "@priemskiyyy/pulse/react-native";',
       'import { useLifecycle as useSolidLifecycle } from "@priemskiyyy/pulse/solid";',
+      'import { useLifecycle as useVueLifecycle } from "@priemskiyyy/pulse/vue";',
       'import { Pulse } from "@priemskiyyy/pulse";',
       "",
       "declare const appState: AppStateLike;",
@@ -278,6 +282,7 @@ try {
       'export const native = new Pulse({ adapter: reactNative({ appState, platform: "ios" }) });',
       "export const Label = () => <span>{useLifecycle(web).phase}</span>;",
       "export const solidPhase = () => useSolidLifecycle(web)().phase;",
+      "export const vuePhase = () => useVueLifecycle(web).value.phase;",
       "",
     ].join("\n"),
   );

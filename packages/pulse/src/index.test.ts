@@ -6,6 +6,7 @@ import * as react from "src/react";
 import * as reactNative from "src/react-native";
 import * as solid from "src/solid";
 import * as testing from "src/testing";
+import * as vue from "src/vue";
 
 test("every entry exports exactly its public runtime names", () => {
   expect(Object.keys(api).sort()).toEqual([
@@ -21,6 +22,11 @@ test("every entry exports exactly its public runtime names", () => {
     "usePulse",
   ]);
   expect(Object.keys(solid).sort()).toEqual([
+    "PulseProvider",
+    "useLifecycle",
+    "usePulse",
+  ]);
+  expect(Object.keys(vue).sort()).toEqual([
     "PulseProvider",
     "useLifecycle",
     "usePulse",

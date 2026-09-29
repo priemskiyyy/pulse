@@ -7,6 +7,7 @@ export default defineConfig({
     "react-native": "src/react-native.ts",
     react: "src/react.ts",
     solid: "src/solid.ts",
+    vue: "src/vue.ts",
     testing: "src/testing.ts",
   },
   format: ["esm"],

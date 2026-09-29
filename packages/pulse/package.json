@@ -50,6 +50,11 @@
       "import": "./dist/solid.js",
       "default": "./dist/solid.js"
     },
+    "./vue": {
+      "types": "./dist/vue.d.ts",
+      "import": "./dist/vue.js",
+      "default": "./dist/vue.js"
+    },
     "./testing": {
       "types": "./dist/testing.d.ts",
       "import": "./dist/testing.js",
@@ -64,13 +69,17 @@
   },
   "peerDependencies": {
     "react": ">=18.3.0 <20",
-    "solid-js": ">=1.9.0 <2"
+    "solid-js": ">=1.9.0 <2",
+    "vue": ">=3.5.0 <4"
   },
   "peerDependenciesMeta": {
     "react": {
       "optional": true
     },
     "solid-js": {
+      "optional": true
+    },
+    "vue": {
       "optional": true
     }
   },
@@ -86,6 +95,7 @@
     "focus",
     "react",
     "solid",
+    "vue",
     "react-native",
     "expo",
     "typescript",

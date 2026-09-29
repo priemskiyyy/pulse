@@ -1,6 +1,6 @@
 {
   "name": "@priemskiyyy/pulse-svelte",
-  "version": "0.1.0-beta.1",
+  "version": "0.1.0-beta.2",
   "description": "Svelte bindings for Pulse: a provider, and utilities for the Pulse and its lifecycle state that observe without starting or disposing anything.",
   "type": "module",
   "license": "MIT",
@@ -40,7 +40,7 @@
     "test:unit": "vitest run --root ../.. --project svelte"
   },
   "peerDependencies": {
-    "@priemskiyyy/pulse": ">=0.1.0-beta.1 <0.2",
+    "@priemskiyyy/pulse": ">=0.1.0-beta.2 <0.2",
     "svelte": ">=5.7.0 <6"
   },
   "devDependencies": {

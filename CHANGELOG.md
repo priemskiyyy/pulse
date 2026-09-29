@@ -1,13 +1,27 @@
 # Changelog
 
-## Unreleased
+## @priemskiyyy/pulse 0.1.0-beta.2 - Unreleased
 
-- Breaking: `@priemskiyyy/pulse/react` moved to its own package, `@priemskiyyy/pulse-react`, like the other Priemskiyyy libraries.
-- `PulseProvider` and `usePulse()` in `@priemskiyyy/pulse-react` publish one Pulse to a tree. The provider never starts or disposes it.
-- `useLifecycle()` takes its source from the nearest `PulseProvider` when none is passed. With neither, it throws `PulseError` with the new code `INVALID_CONFIGURATION`, as does `usePulse()` outside a provider.
-- `@priemskiyyy/pulse-solid`: `PulseProvider`, `usePulse()` and `useLifecycle(source?)` for Solid 1.9, as accessors.
-- `@priemskiyyy/pulse-vue`: `PulseProvider`, `usePulse()` and `useLifecycle(source?)` for Vue 3.5, as computed refs.
-- `@priemskiyyy/pulse-svelte`: `PulseProvider`, `usePulse()` and `useLifecycle(source?)` for Svelte 5, read through `current`.
+- Breaking: `@priemskiyyy/pulse/react` moved to its own package, `@priemskiyyy/pulse-react`, like the bindings of the other Priemskiyyy libraries. The core has no framework peer.
+- `PulseError` has the code `INVALID_CONFIGURATION`, which a binding throws when a hook reads no source.
+
+## @priemskiyyy/pulse-react 0.1.0-beta.2 - Unreleased
+
+- First release. `PulseProvider` publishes one Pulse to a tree, `usePulse()` returns it, and `useLifecycle(source?)` reads the given source or the provider's Pulse, unknown on the server and while hydrating. The provider never starts or disposes the Pulse.
+- Without a provider, `usePulse()` and a sourceless `useLifecycle()` throw `PulseError` with `INVALID_CONFIGURATION`.
+- Requires React 18.3 or 19.
+
+## @priemskiyyy/pulse-solid 0.1.0-beta.2 - Unreleased
+
+- First release. `PulseProvider`, `usePulse()` and `useLifecycle(source?)` for Solid 1.9, as accessors, unknown until mounted.
+
+## @priemskiyyy/pulse-vue 0.1.0-beta.2 - Unreleased
+
+- First release. `PulseProvider`, `usePulse()` and `useLifecycle(source?)` for Vue 3.5, as computed refs, unknown until mounted.
+
+## @priemskiyyy/pulse-svelte 0.1.0-beta.2 - Unreleased
+
+- First release. `PulseProvider`, `usePulse()` and `useLifecycle(source?)` for Svelte 5.7, read through `current`, unknown until mounted. It ships its sources for the application's Svelte compiler.
 
 ## @priemskiyyy/pulse 0.1.0-beta.1 - 2026-09-29
 

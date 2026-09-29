@@ -8,7 +8,7 @@
 2. Run `pnpm check:release`. It needs no browser, device or credentials.
 3. Merge into `main` and check GitHub Actions on that revision.
 4. Create a GitHub release with the tag. Mark a prerelease version as a prerelease.
-5. Approve the publish job in the GitHub `npm` environment once its verification jobs pass.
+5. Check the publish workflow. If the GitHub `npm` environment requires reviewers, approve its publish job once the verification jobs pass.
 
 Do not reuse a published version. Prepare a new patch version and changelog entry for a release fix.
 
@@ -32,6 +32,15 @@ npm publish priemskiyyy-pulse-<version>.tgz --access public --tag next
 Use `next` for a prerelease such as `0.1.0-beta.1`; use `latest` only for a stable
 release whose platform verification is recorded. Mark the corresponding GitHub
 release as a prerelease when its version has a suffix.
+
+On the first publication, npm also assigns `latest` even when `--tag next` is
+specified. The registry rejected removing that tag for `0.1.0-beta.1`, so both
+tags currently identify the beta. The version suffix and release status remain
+the source of its stability level. Later prereleases published with `next` do
+not move the existing `latest` tag.
+
+The initial maintainer publication has no GitHub provenance. Subsequent versions
+published by the trusted workflow include provenance.
 
 After the publish, register the trusted publisher, then require two-factor authentication and disallow tokens for the package. `npm trust` needs npm 11.15 or later; older versions leave out the permission the registry requires and fail with a bare `400 Bad Request`.
 

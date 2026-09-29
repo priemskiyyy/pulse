@@ -8,6 +8,7 @@ export default defineConfig({
     react: "src/react.ts",
     solid: "src/solid.ts",
     vue: "src/vue.ts",
+    svelte: "src/svelte.ts",
     testing: "src/testing.ts",
   },
   format: ["esm"],

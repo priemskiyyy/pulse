@@ -55,6 +55,11 @@
       "import": "./dist/vue.js",
       "default": "./dist/vue.js"
     },
+    "./svelte": {
+      "types": "./dist/svelte.d.ts",
+      "import": "./dist/svelte.js",
+      "default": "./dist/svelte.js"
+    },
     "./testing": {
       "types": "./dist/testing.d.ts",
       "import": "./dist/testing.js",
@@ -65,11 +70,12 @@
     "build": "tsdown",
     "lint:typescript": "tsc --noEmit -p . && tsc --noEmit -p tsconfig.neutral.json",
     "lint:eslint": "eslint src",
-    "test:unit": "vitest run --root ../.. --project pulse --project pulse-solid"
+    "test:unit": "vitest run --root ../.. --project pulse --project pulse-solid --project pulse-svelte"
   },
   "peerDependencies": {
     "react": ">=18.3.0 <20",
     "solid-js": ">=1.9.0 <2",
+    "svelte": ">=5.0.0 <6",
     "vue": ">=3.5.0 <4"
   },
   "peerDependenciesMeta": {
@@ -77,6 +83,9 @@
       "optional": true
     },
     "solid-js": {
+      "optional": true
+    },
+    "svelte": {
       "optional": true
     },
     "vue": {
@@ -95,6 +104,7 @@
     "focus",
     "react",
     "solid",
+    "svelte",
     "vue",
     "react-native",
     "expo",

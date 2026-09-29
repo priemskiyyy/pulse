@@ -10,6 +10,7 @@ const NATIVE = "packages/pulse/src/adapters/react-native/lint-probe.ts";
 const REACT = "packages/pulse/src/react/lint-probe.ts";
 const SOLID = "packages/pulse/src/solid/lint-probe.ts";
 const VUE = "packages/pulse/src/vue/lint-probe.ts";
+const SVELTE = "packages/pulse/src/svelte/lint-probe.ts";
 const TEST = "packages/pulse/src/utils/lint-probe.test.ts";
 
 const syntax = [
@@ -147,6 +148,21 @@ const boundaries = [
   ['import { ref } from "vue";', "no-restricted-imports", SOLID],
   ['import { ref } from "@vue/reactivity";', "no-restricted-imports", REACT],
   ['import { useState } from "react";', "no-restricted-imports", VUE],
+  ['import { onMount } from "svelte";', "no-restricted-imports", CORE],
+  ['import { writable } from "svelte/store";', "no-restricted-imports", VUE],
+  ['import { onMount } from "svelte";', "no-restricted-imports", REACT],
+  ['import { ref } from "vue";', "no-restricted-imports", SVELTE],
+  ['import { useState } from "react";', "no-restricted-imports", SVELTE],
+  [
+    'import { useLifecycle } from "src/vue/useLifecycle";',
+    "no-restricted-imports",
+    SVELTE,
+  ],
+  [
+    'import { useLifecycle } from "src/svelte/useLifecycle";',
+    "no-restricted-imports",
+    SOLID,
+  ],
   ['import { createSignal } from "solid-js";', "no-restricted-imports", VUE],
   [
     'import { useLifecycle } from "src/solid/useLifecycle";',
@@ -183,6 +199,7 @@ const boundaries = [
   ["const root = globalThis;", "no-restricted-globals", REACT],
   ["setTimeout(() => {}, 0);", "no-restricted-globals", SOLID],
   ["const page = document;", "no-restricted-globals", VUE],
+  ["setTimeout(() => {}, 0);", "no-restricted-globals", SVELTE],
   [
     'export { value } from "src/value";',
     "no-restricted-syntax",
@@ -207,6 +224,7 @@ const entryPoints = [
   "packages/pulse/src/react.ts",
   "packages/pulse/src/solid.ts",
   "packages/pulse/src/vue.ts",
+  "packages/pulse/src/svelte.ts",
   "packages/pulse/src/testing.ts",
 ];
 
@@ -257,6 +275,10 @@ const allowed = [
     SOLID,
   ],
   ['import { ref } from "vue";\n\nexport const value = ref;', VUE],
+  [
+    'import { writable } from "svelte/store";\n\nexport const store = writable;',
+    SVELTE,
+  ],
 ];
 
 const getRuleIds = async (code, filePath) => {

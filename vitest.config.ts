@@ -1,3 +1,4 @@
+import { svelte } from "@sveltejs/vite-plugin-svelte";
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vitest/config";
 
@@ -20,7 +21,10 @@ export default defineConfig({
         test: {
           name: "pulse",
           include: ["packages/pulse/src/**/*.test.{ts,tsx}"],
-          exclude: ["packages/pulse/src/solid/**"],
+          exclude: [
+            "packages/pulse/src/solid/**",
+            "packages/pulse/src/svelte/**",
+          ],
           environment: "node",
         },
       },
@@ -40,6 +44,24 @@ export default defineConfig({
           include: ["packages/pulse/src/solid/**/*.test.ts"],
           environment: "jsdom",
           server: { deps: { inline: [/solid-js/] } },
+        },
+      },
+      {
+        extends: true,
+        plugins: [svelte({ configFile: false })],
+        resolve: {
+          alias: {
+            src: fileURLToPath(
+              new URL("./packages/pulse/src", import.meta.url),
+            ),
+          },
+          // The client build, where onMount runs.
+          conditions: ["browser"],
+        },
+        test: {
+          name: "pulse-svelte",
+          include: ["packages/pulse/src/svelte/**/*.test.ts"],
+          environment: "jsdom",
         },
       },
       {

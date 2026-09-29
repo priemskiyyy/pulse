@@ -112,6 +112,7 @@ Only an observed, adjacent change between known phases is a transition. Discover
 | `./react`        | `PulseProvider`, `usePulse()`, `useLifecycle(source?)`, a client module |
 | `./solid`        | The same three names for Solid, as accessors                            |
 | `./vue`          | The same three names for Vue, as computed refs                          |
+| `./svelte`       | `setPulseContext`, `usePulse()`, `useLifecycle(source?)` for Svelte 5   |
 | `./testing`      | `createMockAdapter`, `createTestClock`, `testLifecycleAdapter`          |
 
 ## Tests

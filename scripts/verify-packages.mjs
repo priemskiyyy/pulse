@@ -97,6 +97,7 @@ const ENTRIES = {
   "./react": { file: "dist/react.js", client: true, packages: ["react"] },
   "./solid": { file: "dist/solid.js", client: false, packages: ["solid-js"] },
   "./vue": { file: "dist/vue.js", client: false, packages: ["vue"] },
+  "./svelte": { file: "dist/svelte.js", client: false, packages: ["svelte"] },
   "./testing": { file: "dist/testing.js", client: false, packages: [] },
 };
 
@@ -107,6 +108,7 @@ const RUNTIME_EXPORTS = {
   "./react": ["PulseProvider", "useLifecycle", "usePulse"],
   "./solid": ["PulseProvider", "useLifecycle", "usePulse"],
   "./vue": ["PulseProvider", "useLifecycle", "usePulse"],
+  "./svelte": ["setPulseContext", "useLifecycle", "usePulse"],
   "./testing": ["createMockAdapter", "createTestClock", "testLifecycleAdapter"],
 };
 
@@ -187,7 +189,7 @@ try {
 
   write(
     "package.json",
-    `${JSON.stringify({ name: "pulse-consumer", private: true, type: "module", dependencies: pick(["react", "react-dom", "@types/react", "solid-js", "vue", "typescript"]) }, null, 2)}\n`,
+    `${JSON.stringify({ name: "pulse-consumer", private: true, type: "module", dependencies: pick(["react", "react-dom", "@types/react", "solid-js", "vue", "svelte", "typescript"]) }, null, 2)}\n`,
   );
   run("npm", [
     "install",
@@ -218,6 +220,7 @@ try {
       "react-native",
       "solid-js",
       "vue",
+      "svelte",
       "vitest",
     ]) {
       assert.equal(
@@ -274,6 +277,7 @@ try {
       'import { reactNative, type AppStateLike } from "@priemskiyyy/pulse/react-native";',
       'import { useLifecycle as useSolidLifecycle } from "@priemskiyyy/pulse/solid";',
       'import { useLifecycle as useVueLifecycle } from "@priemskiyyy/pulse/vue";',
+      'import { useLifecycle as useSvelteLifecycle } from "@priemskiyyy/pulse/svelte";',
       'import { Pulse } from "@priemskiyyy/pulse";',
       "",
       "declare const appState: AppStateLike;",
@@ -283,6 +287,7 @@ try {
       "export const Label = () => <span>{useLifecycle(web).phase}</span>;",
       "export const solidPhase = () => useSolidLifecycle(web)().phase;",
       "export const vuePhase = () => useVueLifecycle(web).value.phase;",
+      "export const sveltePhase = () => useSvelteLifecycle(web).current.phase;",
       "",
     ].join("\n"),
   );

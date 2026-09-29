@@ -11,11 +11,11 @@ pnpm check
 
 ## Layout
 
-- `packages/pulse/src/index.ts`, `browser.ts`, `react-native.ts`, `react.ts` and `testing.ts` are the five entry points. They only re-export, and `src/index.test.ts` pins what each one exports.
+- `packages/pulse/src/index.ts`, `browser.ts`, `react-native.ts` and `testing.ts` are the core entry points. They only re-export, and `src/index.test.ts` pins what each one exports.
 - `src/types/` holds one public type per file; `src/types/internal/` the ones no entry exports.
 - `src/utils/` holds the core: `Pulse.ts`, `PulseError.ts`, `constants/` and `internal/` for the intake, the reducer and error reporting.
 - `src/adapters/<name>/` holds one adapter: its factory, its tests and fixture, and its own `types/`, `utils/` and `utils/constants/`.
-- `src/react/` holds the hook, `src/testing/` the mock adapter, the test clock and the conformance suite.
+- `packages/react` is `@priemskiyyy/pulse-react`: `context/` holds the provider, `hooks/` the hooks. `src/testing/` the mock adapter, the test clock and the conformance suite.
 - `*.contracts.ts` files are type checked and never run: they pin the public types, with `@ts-expect-error` negatives.
 - `examples/shared` holds the lab both example apps share and the compiled integration recipes; `examples/react` and `examples/expo` the apps for exercising real hosts.
 

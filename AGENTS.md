@@ -21,13 +21,16 @@ and Trace, and it follows their conventions. Before changing code, read
   4. Every input is delivered in order: reentrant observations queue behind
      the current commit instead of superseding it.
   5. Pulse schedules nothing: no timer, no polling, no debounce.
-- One published package, `@priemskiyyy/pulse`, with the entry points `.`,
-  `./browser`, `./react-native`, `./react` and `./testing`. ESLint keeps each
-  entry to its own platform; `scripts/verify-lint-rules.mjs` proves it.
+- The core package, `@priemskiyyy/pulse`, with the entry points `.`,
+  `./browser`, `./react-native` and `./testing`, and one package per
+  framework binding, `@priemskiyyy/pulse-react` in `packages/react`. ESLint
+  keeps each entry to its own platform; `scripts/verify-lint-rules.mjs` proves
+  it.
 - Layout: the core in `src/types` and `src/utils`, each adapter in
   `src/adapters/<name>/` with its factory, tests and fixture beside it and its
-  own `types/`, `utils/` and `utils/constants/`, the hook in `src/react`, the
-  test helpers in `src/testing`. An entry file only re-exports.
+  own `types/`, `utils/` and `utils/constants/`, the test helpers in
+  `src/testing`; a binding keeps its provider in `context/` and its hooks in
+  `hooks/`. An entry file only re-exports.
 - **Types before runtime checks.** What the types enforce is not checked again
   at runtime: no option or argument validation, no shape checks. Runtime code
   checks only what a type cannot say, such as background's interaction, a

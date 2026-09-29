@@ -4,8 +4,10 @@ description: "PulseProvider publishes a Pulse and useLifecycle reads a lifecycle
 
 # React
 
+The React binding is its own package, `@priemskiyyy/pulse-react`, beside `@priemskiyyy/pulse`.
+
 ```tsx
-import { useLifecycle } from "@priemskiyyy/pulse/react";
+import { useLifecycle } from "@priemskiyyy/pulse-react";
 
 import { pulse } from "src/lifecycle";
 
@@ -27,7 +29,7 @@ export const LifecycleLabel = () => {
 `PulseProvider` publishes one Pulse to the tree below, so components call `useLifecycle()` without importing the instance. `usePulse()` returns that Pulse, for `on()` subscriptions in effects. Without a provider, both throw `PulseError` with `INVALID_CONFIGURATION`; a source passed to `useLifecycle` always wins.
 
 ```tsx
-import { PulseProvider, useLifecycle } from "@priemskiyyy/pulse/react";
+import { PulseProvider, useLifecycle } from "@priemskiyyy/pulse-react";
 
 const Phase = () => <span>{useLifecycle().phase}</span>;
 

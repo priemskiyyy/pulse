@@ -1,0 +1,57 @@
+{
+  "name": "@priemskiyyy/pulse-react",
+  "version": "0.1.0-beta.1",
+  "description": "React bindings for Pulse: a provider, and hooks for the Pulse and its lifecycle state that observe without starting or disposing anything.",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/priemskiyyy/pulse.git",
+    "directory": "packages/react"
+  },
+  "bugs": {
+    "url": "https://github.com/priemskiyyy/pulse/issues"
+  },
+  "homepage": "https://priemskiyyy.github.io/pulse/react",
+  "publishConfig": {
+    "access": "public"
+  },
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsdown",
+    "lint:typescript": "tsc --noEmit -p .",
+    "lint:eslint": "eslint src",
+    "test:unit": "vitest run --root ../.. --project react"
+  },
+  "peerDependencies": {
+    "@priemskiyyy/pulse": ">=0.1.0-beta.1 <0.2",
+    "react": ">=18.3.0 <20"
+  },
+  "devDependencies": {
+    "@priemskiyyy/pulse": "workspace:*"
+  },
+  "keywords": [
+    "react",
+    "hooks",
+    "lifecycle",
+    "app-state",
+    "page-visibility",
+    "foreground",
+    "background",
+    "pulse"
+  ]
+}

@@ -1,5 +1,5 @@
 import type { LifecycleSource } from "@priemskiyyy/pulse";
-import { useLifecycle } from "@priemskiyyy/pulse/react";
+import { useLifecycle } from "@priemskiyyy/pulse-react";
 import type React from "react";
 import { StyleSheet, Text, View } from "react-native";
 

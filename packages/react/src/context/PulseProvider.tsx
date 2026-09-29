@@ -1,19 +1,5 @@
-import type { PropsWithChildren } from "react";
-
-import { PulseContext } from "src/react/PulseContext";
-import type { Pulse } from "src/utils/Pulse";
-
-/**
- * The Pulse to publish to the tree below.
- *
- * @example
- * ```tsx
- * const props: PulseProviderProps = { pulse };
- * ```
- */
-export type PulseProviderProps = PropsWithChildren<{
-  pulse: Pulse;
-}>;
+import { PulseContext } from "src/context/PulseContext";
+import type { PulseProviderProps } from "src/types/PulseProviderProps";
 
 /**
  * Publishes one Pulse to the tree below. It only publishes: it never starts

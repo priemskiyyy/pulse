@@ -1,14 +1,13 @@
+import { Pulse } from "@priemskiyyy/pulse";
+import type { LifecycleSource, LifecycleState } from "@priemskiyyy/pulse";
+import { createMockAdapter } from "@priemskiyyy/pulse/testing";
 import { JSDOM } from "jsdom";
 import { act, createElement } from "react";
 import { hydrateRoot } from "react-dom/client";
 import { renderToString } from "react-dom/server";
 import { expect, test, vi } from "vitest";
 
-import { useLifecycle } from "src/react/useLifecycle";
-import { createMockAdapter } from "src/testing/createMockAdapter";
-import type { LifecycleSource } from "src/types/LifecycleSource";
-import type { LifecycleState } from "src/types/LifecycleState";
-import { Pulse } from "src/utils/Pulse";
+import { useLifecycle } from "src/hooks/useLifecycle";
 
 const FOREGROUND: LifecycleState = {
   phase: "foreground",

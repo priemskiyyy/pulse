@@ -40,11 +40,6 @@
       "import": "./dist/react-native.js",
       "default": "./dist/react-native.js"
     },
-    "./react": {
-      "types": "./dist/react.d.ts",
-      "import": "./dist/react.js",
-      "default": "./dist/react.js"
-    },
     "./solid": {
       "types": "./dist/solid.d.ts",
       "import": "./dist/solid.js",
@@ -73,15 +68,11 @@
     "test:unit": "vitest run --root ../.. --project pulse --project pulse-solid --project pulse-svelte"
   },
   "peerDependencies": {
-    "react": ">=18.3.0 <20",
     "solid-js": ">=1.9.0 <2",
     "svelte": ">=5.0.0 <6",
     "vue": ">=3.5.0 <4"
   },
   "peerDependenciesMeta": {
-    "react": {
-      "optional": true
-    },
     "solid-js": {
       "optional": true
     },
@@ -102,7 +93,6 @@
     "foreground",
     "background",
     "focus",
-    "react",
     "solid",
     "svelte",
     "vue",

@@ -154,9 +154,9 @@ const MUTANTS = [
     describes: "Android inactive treated as the iOS interruption",
   },
   {
-    file: `${source}/react/useLifecycle.ts`,
+    file: "packages/react/src/hooks/useLifecycle.ts",
     find: "    getServerSnapshot,",
-    replace: "    source.state.get,",
+    replace: "    resolved.state.get,",
     describes: "hydration reading the live client state",
   },
 ];

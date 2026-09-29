@@ -66,6 +66,23 @@ export default defineConfig({
       },
       {
         extends: true,
+        resolve: {
+          alias: {
+            src: fileURLToPath(
+              new URL("./packages/react/src", import.meta.url),
+            ),
+          },
+          // A binding must render against the same React instance as the renderer under test.
+          dedupe: ["react", "react-dom"],
+        },
+        test: {
+          name: "react",
+          include: ["packages/react/src/**/*.test.{ts,tsx}"],
+          environment: "node",
+        },
+      },
+      {
+        extends: true,
         test: {
           name: "example-shared",
           include: ["examples/shared/**/*.test.ts"],

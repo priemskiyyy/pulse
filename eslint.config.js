@@ -75,10 +75,10 @@ const reexports = toRestrictions([
 ]);
 
 const entryPoints = [
+  "packages/*/src/index.ts",
   "packages/pulse/src/index.ts",
   "packages/pulse/src/browser.ts",
   "packages/pulse/src/react-native.ts",
-  "packages/pulse/src/react.ts",
   "packages/pulse/src/solid.ts",
   "packages/pulse/src/vue.ts",
   "packages/pulse/src/svelte.ts",
@@ -132,12 +132,6 @@ const reactNativeSource = {
   names: [],
   groups: ["src/adapters/react-native", "src/adapters/react-native/**"],
   message: "Only the React Native entry point imports its adapter.",
-};
-
-const reactSource = {
-  names: [],
-  groups: ["src/react", "src/react/**"],
-  message: "Only the React entry point imports the binding.",
 };
 
 const solid = {
@@ -265,9 +259,8 @@ export default tseslint.config(
     files: ["packages/pulse/src/**/*.{ts,tsx}"],
     ignores: [
       ...tests,
-      "packages/pulse/src/{browser,react-native,react,solid,vue,svelte}.ts",
+      "packages/pulse/src/{browser,react-native,solid,vue,svelte}.ts",
       "packages/pulse/src/adapters/**",
-      "packages/pulse/src/react/**",
       "packages/pulse/src/solid/**",
       "packages/pulse/src/vue/**",
       "packages/pulse/src/svelte/**",
@@ -281,7 +274,6 @@ export default tseslint.config(
         svelte,
         browserSource,
         reactNativeSource,
-        reactSource,
         solidSource,
         vueSource,
         svelteSource,
@@ -304,7 +296,6 @@ export default tseslint.config(
         vue,
         svelte,
         reactNativeSource,
-        reactSource,
         solidSource,
         vueSource,
         svelteSource,
@@ -327,7 +318,6 @@ export default tseslint.config(
         vue,
         svelte,
         browserSource,
-        reactSource,
         solidSource,
         vueSource,
         svelteSource,
@@ -337,24 +327,11 @@ export default tseslint.config(
     },
   },
   {
-    files: [
-      "packages/pulse/src/react.ts",
-      "packages/pulse/src/react/**/*.{ts,tsx}",
-    ],
+    // The React binding reads Pulse's public API and nothing of another platform.
+    files: ["packages/react/src/**/*.{ts,tsx}"],
     ignores: tests,
     rules: {
-      ...platformImports([
-        reactNative,
-        solid,
-        vue,
-        svelte,
-        browserSource,
-        reactNativeSource,
-        solidSource,
-        vueSource,
-        svelteSource,
-        testRunners,
-      ]),
+      ...platformImports([reactNative, solid, vue, svelte, testRunners]),
       "no-restricted-globals": ["error", ...timers, ...hostGlobals],
     },
   },
@@ -369,7 +346,6 @@ export default tseslint.config(
         svelte,
         browserSource,
         reactNativeSource,
-        reactSource,
         vueSource,
         svelteSource,
         testRunners,
@@ -388,7 +364,6 @@ export default tseslint.config(
         svelte,
         browserSource,
         reactNativeSource,
-        reactSource,
         solidSource,
         svelteSource,
         testRunners,
@@ -410,7 +385,6 @@ export default tseslint.config(
         vue,
         browserSource,
         reactNativeSource,
-        reactSource,
         solidSource,
         vueSource,
         testRunners,
@@ -419,11 +393,7 @@ export default tseslint.config(
     },
   },
   {
-    files: [
-      "packages/pulse/src/react.ts",
-      "packages/pulse/src/react/**/*.{ts,tsx}",
-      "examples/**/*.{ts,tsx}",
-    ],
+    files: ["packages/react/**/*.{ts,tsx}", "examples/**/*.{ts,tsx}"],
     plugins: { "react-hooks": reactHooks },
     rules: reactHooks.configs.recommended.rules,
   },

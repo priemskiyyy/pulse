@@ -1,15 +1,14 @@
 // @vitest-environment jsdom
+import { Pulse, UNKNOWN_LIFECYCLE_STATE } from "@priemskiyyy/pulse";
+import { createMockAdapter } from "@priemskiyyy/pulse/testing";
 import { act, cleanup, render, renderHook } from "@testing-library/react";
 import { StrictMode } from "react";
 import type { PropsWithChildren } from "react";
 import { afterEach, expect, test, vi } from "vitest";
 
-import { PulseProvider } from "src/react/PulseProvider";
-import { useLifecycle } from "src/react/useLifecycle";
-import { usePulse } from "src/react/usePulse";
-import { createMockAdapter } from "src/testing/createMockAdapter";
-import { UNKNOWN_LIFECYCLE_STATE } from "src/utils/constants/states";
-import { Pulse } from "src/utils/Pulse";
+import { PulseProvider } from "src/context/PulseProvider";
+import { useLifecycle } from "src/hooks/useLifecycle";
+import { usePulse } from "src/hooks/usePulse";
 
 afterEach(() => {
   cleanup();

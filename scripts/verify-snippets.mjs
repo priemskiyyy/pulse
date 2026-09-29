@@ -24,6 +24,7 @@ const listPages = (directory) =>
 const pages = [
   path.join(workspace, "README.md"),
   path.join(workspace, "packages/pulse/README.md"),
+  path.join(workspace, "packages/react/README.md"),
   ...listPages(path.join(workspace, "docs")),
 ];
 
@@ -76,6 +77,9 @@ writeFileSync(
         paths: {
           "@priemskiyyy/pulse": [path.join(dist, "index.d.ts")],
           "@priemskiyyy/pulse/*": [path.join(dist, "*.d.ts")],
+          "@priemskiyyy/pulse-react": [
+            path.join(workspace, "packages/react/dist/index.d.ts"),
+          ],
           "@tanstack/query-core": [
             path.join(
               workspace,

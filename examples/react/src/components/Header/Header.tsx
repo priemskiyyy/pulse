@@ -1,6 +1,6 @@
 import { ArrowCounterClockwise, Heartbeat } from "@phosphor-icons/react";
 import type { LifecycleSource } from "@priemskiyyy/pulse";
-import { useLifecycle } from "@priemskiyyy/pulse/react";
+import { useLifecycle } from "@priemskiyyy/pulse-react";
 import type React from "react";
 
 import { buttonStyles } from "example-shared/ui/styles/buttonStyles";

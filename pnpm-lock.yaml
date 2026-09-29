@@ -101,6 +101,9 @@ importers:
       '@priemskiyyy/pulse':
         specifier: workspace:*
         version: link:../../packages/pulse
+      '@priemskiyyy/pulse-react':
+        specifier: workspace:*
+        version: link:../../packages/react
       example-shared:
         specifier: workspace:*
         version: link:../shared
@@ -128,6 +131,9 @@ importers:
       '@priemskiyyy/pulse':
         specifier: workspace:*
         version: link:../../packages/pulse
+      '@priemskiyyy/pulse-react':
+        specifier: workspace:*
+        version: link:../../packages/react
       class-variance-authority:
         specifier: 0.7.1
         version: 0.7.1
@@ -183,9 +189,6 @@ importers:
 
   packages/pulse:
     dependencies:
-      react:
-        specifier: '>=18.3.0 <20'
-        version: 19.3.0
       solid-js:
         specifier: '>=1.9.0 <2'
         version: 1.9.15
@@ -195,6 +198,16 @@ importers:
       vue:
         specifier: '>=3.5.0 <4'
         version: 3.5.42(typescript@5.8.3)
+
+  packages/react:
+    dependencies:
+      react:
+        specifier: '>=18.3.0 <20'
+        version: 19.2.8
+    devDependencies:
+      '@priemskiyyy/pulse':
+        specifier: workspace:*
+        version: link:../pulse
 
 packages:
 
@@ -3717,10 +3730,6 @@ packages:
 
   react@19.2.8:
     resolution: {integrity: sha512-PWaYA1L/q9u2u7xYQi+Y3L3Yfnie7XyLeaJICV1MGD6LprsBxcAqGjYyr0eY3p+QdsA+x/Irkt4Qif8D63+Sbw==}
-    engines: {node: '>=0.10.0'}
-
-  react@19.3.0:
-    resolution: {integrity: sha512-E8LUcbtBWt20bbl2YoHfx4ZDBdxVTfOKtCZn9cDSJ4l6/nuoApcpIBcj47t2wZoVX8g2ZHuMHbiShgCR1T5Sog==}
     engines: {node: '>=0.10.0'}
 
   regenerate-unicode-properties@10.2.2:
@@ -8520,8 +8529,6 @@ snapshots:
   react@19.2.3: {}
 
   react@19.2.8: {}
-
-  react@19.3.0: {}
 
   regenerate-unicode-properties@10.2.2:
     dependencies:

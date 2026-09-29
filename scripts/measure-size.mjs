@@ -19,7 +19,8 @@ const ENTRIES = [
     files: ["index.js", "react-native.js"],
     budget: 8 * 1024,
   },
-  { name: "react", files: ["react.js"], budget: 1024 },
+  // A binding package, bundled against the core as a peer.
+  { name: "react", files: ["../../react/dist/index.js"], budget: 1024 },
   { name: "solid", files: ["solid.js"], budget: 1024 },
   { name: "vue", files: ["vue.js"], budget: 1024 },
   { name: "svelte", files: ["svelte.js"], budget: 1024 },
@@ -30,6 +31,7 @@ const measure = async (files) => {
   const bundle = await rolldown({
     input: files.map((file) => `${dist}${file}`),
     external: [
+      /^@priemskiyyy\/pulse(\/|$)/,
       "react",
       "react-dom",
       "react-native",

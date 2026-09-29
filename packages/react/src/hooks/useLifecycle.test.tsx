@@ -1,14 +1,12 @@
 // @vitest-environment jsdom
+import { Pulse, UNKNOWN_LIFECYCLE_STATE } from "@priemskiyyy/pulse";
+import type { LifecycleSource, LifecycleState } from "@priemskiyyy/pulse";
+import { createMockAdapter } from "@priemskiyyy/pulse/testing";
 import { act, cleanup, render } from "@testing-library/react";
 import { StrictMode, useLayoutEffect } from "react";
 import { afterEach, expect, test, vi } from "vitest";
 
-import { useLifecycle } from "src/react/useLifecycle";
-import { createMockAdapter } from "src/testing/createMockAdapter";
-import type { LifecycleSource } from "src/types/LifecycleSource";
-import type { LifecycleState } from "src/types/LifecycleState";
-import { UNKNOWN_LIFECYCLE_STATE } from "src/utils/constants/states";
-import { Pulse } from "src/utils/Pulse";
+import { useLifecycle } from "src/hooks/useLifecycle";
 
 afterEach(cleanup);
 

@@ -54,7 +54,7 @@ pulse.start();
 
 Create and start the instance at application bootstrap. In React, publish it
 with `<PulseProvider pulse={pulse}>` and read it with `useLifecycle()` from
-`@priemskiyyy/pulse/react`, or pass it directly. Subscriptions are passive;
+`@priemskiyyy/pulse-react`, or pass it directly. Subscriptions are passive;
 call `pulse.dispose()` only when the application explicitly tears down the host.
 
 ## Why not use AppState or visibilitychange directly

@@ -12,6 +12,8 @@ No dependencies, ESM only, no side effects on import.
 pnpm add @priemskiyyy/pulse@next
 ```
 
+For React, add `@priemskiyyy/pulse-react@next` beside it.
+
 This is the `0.1.0-beta.1` public beta. Physical-device behavior and several real
 browser lifecycle scenarios remain unverified. Read the
 [verification matrix](https://priemskiyyy.github.io/pulse/verification) before
@@ -50,7 +52,7 @@ In React, publish the Pulse once and read the current state; neither the
 provider nor the hook starts or disposes anything:
 
 ```tsx
-import { PulseProvider, useLifecycle } from "@priemskiyyy/pulse/react";
+import { PulseProvider, useLifecycle } from "@priemskiyyy/pulse-react";
 
 export const LifecycleLabel = () => {
   const { phase, interaction } = useLifecycle();
@@ -104,16 +106,15 @@ Only an observed, adjacent change between known phases is a transition. Discover
 
 ## Entry points
 
-| Entry            | Exports                                                                 |
-| ---------------- | ----------------------------------------------------------------------- |
-| `.`              | `Pulse`, `PulseError`, `UNKNOWN_LIFECYCLE_STATE` and the types          |
-| `./browser`      | `browser({ target? })`                                                  |
-| `./react-native` | `reactNative({ appState, platform })`                                   |
-| `./react`        | `PulseProvider`, `usePulse()`, `useLifecycle(source?)`, a client module |
-| `./solid`        | The same three names for Solid, as accessors                            |
-| `./vue`          | The same three names for Vue, as computed refs                          |
-| `./svelte`       | `setPulseContext`, `usePulse()`, `useLifecycle(source?)` for Svelte 5   |
-| `./testing`      | `createMockAdapter`, `createTestClock`, `testLifecycleAdapter`          |
+| Entry            | Exports                                                               |
+| ---------------- | --------------------------------------------------------------------- |
+| `.`              | `Pulse`, `PulseError`, `UNKNOWN_LIFECYCLE_STATE` and the types        |
+| `./browser`      | `browser({ target? })`                                                |
+| `./react-native` | `reactNative({ appState, platform })`                                 |
+| `./solid`        | The same three names for Solid, as accessors                          |
+| `./vue`          | The same three names for Vue, as computed refs                        |
+| `./svelte`       | `setPulseContext`, `usePulse()`, `useLifecycle(source?)` for Svelte 5 |
+| `./testing`      | `createMockAdapter`, `createTestClock`, `testLifecycleAdapter`        |
 
 ## Tests
 

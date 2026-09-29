@@ -7,7 +7,7 @@
     "node": ">=22.18.0"
   },
   "scripts": {
-    "build": "pnpm -r --filter ./packages/** build",
+    "build": "pnpm -r --filter './packages/*' build",
     "format": "prettier --write .",
     "lint:prettier": "prettier --check .",
     "lint:typescript": "tsc --noEmit && tsc --noEmit -p examples && pnpm -r lint:typescript",

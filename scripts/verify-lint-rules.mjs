@@ -7,7 +7,7 @@ const CORE = "packages/pulse/src/utils/lint-probe.ts";
 const TESTING = "packages/pulse/src/testing/lint-probe.ts";
 const BROWSER = "packages/pulse/src/adapters/browser/lint-probe.ts";
 const NATIVE = "packages/pulse/src/adapters/react-native/lint-probe.ts";
-const REACT = "packages/pulse/src/react/lint-probe.ts";
+const REACT = "packages/react/src/lint-probe.ts";
 const SOLID = "packages/pulse/src/solid/lint-probe.ts";
 const VUE = "packages/pulse/src/vue/lint-probe.ts";
 const SVELTE = "packages/pulse/src/svelte/lint-probe.ts";
@@ -102,11 +102,6 @@ const boundaries = [
     "no-restricted-imports",
     TESTING,
   ],
-  [
-    'import { useLifecycle } from "src/react/useLifecycle";',
-    "no-restricted-imports",
-    CORE,
-  ],
   ['import { expect } from "vitest";', "no-restricted-imports", TESTING],
   [
     'import { render } from "@testing-library/react";',
@@ -137,11 +132,6 @@ const boundaries = [
     'import { isServer } from "solid-js/web";',
     "no-restricted-imports",
     BROWSER,
-  ],
-  [
-    'import { useLifecycle } from "src/solid/useLifecycle";',
-    "no-restricted-imports",
-    REACT,
   ],
   ['import { useState } from "react";', "no-restricted-imports", SOLID],
   ['import { ref } from "vue";', "no-restricted-imports", CORE],
@@ -175,19 +165,9 @@ const boundaries = [
     SOLID,
   ],
   [
-    'import { useLifecycle } from "src/react/useLifecycle";',
-    "no-restricted-imports",
-    SOLID,
-  ],
-  [
     'import { browser } from "src/adapters/browser/browser";',
     "no-restricted-imports",
     SOLID,
-  ],
-  [
-    'import { browser } from "src/adapters/browser/browser";',
-    "no-restricted-imports",
-    REACT,
   ],
   ["setTimeout(() => {}, 0);", "no-restricted-globals", CORE],
   ["queueMicrotask(() => {});", "no-restricted-globals", TESTING],
@@ -208,7 +188,7 @@ const boundaries = [
   [
     'import { useState } from "react";\n\nexport const useValue = (flag: boolean) => {\n  if (flag) {\n    useState(1);\n  }\n};',
     "react-hooks/rules-of-hooks",
-    "packages/pulse/src/react/useValue.ts",
+    "packages/react/src/useValue.ts",
   ],
   [
     "function value() {\n  console.log(1);\n  return 1;\n}",
@@ -221,7 +201,7 @@ const entryPoints = [
   "packages/pulse/src/index.ts",
   "packages/pulse/src/browser.ts",
   "packages/pulse/src/react-native.ts",
-  "packages/pulse/src/react.ts",
+  "packages/react/src/index.ts",
   "packages/pulse/src/solid.ts",
   "packages/pulse/src/vue.ts",
   "packages/pulse/src/svelte.ts",
@@ -255,11 +235,11 @@ const allowed = [
     "packages/pulse/src/adapters/react-native/reactNative.ts",
   ],
   [
-    'export { useLifecycle } from "src/react/useLifecycle";',
-    "packages/pulse/src/react.ts",
+    'export { useLifecycle } from "src/hooks/useLifecycle";',
+    "packages/react/src/index.ts",
   ],
   [
-    'import { UNKNOWN_LIFECYCLE_STATE } from "src/utils/constants/states";\n\nexport const state = UNKNOWN_LIFECYCLE_STATE;',
+    'import { UNKNOWN_LIFECYCLE_STATE } from "@priemskiyyy/pulse";\n\nexport const state = UNKNOWN_LIFECYCLE_STATE;',
     REACT,
   ],
   [

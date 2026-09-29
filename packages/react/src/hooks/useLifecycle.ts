@@ -1,10 +1,8 @@
+import { PulseError, UNKNOWN_LIFECYCLE_STATE } from "@priemskiyyy/pulse";
+import type { LifecycleSource, LifecycleState } from "@priemskiyyy/pulse";
 import { useContext, useSyncExternalStore } from "react";
 
-import { PulseContext } from "src/react/PulseContext";
-import type { LifecycleSource } from "src/types/LifecycleSource";
-import type { LifecycleState } from "src/types/LifecycleState";
-import { UNKNOWN_LIFECYCLE_STATE } from "src/utils/constants/states";
-import { PulseError } from "src/utils/PulseError";
+import { PulseContext } from "src/context/PulseContext";
 
 // One interned snapshot, so the server render and hydration read the same data.
 const getServerSnapshot = () => UNKNOWN_LIFECYCLE_STATE;

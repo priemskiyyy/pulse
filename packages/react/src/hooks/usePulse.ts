@@ -1,8 +1,8 @@
+import { PulseError } from "@priemskiyyy/pulse";
+import type { Pulse } from "@priemskiyyy/pulse";
 import { useContext } from "react";
 
-import { PulseContext } from "src/react/PulseContext";
-import type { Pulse } from "src/utils/Pulse";
-import { PulseError } from "src/utils/PulseError";
+import { PulseContext } from "src/context/PulseContext";
 
 /**
  * Returns the nearest provider's Pulse and throws `INVALID_CONFIGURATION`

@@ -24,6 +24,7 @@ const prose = [
     "AGENTS.md",
     "CHANGELOG.md",
     "packages/pulse/README.md",
+    "packages/react/README.md",
     "examples/react/README.md",
     "examples/expo/README.md",
   ].map((file) => path.join(workspace, file)),

@@ -155,6 +155,7 @@ const MUTANTS = [
   },
   {
     file: "packages/react/src/hooks/useLifecycle.ts",
+    project: "react",
     find: "    getServerSnapshot,",
     replace: "    resolved.state.get,",
     describes: "hydration reading the live client state",
@@ -169,12 +170,13 @@ const countFailures = (report) => {
   }
 };
 
-const failingTests = () => {
+// A mutant runs the tests of the package it lives in, the core's by default.
+const failingTests = (project = "pulse") => {
   try {
     return countFailures(
       execFileSync(
         "node_modules/.bin/vitest",
-        ["run", "--project", "pulse", "--reporter", "json"],
+        ["run", "--project", project, "--reporter", "json"],
         { cwd: root, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] },
       ),
     );
@@ -184,7 +186,9 @@ const failingTests = () => {
   }
 };
 
-if (failingTests() !== 0) {
+const projects = [...new Set(MUTANTS.map((mutant) => mutant.project))];
+
+if (projects.some((project) => failingTests(project) !== 0)) {
   console.error(
     "The baseline is not green; a mutation run against it proves nothing.",
   );
@@ -209,7 +213,7 @@ for (const mutant of MUTANTS) {
   try {
     writeFileSync(path, original.replace(mutant.find, mutant.replace));
 
-    const failed = failingTests();
+    const failed = failingTests(mutant.project);
 
     if (failed > 0) {
       console.log(`caught   ${mutant.describes} (${failed} tests went red)`);

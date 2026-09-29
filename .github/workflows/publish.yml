@@ -16,6 +16,7 @@ jobs:
     timeout-minutes: 5
     outputs:
       package: ${{ steps.verify.outputs.package }}
+      version: ${{ steps.verify.outputs.version }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -68,6 +69,20 @@ jobs:
         working-directory: release/${{ needs.metadata.outputs.package }}
         env:
           NPM_TAG: ${{ github.event.release.prerelease && 'next' || 'latest' }}
+          PACKAGE_NAME: ${{ needs.metadata.outputs.package }}
+          PACKAGE_VERSION: ${{ needs.metadata.outputs.version }}
         run: |
           sha256sum --check SHA256SUMS
+          if published="$(npm view "$PACKAGE_NAME@$PACKAGE_VERSION" dist.integrity --json)"; then
+            node --input-type=module - "$published" ./*.tgz <<'NODE'
+          import assert from "node:assert/strict";
+          import { createHash } from "node:crypto";
+          import { readFileSync } from "node:fs";
+          const expected = JSON.parse(process.argv[2]);
+          const actual = `sha512-${createHash("sha512").update(readFileSync(process.argv[3])).digest("base64")}`;
+          assert.equal(actual, expected, "The published version differs from the verified tarball. Prepare a new version.");
+          console.log("This exact verified tarball is already published.");
+          NODE
+            exit 0
+          fi
           npm publish ./*.tgz --access public --provenance --tag "$NPM_TAG"

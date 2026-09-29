@@ -9,6 +9,9 @@ on:
       - "package.json"
       - "pnpm-lock.yaml"
       - "docs/**"
+      - "packages/**"
+      - "examples/**"
+      - "scripts/build-demo.mjs"
       - ".github/actions/setup/**"
       - ".github/workflows/docs.deploy.yml"
 
@@ -42,7 +45,7 @@ jobs:
         env:
           DOCS_SITE_URL: ${{ steps.pages.outputs.base_url }}/
           DOCS_BASE_PATH: ${{ steps.pages.outputs.base_path }}/
-        run: pnpm build:docs
+        run: pnpm build && pnpm build:docs
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

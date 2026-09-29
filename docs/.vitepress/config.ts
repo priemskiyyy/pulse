@@ -12,18 +12,27 @@ export default defineConfig({
   lang: "en-US",
   title: "Pulse",
   description:
-    "One owned observation of an application's lifecycle on the web and in React Native.",
+    "Typed application lifecycle for the web and React Native. Immutable state, foreground/background transitions, and one shared observation.",
+  head: [
+    ["link", { rel: "icon", type: "image/svg+xml", href: `${base}pulse.svg` }],
+    ["meta", { name: "theme-color", content: "#be123c" }],
+  ],
   cleanUrls: true,
   lastUpdated: true,
   ...(siteUrl ? { sitemap: { hostname: siteUrl } } : {}),
   themeConfig: {
+    logo: "/pulse.svg",
     socialLinks: [{ icon: "github", link: repositoryUrl }],
     editLink: { pattern: `${repositoryUrl}/edit/main/docs/:path` },
     nav: [
       { text: "Guide", link: "/getting-started" },
       { text: "Adapters", link: "/browser" },
       { text: "React", link: "/react" },
-      { text: "Reference", link: "/internals/architecture" },
+      { text: "Live lab", link: `${base}demo/`, target: "_blank" },
+      {
+        text: "0.1.0-beta.1",
+        link: `${repositoryUrl}/releases/tag/pulse-v0.1.0-beta.1`,
+      },
     ],
     sidebar: [
       {

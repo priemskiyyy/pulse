@@ -20,14 +20,18 @@ The adapters are tested against jsdom pages and a fake `AppState`, never a real 
 
 The package uses the GitHub owner `priemskiyyy`, repository `pulse`, workflow `publish.yml` and environment `npm`. Trusted publishing uses GitHub's short-lived OIDC identity, so the repository needs no npm token.
 
-The first publication requires an authenticated npm maintainer, because the package must exist before its trusted publisher can be configured. Publish the verified tarball from its artifact directory, then register the workflow. Do not create a GitHub release for that same version afterward.
+The first publication requires an authenticated npm maintainer, because the package must exist before its trusted publisher can be configured. Download the `release` artifact from the successful `packages-verify` run for the intended commit. Publish that exact verified tarball, then register the workflow and create the GitHub release at the same commit. If the version already exists, the workflow verifies that npm's integrity matches its verified tarball and finishes without republishing it. A mismatch fails the job and requires a new version.
 
 ```sh
 npm login
 cd .artifacts/release/@priemskiyyy/pulse
 shasum -a 256 -c SHA256SUMS
-npm publish priemskiyyy-pulse-<version>.tgz --access public --tag latest
+npm publish priemskiyyy-pulse-<version>.tgz --access public --tag next
 ```
+
+Use `next` for a prerelease such as `0.1.0-beta.1`; use `latest` only for a stable
+release whose platform verification is recorded. Mark the corresponding GitHub
+release as a prerelease when its version has a suffix.
 
 After the publish, register the trusted publisher, then require two-factor authentication and disallow tokens for the package. `npm trust` needs npm 11.15 or later; older versions leave out the permission the registry requires and fail with a bare `400 Bad Request`.
 

@@ -2,7 +2,18 @@
 description: "Pulse gives an application one owned observation of its lifecycle on the web and in React Native: two fields, two transitions, and precise cleanup."
 ---
 
-# What Pulse is
+# Pulse
+
+Application lifecycle state for TypeScript, React and React Native. One shared
+observation, immutable snapshots, and deduplicated foreground/background events.
+
+[Get started](getting-started.md) · [Try the lifecycle lab](https://priemskiyyy.github.io/pulse/demo/) · [View on GitHub](https://github.com/priemskiyyy/pulse)
+
+::: info Public beta
+Install `@priemskiyyy/pulse@next` for `0.1.0-beta.1`. The runtime and packaged
+consumer are tested automatically; physical-device and several browser lifecycle
+checks remain pending. See [verification](verification.md).
+:::
 
 ```ts
 import { Pulse } from "@priemskiyyy/pulse";
@@ -10,7 +21,9 @@ import { browser } from "@priemskiyyy/pulse/browser";
 
 export const pulse = new Pulse({ adapter: browser() });
 
-pulse.on("foreground", (event) => refreshIfStale(event.observedAway));
+pulse.on("foreground", (event) => {
+  console.log("Returned after", event.observedAway, "ms");
+});
 pulse.start();
 ```
 

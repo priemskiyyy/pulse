@@ -4,11 +4,18 @@ Application lifecycle observation for TypeScript, on the web and in React Native
 
 No dependencies, ESM only, no side effects on import.
 
+[Documentation](https://priemskiyyy.github.io/pulse/) · [Live lifecycle lab](https://priemskiyyy.github.io/pulse/demo/) · [GitHub](https://github.com/priemskiyyy/pulse)
+
 ## Installation
 
 ```sh
-pnpm add @priemskiyyy/pulse
+pnpm add @priemskiyyy/pulse@next
 ```
+
+This is the `0.1.0-beta.1` public beta. Physical-device behavior and several real
+browser lifecycle scenarios remain unverified. Read the
+[verification matrix](https://priemskiyyy.github.io/pulse/verification) before
+choosing the platforms your application relies on.
 
 ## Use it
 
@@ -35,6 +42,8 @@ import { AppState, Platform } from "react-native";
 export const pulse = new Pulse({
   adapter: reactNative({ appState: AppState, platform: Platform.OS }),
 });
+
+pulse.start();
 ```
 
 In React, read the current state; the hook never starts or disposes anything:

@@ -53,7 +53,10 @@ if (prerelease !== undefined) {
 }
 
 if (process.env.GITHUB_OUTPUT !== undefined) {
-  appendFileSync(process.env.GITHUB_OUTPUT, `package=${name}\n`);
+  appendFileSync(
+    process.env.GITHUB_OUTPUT,
+    `package=${name}\nversion=${version}\n`,
+  );
 }
 
 console.log(`Release metadata is valid for ${name} ${version}.`);

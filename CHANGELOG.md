@@ -1,6 +1,10 @@
 # Changelog
 
-## @priemskiyyy/pulse 0.1.0 - Unreleased
+## @priemskiyyy/pulse 0.1.0-beta.1 - 2026-09-29
+
+Public beta. Install with `@priemskiyyy/pulse@next`. Physical-device behavior,
+real back/forward-cache restoration and freeze/discard remain unverified; see
+the [verification matrix](docs/verification.md).
 
 - First release. `Pulse` owns one observation of an application's lifecycle: a frozen `{ phase, interaction }` snapshot through `state.get()` and `state.subscribe()`, and deduplicated `foreground` and `background` transitions through `on()`.
 - Unknown is a value. Initial discovery, interaction-only changes and changes across an unknown phase are never transitions.

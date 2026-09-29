@@ -14,6 +14,7 @@ on:
       - ".github/actions/setup/**"
       - ".github/workflows/docs.test.yml"
       - "scripts/verify-docs.mjs"
+      - "scripts/build-demo.mjs"
       - "scripts/verify-snippets.mjs"
       - "scripts/snippets.ambient.d.ts"
   push:
@@ -29,6 +30,7 @@ on:
       - ".github/actions/setup/**"
       - ".github/workflows/docs.test.yml"
       - "scripts/verify-docs.mjs"
+      - "scripts/build-demo.mjs"
       - "scripts/verify-snippets.mjs"
       - "scripts/snippets.ambient.d.ts"
 

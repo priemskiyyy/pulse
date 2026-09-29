@@ -1,6 +1,6 @@
 {
   "name": "@priemskiyyy/pulse",
-  "version": "0.1.0",
+  "version": "0.1.0-beta.1",
   "description": "Application lifecycle observation for the web and React Native: a phase and interaction evidence as immutable snapshots, and deduplicated foreground and background transitions.",
   "type": "module",
   "license": "MIT",

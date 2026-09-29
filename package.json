@@ -23,7 +23,7 @@
     "test:mutation": "node scripts/mutate.mjs",
     "verify:docs": "node scripts/verify-docs.mjs",
     "verify:snippets": "node scripts/verify-snippets.mjs",
-    "build:docs": "vitepress build docs",
+    "build:docs": "vitepress build docs && node scripts/build-demo.mjs",
     "dev:docs": "vitepress dev docs",
     "test:browser": "pnpm build && playwright test -c examples/playwright.config.ts"
   },

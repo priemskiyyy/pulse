@@ -5,7 +5,7 @@ Vue bindings for [Pulse](../pulse): a provider that publishes one Pulse, and com
 ## Installation
 
 ```sh
-pnpm add @priemskiyyy/pulse@next @priemskiyyy/pulse-vue@next
+pnpm add @priemskiyyy/pulse @priemskiyyy/pulse-vue
 ```
 
 Requires Vue 3.5 or later.

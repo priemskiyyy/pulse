@@ -5,10 +5,10 @@ description: "Create one Pulse per host, subscribe passively, start it once at b
 # Getting started
 
 ```sh
-pnpm add @priemskiyyy/pulse@next
+pnpm add @priemskiyyy/pulse
 ```
 
-The current release is `0.1.0-beta.1`, published under the `next` tag. Start with
+The current release is `0.1.0`. Start with
 the [live lifecycle lab](https://priemskiyyy.github.io/pulse/demo/) to see the
 browser adapter in action, and review the [verification matrix](verification.md)
 for the platform checks still pending.

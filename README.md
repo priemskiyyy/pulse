@@ -2,7 +2,7 @@
 
 **Application lifecycle state for TypeScript, React and React Native.**
 
-[![npm beta](https://img.shields.io/npm/v/%40priemskiyyy%2Fpulse/next?label=npm%20beta&color=be123c)](https://www.npmjs.com/package/@priemskiyyy/pulse)
+[![npm](https://img.shields.io/npm/v/%40priemskiyyy%2Fpulse?color=be123c)](https://www.npmjs.com/package/@priemskiyyy/pulse)
 [![Tests](https://github.com/priemskiyyy/pulse/actions/workflows/packages.test.yml/badge.svg)](https://github.com/priemskiyyy/pulse/actions/workflows/packages.test.yml)
 [![MIT license](https://img.shields.io/badge/license-MIT-475569)](LICENSE)
 
@@ -18,10 +18,10 @@ No runtime dependencies. ESM. React is optional.
 ## Install
 
 ```sh
-pnpm add @priemskiyyy/pulse@next
+pnpm add @priemskiyyy/pulse
 ```
 
-The first release is a public beta. See [status](#status) for the verification limits.
+See [status](#status) for the verification limits.
 
 ## Browser
 
@@ -91,7 +91,7 @@ Every package is ESM only, side-effect free and typed. The core has no dependenc
 
 ## Status
 
-`0.1.0-beta.1` is the first public beta, available under npm's `next` tag.
+`0.1.0` is the first stable release.
 The automated checks cover the runtime, adapter mappings, React integration,
 package installation, browser labs and native bundles. Physical iOS and Android
 devices, real browser tab/focus changes, freeze/discard and back/forward-cache

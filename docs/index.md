@@ -9,10 +9,10 @@ observation, immutable snapshots, and deduplicated foreground/background events.
 
 [Get started](getting-started.md) · [Try the lifecycle lab](https://priemskiyyy.github.io/pulse/demo/) · [View on GitHub](https://github.com/priemskiyyy/pulse)
 
-::: info Public beta
-Install `@priemskiyyy/pulse@next` for `0.1.0-beta.1`. The runtime and packaged
-consumer are tested automatically; physical-device and several browser lifecycle
-checks remain pending. See [verification](verification.md).
+::: info Verification
+The runtime and packaged consumer are tested automatically; physical-device and
+several browser lifecycle checks remain pending. See
+[verification](verification.md).
 :::
 
 ```ts

@@ -5,7 +5,7 @@ Solid bindings for [Pulse](../pulse): a provider that publishes one Pulse, and p
 ## Installation
 
 ```sh
-pnpm add @priemskiyyy/pulse@next @priemskiyyy/pulse-solid@next
+pnpm add @priemskiyyy/pulse @priemskiyyy/pulse-solid
 ```
 
 Requires `solid-js` 1.9 or later.

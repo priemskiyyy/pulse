@@ -9,14 +9,14 @@ No dependencies, ESM only, no side effects on import.
 ## Installation
 
 ```sh
-pnpm add @priemskiyyy/pulse@next
+pnpm add @priemskiyyy/pulse
 ```
 
-Framework bindings are their own packages: add `@priemskiyyy/pulse-react@next`
-`@priemskiyyy/pulse-solid@next`, `@priemskiyyy/pulse-vue@next` or
-`@priemskiyyy/pulse-svelte@next` beside it.
+Framework bindings are their own packages: add `@priemskiyyy/pulse-react`,
+`@priemskiyyy/pulse-solid`, `@priemskiyyy/pulse-vue` or
+`@priemskiyyy/pulse-svelte` beside it.
 
-This is the `0.1.0-beta.1` public beta. Physical-device behavior and several real
+Physical-device behavior and several real
 browser lifecycle scenarios remain unverified. Read the
 [verification matrix](https://priemskiyyy.github.io/pulse/verification) before
 choosing the platforms your application relies on.

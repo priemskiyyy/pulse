@@ -5,7 +5,7 @@ Svelte bindings for [Pulse](../pulse): a provider that publishes one Pulse, and 
 ## Installation
 
 ```sh
-pnpm add @priemskiyyy/pulse@next @priemskiyyy/pulse-svelte@next
+pnpm add @priemskiyyy/pulse @priemskiyyy/pulse-svelte
 ```
 
 Requires Svelte 5.7 or later. The package ships its sources for your Svelte compiler.

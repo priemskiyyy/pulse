@@ -1,6 +1,6 @@
 {
   "name": "@priemskiyyy/pulse-solid",
-  "version": "0.1.0-beta.2",
+  "version": "0.1.0",
   "description": "Solid bindings for Pulse: a provider, and primitives for the Pulse and its lifecycle state that observe without starting or disposing anything.",
   "type": "module",
   "license": "MIT",
@@ -38,7 +38,7 @@
     "test:unit": "vitest run --root ../.. --project solid"
   },
   "peerDependencies": {
-    "@priemskiyyy/pulse": ">=0.1.0-beta.2 <0.2",
+    "@priemskiyyy/pulse": ">=0.1.0 <0.2",
     "solid-js": ">=1.9.0 <2"
   },
   "devDependencies": {

@@ -30,8 +30,8 @@ export default defineConfig({
       { text: "React", link: "/react" },
       { text: "Live lab", link: "/demo/", target: "_blank" },
       {
-        text: "0.1.0-beta.1",
-        link: `${repositoryUrl}/releases/tag/pulse-v0.1.0-beta.1`,
+        text: "0.1.0",
+        link: `${repositoryUrl}/releases/tag/pulse-v0.1.0`,
       },
     ],
     sidebar: [

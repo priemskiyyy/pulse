@@ -5,7 +5,7 @@ React bindings for [Pulse](../pulse): a provider that publishes one Pulse, and h
 ## Installation
 
 ```sh
-pnpm add @priemskiyyy/pulse@next @priemskiyyy/pulse-react@next
+pnpm add @priemskiyyy/pulse @priemskiyyy/pulse-react
 ```
 
 Requires React 18.3 or later.

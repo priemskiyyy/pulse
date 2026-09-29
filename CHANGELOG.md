@@ -4,6 +4,7 @@
 
 - `PulseProvider` and `usePulse()` under `./react` publish one Pulse to a tree. The provider never starts or disposes it.
 - `useLifecycle()` takes its source from the nearest `PulseProvider` when none is passed. With neither, it throws `PulseError` with the new code `INVALID_CONFIGURATION`, as does `usePulse()` outside a provider.
+- `./solid`: `PulseProvider`, `usePulse()` and `useLifecycle(source?)` for Solid 1.9, as accessors. `solid-js` is an optional peer.
 
 ## @priemskiyyy/pulse 0.1.0-beta.1 - 2026-09-29
 

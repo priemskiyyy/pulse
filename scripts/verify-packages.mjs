@@ -97,6 +97,31 @@ const ENTRIES = {
   "./testing": { file: "dist/testing.js", client: false, packages: [] },
 };
 
+// Each framework binding is its own package over the core. Svelte ships its
+// sources unbundled, for the application's own compiler, under its own condition.
+const BINDINGS = {
+  "packages/react": {
+    conditions: ["types", "import", "default"],
+    client: true,
+    exports: ["PulseProvider", "useLifecycle", "usePulse"],
+  },
+  "packages/solid": {
+    conditions: ["types", "import", "default"],
+    client: false,
+    exports: ["PulseProvider", "useLifecycle", "usePulse"],
+  },
+  "packages/vue": {
+    conditions: ["types", "import", "default"],
+    client: false,
+    exports: ["PulseProvider", "useLifecycle", "usePulse"],
+  },
+  "packages/svelte": {
+    conditions: ["types", "svelte"],
+    client: false,
+    exports: null,
+  },
+};
+
 const RUNTIME_EXPORTS = {
   ".": ["Pulse", "PulseError", "UNKNOWN_LIFECYCLE_STATE"],
   "./browser": ["browser"],
@@ -174,6 +199,83 @@ try {
     `${checksum}  ${packed.filename}\n`,
   );
 
+  const bindingTarballs = Object.entries(BINDINGS).map(
+    ([folder, { conditions, client }]) => {
+      const bindingDirectory = path.join(workspace, folder);
+
+      const bindingManifest = JSON.parse(
+        readFileSync(path.join(bindingDirectory, "package.json"), "utf8"),
+      );
+
+      assert.deepEqual(
+        Object.keys(bindingManifest.exports),
+        ["."],
+        `${bindingManifest.name} has entries beyond its root.`,
+      );
+      assert.deepEqual(
+        Object.keys(bindingManifest.exports["."]),
+        conditions,
+        `${bindingManifest.name} orders its conditions wrongly.`,
+      );
+      assert(
+        "@priemskiyyy/pulse" in bindingManifest.peerDependencies,
+        `${bindingManifest.name} does not declare the core as a peer.`,
+      );
+      assert.equal(
+        readFileSync(
+          path.join(bindingDirectory, "dist/index.js"),
+          "utf8",
+        ).startsWith('"use client";'),
+        client,
+        `${bindingManifest.name} has the wrong "use client" state.`,
+      );
+
+      process.stdout.write(
+        run("pnpm", ["exec", "publint", bindingDirectory], workspace),
+      );
+
+      const [bindingPacked] = JSON.parse(
+        run(
+          "npm",
+          [
+            "pack",
+            "--ignore-scripts",
+            "--json",
+            "--pack-destination",
+            artifacts,
+          ],
+          bindingDirectory,
+        ),
+      );
+
+      const bindingFiles = bindingPacked.files.map((file) => file.path);
+
+      assert(
+        ["README.md", "LICENSE"].every((file) => bindingFiles.includes(file)),
+        `${bindingManifest.name} ships no README or LICENSE.`,
+      );
+      assert(
+        !bindingFiles.some((file) => /\.(test|fixture|contracts)\./.test(file)),
+        `${bindingManifest.name} packed test files.`,
+      );
+
+      const bindingTarball = path.join(artifacts, bindingPacked.filename);
+      const bindingStaged = path.join(release, bindingPacked.name);
+
+      mkdirSync(bindingStaged, { recursive: true });
+      copyFileSync(
+        bindingTarball,
+        path.join(bindingStaged, bindingPacked.filename),
+      );
+      writeFileSync(
+        path.join(bindingStaged, "SHA256SUMS"),
+        `${createHash("sha256").update(readFileSync(bindingTarball)).digest("hex")}  ${bindingPacked.filename}\n`,
+      );
+
+      return bindingTarball;
+    },
+  );
+
   const pick = (names) =>
     Object.fromEntries(
       names.map((name) => [name, rootManifest.devDependencies[name]]),
@@ -189,6 +291,7 @@ try {
     "--no-audit",
     "--no-fund",
     tarball,
+    ...bindingTarballs,
   ]);
 
   for (const [subpath, { file, client, packages }] of Object.entries(ENTRIES)) {
@@ -335,6 +438,19 @@ try {
       'const mock = createMockAdapter({ initial: { phase: "foreground", interaction: "available" } });',
       "const pulse = new Pulse({ adapter: mock.adapter });",
       "const events = [];",
+      `const bindings = ${JSON.stringify(
+        Object.fromEntries(
+          Object.entries(BINDINGS).flatMap(([folder, { exports }]) =>
+            exports === null
+              ? []
+              : [[`@priemskiyyy/pulse-${path.basename(folder)}`, exports]],
+          ),
+        ),
+      )};`,
+      "",
+      "for (const [name, names] of Object.entries(bindings)) {",
+      "  assert.deepEqual(Object.keys(await import(name)).sort(), names, name);",
+      "}",
       "",
       'pulse.on("background", (event) => events.push(event.type));',
       "pulse.start();",
@@ -347,7 +463,7 @@ try {
   run("node", ["smoke.mjs"]);
 
   console.log(
-    `Verified ${packed.filename}: ${files.length} files, ${Object.keys(ENTRIES).length} entry points, staged with its checksum.`,
+    `Verified ${packed.filename}: ${files.length} files, ${Object.keys(ENTRIES).length} entry points, and ${bindingTarballs.length} binding packages, staged with their checksums.`,
   );
 } finally {
   rmSync(consumer, { recursive: true, force: true });

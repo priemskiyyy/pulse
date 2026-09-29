@@ -1,5 +1,5 @@
 ---
-description: "useLifecycle reads a lifecycle source in React, hydrates from unknown, and never starts or disposes the source."
+description: "PulseProvider publishes a Pulse and useLifecycle reads a lifecycle source in React, hydrates from unknown, and never starts or disposes the source."
 ---
 
 # React
@@ -21,6 +21,24 @@ export const LifecycleLabel = () => {
 ```
 
 `useLifecycle(source)` subscribes with `useSyncExternalStore` and answers the current frozen snapshot. It accepts any object with a `state` readable, not only a `Pulse`. It supports React 18.3 and 19, works the same in React Native, and its module is marked `"use client"`.
+
+## Provider
+
+`PulseProvider` publishes one Pulse to the tree below, so components call `useLifecycle()` without importing the instance. `usePulse()` returns that Pulse, for `on()` subscriptions in effects. Without a provider, both throw `PulseError` with `INVALID_CONFIGURATION`; a source passed to `useLifecycle` always wins.
+
+```tsx
+import { PulseProvider, useLifecycle } from "@priemskiyyy/pulse/react";
+
+const Phase = () => <span>{useLifecycle().phase}</span>;
+
+export const App = () => (
+  <PulseProvider pulse={pulse}>
+    <Phase />
+  </PulseProvider>
+);
+```
+
+The provider only publishes: start the Pulse at bootstrap, never in an effect.
 
 ## It only observes
 

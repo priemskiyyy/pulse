@@ -46,13 +46,14 @@ export const pulse = new Pulse({
 pulse.start();
 ```
 
-In React, read the current state; the hook never starts or disposes anything:
+In React, publish the Pulse once and read the current state; neither the
+provider nor the hook starts or disposes anything:
 
 ```tsx
-import { useLifecycle } from "@priemskiyyy/pulse/react";
+import { PulseProvider, useLifecycle } from "@priemskiyyy/pulse/react";
 
 export const LifecycleLabel = () => {
-  const { phase, interaction } = useLifecycle(pulse);
+  const { phase, interaction } = useLifecycle();
 
   return (
     <span>
@@ -60,6 +61,12 @@ export const LifecycleLabel = () => {
     </span>
   );
 };
+
+export const App = () => (
+  <PulseProvider pulse={pulse}>
+    <LifecycleLabel />
+  </PulseProvider>
+);
 ```
 
 Creating a Pulse observes nothing. `start()` begins, once; when the adapter is unavailable, such as the browser adapter on a server, it observes nothing and the state stays unknown. `dispose()` ends it for good.
@@ -97,13 +104,13 @@ Only an observed, adjacent change between known phases is a transition. Discover
 
 ## Entry points
 
-| Entry            | Exports                                                        |
-| ---------------- | -------------------------------------------------------------- |
-| `.`              | `Pulse`, `PulseError`, `UNKNOWN_LIFECYCLE_STATE` and the types |
-| `./browser`      | `browser({ target? })`                                         |
-| `./react-native` | `reactNative({ appState, platform })`                          |
-| `./react`        | `useLifecycle(source)`, a client module                        |
-| `./testing`      | `createMockAdapter`, `createTestClock`, `testLifecycleAdapter` |
+| Entry            | Exports                                                                 |
+| ---------------- | ----------------------------------------------------------------------- |
+| `.`              | `Pulse`, `PulseError`, `UNKNOWN_LIFECYCLE_STATE` and the types          |
+| `./browser`      | `browser({ target? })`                                                  |
+| `./react-native` | `reactNative({ appState, platform })`                                   |
+| `./react`        | `PulseProvider`, `usePulse()`, `useLifecycle(source?)`, a client module |
+| `./testing`      | `createMockAdapter`, `createTestClock`, `testLifecycleAdapter`          |
 
 ## Tests
 

@@ -102,7 +102,7 @@ const RUNTIME_EXPORTS = {
   ".": ["Pulse", "PulseError", "UNKNOWN_LIFECYCLE_STATE"],
   "./browser": ["browser"],
   "./react-native": ["reactNative"],
-  "./react": ["useLifecycle"],
+  "./react": ["PulseProvider", "useLifecycle", "usePulse"],
   "./testing": ["createMockAdapter", "createTestClock", "testLifecycleAdapter"],
 };
 

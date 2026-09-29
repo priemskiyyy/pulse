@@ -1,7 +1,7 @@
 /**
  * What went wrong: an adapter whose probe or setup threw, an instance used
  * after it failed or was disposed, an adapter snapshot outside the contract,
- * or a clock that failed or moved backwards.
+ * a clock that failed or moved backwards, or a React hook with no source.
  *
  * @example
  * ```ts
@@ -13,4 +13,5 @@ export type PulseErrorCode =
   | "FAILED_INSTANCE"
   | "DISPOSED"
   | "INVALID_OBSERVATION"
-  | "INVALID_CLOCK";
+  | "INVALID_CLOCK"
+  | "INVALID_CONFIGURATION";

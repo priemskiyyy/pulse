@@ -13,12 +13,12 @@ import type { AppStateStatus } from "src/adapters/react-native/types/AppStateSta
  * ```
  */
 export type AppStateLike = {
-  /** The latest status React Native knows; older versions answer `null` until it resolves. */
-  currentState: AppStateStatus | null;
+  /** The latest status React Native knows. It is a plain string from React Native 0.87, and older versions answer `null` until it resolves. */
+  currentState: string | null | undefined;
   /** `false` when the runtime has no AppState module at all. */
   isAvailable: boolean;
   addEventListener: (
     type: "change" | "focus" | "blur",
-    listener: (status: AppStateStatus) => void,
+    listener: (status?: AppStateStatus) => void,
   ) => { remove: () => void };
 };

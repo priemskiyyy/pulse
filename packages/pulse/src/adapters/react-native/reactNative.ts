@@ -86,21 +86,20 @@ export const reactNative = ({
       return next === "UNKNOWN";
     };
 
-    // React Native can add a status before its types do, so anything unmapped is no evidence.
-    const classify = (status: AppStateStatus | null) => {
-      if (status === null) {
-        return "UNKNOWN";
-      }
+    // hasOwnProperty rather than Object.hasOwn, which older Hermes engines lack.
+    const isStatus = (status: string): status is AppStateStatus =>
+      Object.prototype.hasOwnProperty.call(classifications, status);
 
-      // hasOwnProperty rather than Object.hasOwn, which older Hermes engines lack.
-      if (!Object.prototype.hasOwnProperty.call(classifications, status)) {
+    // React Native can add a status before its types do, so anything unmapped is no evidence.
+    const classify = (status: string | null | undefined) => {
+      if (status === null || status === undefined || !isStatus(status)) {
         return "UNKNOWN";
       }
 
       return classifications[status];
     };
 
-    const accept = (status: AppStateStatus | null) => {
+    const accept = (status: string | null | undefined) => {
       const next = classify(status);
 
       if (isStaleFocusBoundary(next)) {
@@ -111,7 +110,7 @@ export const reactNative = ({
       publish();
     };
 
-    const handleChange = (status: AppStateStatus) => {
+    const handleChange = (status?: AppStateStatus) => {
       if (closed) {
         return;
       }
@@ -140,7 +139,7 @@ export const reactNative = ({
 
     const listen = (
       type: "change" | "focus" | "blur",
-      handler: (status: AppStateStatus) => void,
+      handler: (status?: AppStateStatus) => void,
     ) => {
       const subscription = appState.addEventListener(type, handler);
 

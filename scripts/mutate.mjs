@@ -107,8 +107,8 @@ const MUTANTS = [
   },
   {
     file: `${source}/adapters/react-native/reactNative.ts`,
-    find: "      if (!Object.prototype.hasOwnProperty.call(classifications, status)) {",
-    replace: "      if (false) {",
+    find: "      Object.prototype.hasOwnProperty.call(classifications, status);",
+    replace: "      true;",
     describes: "an unmapped AppState status crashing the adapter",
   },
   {
